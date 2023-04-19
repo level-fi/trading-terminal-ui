@@ -1,0 +1,61 @@
+.trader-item {
+  position: relative;
+  ::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #34343b;
+    border: 1px solid #5d5d5d;
+    border-radius: 10px;
+    transform: skew(-15deg);
+    z-index: -1;
+  }
+  &:hover {
+    ::before {
+      background: #5d5d5d;
+    }
+  }
+}
+
+.trader-item-highlight {
+  position: relative;
+  ::before {
+    border: 1px solid transparent;
+  }
+  ::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    bottom: 0;
+    left: -1px;
+    right: -1px;
+    z-index: -2;
+    transform: skew(-15deg);
+    border-radius: 10px;
+    background: linear-gradient(to top, transparent, #ffb4134b);
+  }
+}
+
+.tier-1 {
+  background: linear-gradient(167.51deg, #ffbc0f 15.62%, #fff2d6 48.57%, #ffc715 80.18%);
+  -webkit-text-fill-color: transparent;
+}
+
+.tier-2 {
+  background: linear-gradient(
+    180deg,
+    #d7d7d7 0%,
+    #e7e4de 34.09%,
+    #ffffff 79.28%,
+    rgba(221, 221, 221, 0) 100%
+  );
+  -webkit-text-fill-color: transparent;
+}
+
+.tier-3 {
+  background: linear-gradient(180deg, #be792c 0%, #c19a73 58.33%, #916942 98.96%);
+  -webkit-text-fill-color: transparent;
+}

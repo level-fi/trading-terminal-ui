@@ -1,0 +1,74 @@
+.header-nav-link a.active {
+  position: relative;
+  ::after {
+    content: '';
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background-color: #ffd339;
+    bottom: -4px;
+    left: 0px;
+    box-shadow: 0px 1px 4px #ffd339;
+  }
+}
+
+.header-bg {
+  position: relative;
+  &::after {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('./../assets/imgs/bg.png');
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+  }
+}
+
+.menu-bg[data-zone='traders'],
+.header-bg[data-zone='traders'] {
+  background: radial-gradient(
+    100% 100% at 49.97% 0%,
+    rgba(255, 152, 57, 0.33) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.menu-bg[data-zone='positions'],
+.header-bg[data-zone='positions'] {
+  background: radial-gradient(
+    100% 100% at 49.97% 0%,
+    rgba(176, 164, 255, 0.33) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.menu-bg,
+.header-bg {
+  background: radial-gradient(
+    100% 100% at 49.97% 0%,
+    rgba(236, 226, 133, 0.36) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.menu-bg[data-zone='live'],
+.header-bg[data-zone='live'] {
+  background: radial-gradient(
+    100% 100% at 49.97% 0%,
+    rgba(57, 184, 255, 0.33) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.menu[data-visible='true'] {
+  transform: translateX(0);
+  transition: transform 0.2s ease-out 0s;
+}
+
+.menu[data-visible='false'] {
+  transform: translateX(-100%);
+  transition: transform 0.2s ease-in 0s;
+}

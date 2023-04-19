@@ -1,0 +1,41 @@
+{
+  "market": {
+    "leverage": {
+      "request": "Requested to %action% %index_token% %side% by %size% (price %price_condition% %index_price%)",
+      "executed": "%index_token% %side% %action_in_past% by %size% (price = %mark_price%)",
+      "expired": "Request to %action% %index_token% %side% by %size% (price %price_condition% %index_price%) has expired",
+      "cancel": "Canceled %action% %index_token% %side% by %size% (price %price_condition% %index_price%)",
+      "liquidated": "%index_token% %side% of %size% has been liquidated (price = %liquidated_price%)"
+    },
+    "swap": {
+      "request": "Requested to swap %from_amount% %from_token% for %min_receive_amount% %receive_token%",
+      "executed": "Swapped %from_amount% %from_token% for %receive_amount% %receive_token%",
+      "cancel": "Canceled swap %from_amount% %from_token% for %min_receive_amount% %receive_token%"
+    },
+    "deposit": {
+      "request": "Requested to %action% %collateral% to %index_token% %side%",
+      "executed": "%action_in_past% %collateral% to %index_token% %side%",
+      "expired": "Request to %action% %collateral% to %index_token% %side% has expired",
+      "cancel": "Canceled %action% %collateral% to %index_token% %side%"
+    },
+    "withdraw": {
+      "request": "Requested to %action% %collateral% from %index_token% %side%",
+      "executed": "%action_in_past% %collateral% from %index_token% %side%",
+      "expired": "Request to %action% %collateral% from %index_token% %side% has expired",
+      "cancel": "Canceled %action% %collateral% from %index_token% %side%"
+    }
+  },
+  "limit": {
+    "leverage": {
+      "request": "Order created to %action% %index_token% %side% by %size% (price %price_condition% %index_price%)",
+      "executed": "Order executed to %action% %index_token% %side% by %size% (price = %mark_price%)",
+      "expired": "Order to %action% %index_token% %side% by %size% (price %price_condition% %index_price%) has expired",
+      "cancel": "Canceled order to %action% %index_token% %side% by %size% (price %price_condition% %index_price%)"
+    },
+    "swap": {
+      "request": "Order created to swap %from_amount% %from_token% for %min_receive_amount% %receive_token% (price: %price_condition%)",
+      "executed": "Order executed to swap %from_amount% %from_token% for %receive_amount% %receive_token% (price: %price_condition_executed%)",
+      "cancel": "Canceled order to swap %from_amount% %from_token% for %min_receive_amount% %receive_token%"
+    }
+  }
+}

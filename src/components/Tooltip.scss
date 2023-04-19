@@ -1,0 +1,9 @@
+.question-mark-icon {
+  background-image: url('../assets/icons/ic-question.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  &::hover {
+    background-image: url('../assets/icons/ic-question-active.svg');
+  }
+}
