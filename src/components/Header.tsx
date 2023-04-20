@@ -96,11 +96,11 @@ export const Header = () => {
             onClick={() => {
               toggleMenu(false);
             }}
-            className="fixed top-0 left-0 h-100% w-100% bg-black bg-op-20 z-999"
+            className="fixed top-0 left-0 h-100% w-100% bg-black bg-op-20 z-1002"
           ></div>
         )}
         <div
-          className="fixed top-0 left-0 h-100% w-300px bg-#34343B z-1000 menu"
+          className="fixed top-0 left-0 h-100% w-300px bg-#34343B z-1001 menu"
           data-visible={menuVisible}
         >
           <div className="menu-bg w-100% h-100%" data-zone={location.pathname.split('/')[1]}>

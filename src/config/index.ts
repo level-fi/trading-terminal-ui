@@ -23,20 +23,20 @@ const ProdConfig: ChainConfig = {
   pool: '0xA5aBFB56a78D2BD4689b25B8A77fd49Bb0675874',
   indexTokens: [
     {
-      symbol: 'ETH',
-      address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
-      decimals: 18,
-      fractionDigits: 4,
-      priceFractionDigits: 2,
-      threshold: 0.0001,
-    },
-    {
       symbol: 'BTC',
       address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
       decimals: 18,
       fractionDigits: 5,
       priceFractionDigits: 2,
       threshold: 0.00001,
+    },
+    {
+      symbol: 'ETH',
+      address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
+      decimals: 18,
+      fractionDigits: 4,
+      priceFractionDigits: 2,
+      threshold: 0.0001,
     },
     {
       symbol: 'BNB',

@@ -4,6 +4,7 @@ import IconDown from '../assets/icons/ic-down.svg';
 
 interface DropdownProps<T> {
   defaultValue: T;
+  value?: T;
   options: T[];
   onChange: (value: T) => void;
   className: string;
@@ -45,6 +46,7 @@ const CustomOption = (props) => {
 
 export const Dropdown = <T,>({
   defaultValue,
+  value,
   onChange,
   options,
   className,
@@ -52,6 +54,7 @@ export const Dropdown = <T,>({
   return (
     <Select
       defaultValue={defaultValue}
+      value={value}
       onChange={onChange}
       options={options}
       isSearchable={false}

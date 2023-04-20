@@ -36,6 +36,7 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
           <>
             <NavLink
               to={`/traders/${items?.[1]?.wallet}`}
+              state={{ from: 'leaderboard' }}
               className="no-underline hover:color-#ffffffc4 font-600 text-10px lg:text-16px color-#fff pb-8px"
             >
               {shortenAddress(items?.[1]?.wallet)}
@@ -62,6 +63,7 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
           <>
             <NavLink
               to={`/traders/${items?.[0]?.wallet}`}
+              state={{ from: 'leaderboard' }}
               className="no-underline hover:color-#ffffffc4 font-600 text-10px lg:text-16px color-#fff pb-8px"
             >
               {shortenAddress(items?.[0]?.wallet)}
@@ -88,6 +90,7 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
           <>
             <NavLink
               to={`/traders/${items?.[2]?.wallet}`}
+              state={{ from: 'leaderboard' }}
               className="no-underline hover:color-#ffffffc4 font-600 text-10px lg:text-16px color-#fff pb-8px"
             >
               {shortenAddress(items?.[2]?.wallet)}

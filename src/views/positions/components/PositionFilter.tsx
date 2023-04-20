@@ -93,8 +93,9 @@ export const PositionFilter = () => {
           <div className="table-cell w-100%">
             <div className="flex justify-start w-100%">
               <Dropdown
-                defaultValue={statusOptions[0]}
+                defaultValue={statusOptions[1]}
                 options={statusOptions}
+                value={statusOptions.find((c) => c.value === config.status)}
                 className="color-white uppercase"
                 onChange={(item) => {
                   onUpdate('status', item.label, item.value);
@@ -110,8 +111,12 @@ export const PositionFilter = () => {
           <div className="table-cell w-100%">
             <div className="flex justify-start w-100%">
               <Dropdown
-                defaultValue={orderOptions[0]}
+                defaultValue={orderOptions[6]}
                 options={orderOptions}
+                value={orderOptions.find(
+                  (c) =>
+                    c.value.sortBy === config.sortBy && c.value.sortType === config.sortType,
+                )}
                 className="color-white"
                 onChange={(item) => {
                   params.set('sort', item.value.sortBy);
@@ -129,6 +134,7 @@ export const PositionFilter = () => {
               <Dropdown
                 defaultValue={marketOptions[0]}
                 options={marketOptions}
+                value={marketOptions.find((c) => c.value === config.market)}
                 className="color-white uppercase"
                 onChange={(item) => {
                   onUpdate('market', item.label, item.value);
@@ -144,6 +150,7 @@ export const PositionFilter = () => {
               <Dropdown
                 defaultValue={sideOptions[0]}
                 options={sideOptions}
+                value={sideOptions.find((c) => c.value === config.side)}
                 className="color-white uppercase"
                 onChange={(item) => {
                   onUpdate('side', item.label, item.value);

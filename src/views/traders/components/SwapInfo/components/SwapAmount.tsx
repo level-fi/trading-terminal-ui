@@ -1,28 +1,26 @@
-import { BigNumber } from 'ethers';
 import { ChainConfigToken } from '../../../../../utils/type';
 import React from 'react';
 import { TokenSymbol } from '../../../../../components/TokenSymbol';
-import { formatBigNumber } from '../../../../../utils/numbers';
+import { formatNumberWithThreshold } from '../../../../../utils/numbers';
 
 interface SwapAmountProps {
   token: ChainConfigToken;
   size: number;
-  amount: BigNumber;
+  amount: number;
 }
 export const SwapAmount: React.FC<SwapAmountProps> = ({ amount, size, token }) => {
   return (
     <div className="flex items-center">
-      <TokenSymbol symbol={token.symbol} size={size} />
+      <TokenSymbol symbol={token?.symbol} size={size} />
       <label className="color-white ml-8px">
-        {formatBigNumber(
+        {formatNumberWithThreshold(
           amount,
-          token.decimals,
           {
-            fractionDigits: token.fractionDigits,
+            fractionDigits: token?.fractionDigits,
           },
-          token.threshold,
+          token?.threshold,
         )}
-        <label className="text-14px color-#adadab ml-8px">{token.symbol}</label>
+        <label className="text-14px color-#adadab ml-8px">{token?.symbol}</label>
       </label>
     </div>
   );

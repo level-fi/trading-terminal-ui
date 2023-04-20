@@ -1,19 +1,23 @@
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
+import './App.scss';
 import { Header } from './components/Header';
 import { PositionList } from './views/positions';
 import { TraderList } from './views/traders';
 import { TraderDetail } from './views/traders/TraderDetail';
 import { Leaderboard } from './views/leaderboard';
 import { Live } from './views/live';
+import { Footer } from './components/Footer';
+import { StatsProvider } from './context/StatsProvider';
 
 const Container = () => {
   return (
-    <div>
+    <StatsProvider>
       <Header />
       <div className="relative z-2">
         <Outlet />
       </div>
-    </div>
+      <Footer />
+    </StatsProvider>
   );
 };
 
