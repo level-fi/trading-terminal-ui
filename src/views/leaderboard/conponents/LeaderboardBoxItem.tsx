@@ -28,6 +28,7 @@ export const LeaderboardBoxItem: React.FC<LeaderboardBoxItemProps> = ({
             <NavLink
               key={index}
               to={`/traders/${trader.wallet}`}
+              state={{ from: 'leaderboard' }}
               className={`no-underline trader-item ${
                 index === 0 ? 'trader-item-highlight' : ''
               } flex items-center mb-16px p-x-15px lg:p-x-25px p-y-10px lg:p-y-15px color-#fff`}

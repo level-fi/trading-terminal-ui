@@ -10,15 +10,15 @@ export const timeFilterOptions = [
   },
   {
     label: '24h',
-    value: '86400',
+    value: 86400,
   },
   {
     label: '7d',
-    value: '604800',
+    value: 604800,
   },
   {
     label: '1m',
-    value: '2592000',
+    value: 2592000,
   },
 ];
 export const orderOptions = [
@@ -83,11 +83,7 @@ export const useTradersConfigParsed = () => {
     const raw = timeFilterOptions.find(
       (c) => c.label === params.get('duration')?.toLowerCase(),
     )?.value;
-    const parsed = parseInt(raw || '');
-    if (!raw || isNaN(parsed)) {
-      return;
-    }
-    return parsed;
+    return raw;
   }, [params]);
 
   return useMemo<UseTradersConfig>(

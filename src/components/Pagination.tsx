@@ -16,7 +16,7 @@ export const Pagination: React.FC<PaginationProps> = ({ total, current, onChange
     const margin = 3;
     const border = 1;
 
-    if (total <= margin) {
+    if (total <= margin + border + 1) {
       top = [...new Array(total)].map((_, i) => i + 1);
       mid = [];
       last = [];

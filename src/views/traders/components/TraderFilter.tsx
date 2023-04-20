@@ -70,7 +70,7 @@ export const TraderFilter = () => {
           <label className="color-#cdcdcd lg:hidden">TIME</label>
           <div className="flex items-center lg:mt-0 lg:ml-0 mt-13px -ml-10px">
             {timeFilterOptions.map(({ label, value }, index) => {
-              const active = value === config.duration?.toString();
+              const active = value === config.duration;
               const color = active ? 'color-black' : 'color-white';
               const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
               return (
@@ -98,6 +98,10 @@ export const TraderFilter = () => {
               <Dropdown
                 defaultValue={orderOptions[0]}
                 options={orderOptions}
+                value={orderOptions.find(
+                  (c) =>
+                    c.value.sortBy === config.sortBy && c.value.sortType === config.sortType,
+                )}
                 className="color-white"
                 onChange={(item) => {
                   params.set('sort', item.value.sortBy);
@@ -115,6 +119,7 @@ export const TraderFilter = () => {
               <Dropdown
                 defaultValue={timeFilterOptions[0]}
                 options={timeFilterOptions}
+                value={timeFilterOptions.find((c) => c.value === config.duration)}
                 className="color-white uppercase"
                 onChange={(item) => {
                   onUpdateTime(item.label, item.value);
