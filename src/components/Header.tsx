@@ -100,7 +100,7 @@ export const Header = () => {
           ></div>
         )}
         <div
-          className="fixed top-0 left-0 h-100% w-300px bg-#34343B z-1001 menu"
+          className="fixed top-0 left-0 h-100% w-300px bg-#34343B z-1003 menu"
           data-visible={menuVisible}
         >
           <div className="menu-bg w-100% h-100%" data-zone={location.pathname.split('/')[1]}>
