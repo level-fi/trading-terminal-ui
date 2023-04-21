@@ -37,12 +37,12 @@ export const Moddal: React.FC<ModalProps> = ({ visible, children, close }) => {
     >
       <div
         onClick={close}
-        className="z-1002 lg:absolute w-100% h-100% overflow-y-auto pt-61px lg:py-96px flex flex-col lg:items-center lg:justify-start"
+        className="z-1002 xl:absolute w-100% h-100% overflow-y-auto pt-61px xl:py-96px flex flex-col xl:items-center xl:justify-start"
       >
-        <div className="lg:hidden pointer-events-none flex-1"></div>
+        <div className="xl:hidden pointer-events-none flex-1"></div>
         <div
           onClick={(e) => e.stopPropagation()}
-          className="lg:p-20px p-14px rounded-t-10px lg:rounded-20px bg-#34343B"
+          className="xl:p-20px p-14px rounded-t-10px xl:rounded-20px bg-#34343B"
         >
           <div>{children}</div>
         </div>

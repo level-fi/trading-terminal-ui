@@ -29,9 +29,9 @@ export const TraderItem: React.FC<TraderItemProps> = ({
     <NavLink
       to={`/traders/${address}`}
       state={{ from: 'trader-list' }}
-      className="relative no-underline block lg:table-row lg:h-56px bg-#34343B hover-bg-#5E5E5E hover-shadow b-1px b-solid b-#5E5E5E p-14px rounded-10px mb-12px"
+      className="relative no-underline block xl:table-row xl:h-56px bg-#34343B hover-bg-#5E5E5E hover-shadow b-1px b-solid b-#5E5E5E p-14px rounded-10px mb-12px"
     >
-      <div className="lg:hidden">
+      <div className="xl:hidden">
         {loading && <TraderItemContentLoader />}
         <div
           className={`flex justify-between items-center b-b-1px b-dashed b-#5E5E5E pb-10px ${
@@ -62,10 +62,10 @@ export const TraderItem: React.FC<TraderItemProps> = ({
         </div>
       </div>
       {/* desktop */}
-      <div className="hidden lg:table-cell b-y-1px b-l-1px b-solid b-#5e5e5e vertical-mid px-24px rounded-l-10px">
+      <div className="hidden xl:table-cell b-y-1px b-l-1px b-solid b-#5e5e5e vertical-mid px-24px rounded-l-10px">
         <span className={`text-31px font-800 trader-item-rank color-#adadab`}>{rank}</span>
       </div>
-      <div className="hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
+      <div className="hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
         <div className="flex items-center">
           <Avatar wallet={address} size={32} />
           <span className="mx-11px font-500 text-16px color-white leading-22px flex-1 b-solid b-#5E5E5E">
@@ -73,18 +73,18 @@ export const TraderItem: React.FC<TraderItemProps> = ({
           </span>
         </div>
       </div>
-      <div className="hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
+      <div className="hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
         <span className="color-white">
           {win}/{loss}
         </span>
       </div>
-      <div className="hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
+      <div className="hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
         <span className="color-white">{formatCurrency(volume)}</span>
       </div>
-      <div className="hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
+      <div className="hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
         <span className={profitColor(netProfit)}>{formatProfit(netProfit)}</span>
       </div>
-      <div className="hidden lg:table-cell b-y-1px b-r-1px b-solid b-#5e5e5e vertical-mid px-24px rounded-r-10px">
+      <div className="hidden xl:table-cell b-y-1px b-r-1px b-solid b-#5e5e5e vertical-mid px-24px rounded-r-10px">
         <img src={IconRight} height={12} />
       </div>
     </NavLink>
