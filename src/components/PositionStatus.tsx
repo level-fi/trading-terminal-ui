@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 
 const Size = {
-  md: 'lg:leading-22px lg:text-16px lg:font-800 leading-18px text-14px font-400 px-7px rounded-7px',
-  sm: 'leading-1 lg:text-14px text-12px font-400 px-6px rounded-5px',
+  md: 'xl:leading-22px xl:text-16px xl:font-800 leading-18px text-14px font-400 px-7px rounded-7px',
+  sm: 'leading-1 xl:text-14px text-12px font-400 px-6px rounded-5px',
 };
 interface PositionStatusProps {
   closed: boolean;

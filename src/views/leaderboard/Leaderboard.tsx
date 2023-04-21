@@ -5,7 +5,7 @@ import { TopTrader } from './conponents/TopTrader';
 export const Leaderboard = () => {
   const { data, loading } = useLeaderboard();
   return (
-    <div className="mx-14px lg:mx-60px my-20px">
+    <div className="mx-14px xl:mx-60px my-20px">
       <TopTrader items={data.allTime} loading={loading} />
       <LeaderboardBox
         currentMonth={data.currentMonth}

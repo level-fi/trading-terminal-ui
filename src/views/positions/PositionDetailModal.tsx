@@ -44,33 +44,33 @@ export const PositionDetailModal = () => {
             <div></div>
           ) : (
             <div className="flex items-center">
-              <div className="hidden lg:block">
+              <div className="hidden xl:block">
                 <TokenSymbol symbol={item?.indexToken.symbol} size={56} />
               </div>
-              <div className="lg:hidden">
+              <div className="xl:hidden">
                 <TokenSymbol symbol={item?.indexToken.symbol} size={40} />
               </div>
-              <div className="flex flex-col ml-8px lg:ml-17px">
+              <div className="flex flex-col ml-8px xl:ml-17px">
                 <div>
-                  <span className="font-700 lg:text-20px text-16px color-white">
+                  <span className="font-700 xl:text-20px text-16px color-white">
                     {item?.indexToken.symbol}/USD
                   </span>
                   <span
-                    className={`ml-4px lg:ml-8px font-400 lg:text-16px text-14px ${
+                    className={`ml-4px xl:ml-8px font-400 xl:text-16px text-14px ${
                       item?.side === Side.LONG ? 'color-win' : 'color-loss'
                     }`}
                   >
                     {Side[item?.side]}
                   </span>
                 </div>
-                <div className="mt-8px color-#cdcdcd lg:text-14px text-12px">
+                <div className="mt-8px color-#cdcdcd xl:text-14px text-12px">
                   Wallet:{' '}
                   <NavLink
                     to={`/traders/${item?.wallet}`}
                     className="color-white b-b-1px b-white b-solid no-underline hover-op-54"
                   >
-                    <span className="hidden lg:inline">{item?.wallet}</span>
-                    <span className="lg:hidden">{shortenAddress(item?.wallet)}</span>
+                    <span className="hidden xl:inline">{item?.wallet}</span>
+                    <span className="xl:hidden">{shortenAddress(item?.wallet)}</span>
                   </NavLink>
                 </div>
               </div>
@@ -78,12 +78,12 @@ export const PositionDetailModal = () => {
           )}
           <div
             onClick={closeModal}
-            className="bg-white bg-op-54 hover:bg-op-70 cursor-pointer [&:hover_img]:op-100 p-8px rounded-99 lg:-mt-10px lg:-mr-10px"
+            className="bg-white bg-op-54 hover:bg-op-70 cursor-pointer [&:hover_img]:op-100 p-8px rounded-99 xl:-mt-10px xl:-mr-10px"
           >
             <img src={IconX} height={12} width={12} className="block op-54" />
           </div>
         </div>
-        <div className="flex flex-col lg:flex-row mt-20px mb-16px -mx-10px lg:min-w-800px">
+        <div className="flex flex-col xl:flex-row mt-20px mb-16px -mx-10px xl:min-w-800px">
           <div className="rounded-10px bg-black bg-op-54 px-20px py-18px relative flex-1 mx-10px">
             {loading && !silentLoad && (
               <div className="absolute top-0 left-0 h-100% w-100%">
@@ -139,7 +139,7 @@ export const PositionDetailModal = () => {
                 </div>
               ))}
           </div>
-          <div className="rounded-10px bg-black bg-op-54 px-23px py-18px relative flex-1 mx-10px mt-16px lg:mt-0">
+          <div className="rounded-10px bg-black bg-op-54 px-23px py-18px relative flex-1 mx-10px mt-16px xl:mt-0">
             {loading && !silentLoad && (
               <div className="absolute top-0 left-0 h-100% w-100%">
                 <PositionDetailInfoContentLoader />

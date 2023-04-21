@@ -45,11 +45,11 @@ export const PositionItem: React.FC<PositionItemProps> = ({
   return (
     <div
       onClick={() => onClick(id)}
-      className={`cursor-pointer relative no-underline block lg:table-row lg:h-56px bg-#34343B hover-bg-#5E5E5E hover-shadow b-1px b-solid b-#5E5E5E p-14px rounded-10px mb-12px ${
-        loading ? 'lg:invisible' : ''
+      className={`cursor-pointer relative no-underline block xl:table-row xl:h-56px bg-#34343B hover-bg-#5E5E5E hover-shadow b-1px b-solid b-#5E5E5E p-14px rounded-10px mb-12px ${
+        loading ? 'xl:invisible' : ''
       }`}
     >
-      <div className="lg:hidden">
+      <div className="xl:hidden">
         {loading && <PositionItemContentLoader />}
         <div
           className={`flex justify-between items-center b-b-1px b-dashed b-#5E5E5E pb-10px ${
@@ -84,46 +84,46 @@ export const PositionItem: React.FC<PositionItemProps> = ({
       </div>
       {/* desktop */}
       <div
-        className={`hidden lg:table-cell b-y-1px b-l-1px b-solid b-#5e5e5e vertical-mid ${cellClassName} rounded-l-10px`}
+        className={`hidden xl:table-cell b-y-1px b-l-1px b-solid b-#5e5e5e vertical-mid ${cellClassName} rounded-l-10px`}
       >
         <TokenSide address={address} side={side} symbol={token?.symbol} />
       </div>
       <div
-        className={`hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
+        className={`hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
       >
         <span className="color-white">{formatCurrency(size)}</span>
       </div>
       <div
-        className={`hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
+        className={`hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
       >
         <span className={profitColor(pnl)}>{formatProfit(pnl)}</span>
       </div>
       <div
-        className={`hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
+        className={`hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
       >
         <span className={profitColor(netProfit)}>{formatProfit(netProfit)}</span>
       </div>
       <div
-        className={`hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
+        className={`hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
       >
         <span className="color-white">
           {formatCurrency(entryPrice, token?.priceFractionDigits)}
         </span>
       </div>
       <div
-        className={`hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
+        className={`hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
       >
         <span className="color-white">
           {formatCurrency(markPrice, token?.priceFractionDigits)}
         </span>
       </div>
       <div
-        className={`hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
+        className={`hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
       >
         <PositionStatus closed={closed} />
       </div>
       <div
-        className={`hidden lg:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
+        className={`hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid ${cellClassName}`}
       >
         <div className="flex flex-col 2xl:flex-row">
           <span className="color-white">{unixToDate(time, 'yyyy-MM-dd')}</span>
@@ -133,7 +133,7 @@ export const PositionItem: React.FC<PositionItemProps> = ({
         </div>
       </div>
       <div
-        className={`hidden lg:table-cell b-y-1px b-r-1px b-solid b-#5e5e5e vertical-mid ${cellClassName} rounded-r-10px`}
+        className={`hidden xl:table-cell b-y-1px b-r-1px b-solid b-#5e5e5e vertical-mid ${cellClassName} rounded-r-10px`}
       >
         <img src={IconRight} height={12} />
       </div>

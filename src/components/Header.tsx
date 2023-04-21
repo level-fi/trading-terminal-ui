@@ -26,26 +26,26 @@ export const Header = () => {
   };
 
   return (
-    <div className="overflow-hidden relative lg:static lg:overflow-visible">
+    <div className="overflow-hidden relative xl:static xl:overflow-visible">
       <div
-        className="header-bg z-1 absolute top-0 left-0 w-100% h-331px op-20 lg:op-100"
+        className="header-bg z-1 absolute top-0 left-0 w-100% h-331px op-20 xl:op-100"
         data-zone={location.pathname.split('/')[1]}
       ></div>
-      <div className="relative z-2 flex justify-between items-center px-18px py-15px flex lg:px-30px lg:py-25px">
-        <div className="flex items-center lg:w-150px">
+      <div className="relative z-2 flex justify-between items-center px-18px py-15px flex xl:px-30px xl:py-25px">
+        <div className="flex items-center xl:w-150px">
           <img
             src={IconBar}
             height={16}
-            className="mr-16px lg:hidden hover-op-75"
+            className="mr-16px xl:hidden hover-op-75"
             onClick={() => {
               toggleMenu(true);
             }}
           />
           <NavLink to={'/'} className={'cursor-pointer'}>
-            <img src={Logo} className="h-28px lg:h-34px" />
+            <img src={Logo} className="h-28px xl:h-34px" />
           </NavLink>
         </div>
-        <div className="header-nav-link text-center hidden lg:block">
+        <div className="header-nav-link text-center hidden xl:block">
           <NavLink
             to={'/'}
             className={
@@ -79,10 +79,10 @@ export const Header = () => {
             <label className="text-16px font-400 cursor-inherit">Live</label>
           </NavLink>
         </div>
-        <div className="lg:w-150px flex justify-end items-center">
+        <div className="xl:w-150px flex justify-end items-center">
           <a
             href="https://app.level.finance/"
-            className="color-primary flex items-center font-700 no-underline hover-opacity-75 [&>_svg_path]:fill-primary lg:text-16px text-14px"
+            className="color-primary flex items-center font-700 no-underline hover-opacity-75 [&>_svg_path]:fill-primary xl:text-16px text-14px"
           >
             Go to App
             <IconExplorer height={14} className={'ml-9px'} />
@@ -90,7 +90,7 @@ export const Header = () => {
         </div>
       </div>
       {/* mobile */}
-      <div className="lg:hidden">
+      <div className="xl:hidden">
         {menuVisible && (
           <div
             onClick={() => {

@@ -19,7 +19,7 @@ export const LeaderboardBoxItem: React.FC<LeaderboardBoxItemProps> = ({
 }) => {
   return (
     <div>
-      <div className="pb-20px font-800 text-18px lg:text-22px color-#fff">{title}</div>
+      <div className="pb-20px font-800 text-18px xl:text-22px color-#fff">{title}</div>
       {loading ? (
         <LeaderBoardContentLoader />
       ) : (
@@ -30,21 +30,21 @@ export const LeaderboardBoxItem: React.FC<LeaderboardBoxItemProps> = ({
               to={`/traders/${trader.wallet}`}
               className={`no-underline trader-item ${
                 index === 0 ? 'trader-item-highlight' : ''
-              } flex items-center mb-16px p-x-15px lg:p-x-25px p-y-10px lg:p-y-15px color-#fff`}
+              } flex items-center mb-16px p-x-15px xl:p-x-25px p-y-10px xl:p-y-15px color-#fff`}
             >
               <div
-                className={`tier-1 font-800 text-16px lg:text-32px mr-10px lg:mr-32px bg-clip-text tier-${
+                className={`tier-1 font-800 text-16px xl:text-32px mr-10px xl:mr-32px bg-clip-text tier-${
                   index + 1
                 }`}
               >
                 {index + 1}
               </div>
               <Avatar wallet={trader.wallet} size={30} />
-              <div className="ml-9px font-normal lg:font-500 text-14px lg:text-16px">
-                <span className="inline lg:hidden xl:hidden">
+              <div className="ml-9px font-normal xl:font-500 text-14px xl:text-16px">
+                <span className="inline xl:hidden xl:hidden">
                   {shortenAddress(trader.wallet)}
                 </span>
-                <span className="hidden lg:inline xl:hidden">
+                <span className="hidden xl:inline xl:hidden">
                   {shortenAddress(trader.wallet)}
                 </span>
                 <span className="hidden xl:inline 2xl:hidden">
@@ -54,7 +54,7 @@ export const LeaderboardBoxItem: React.FC<LeaderboardBoxItemProps> = ({
                   {shortenAddress(trader.wallet, 20, 10)}
                 </span>
               </div>
-              <div className="ml-auto font-800 text-16px lg:text-20px color-#ffd339">
+              <div className="ml-auto font-800 text-16px xl:text-20px color-#ffd339">
                 {formatCurrency(trader.volume, 0)}
               </div>
             </NavLink>

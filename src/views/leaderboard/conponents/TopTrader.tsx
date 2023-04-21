@@ -25,10 +25,10 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
         <Tier2 wallet={items?.[1]?.wallet} />
         {loading ? (
           <>
-            <div className="block lg:hidden">
+            <div className="block xl:hidden">
               <TopTraderContentLoaderMobile />
             </div>
-            <div className="hidden lg:block">
+            <div className="hidden xl:block">
               <TopTraderContentLoader />
             </div>
           </>
@@ -36,25 +36,30 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
           <>
             <NavLink
               to={`/traders/${items?.[1]?.wallet}`}
+<<<<<<< Updated upstream
               className="no-underline hover:color-#ffffffc4 font-600 text-10px lg:text-16px color-#fff pb-8px"
+=======
+              state={{ from: 'leaderboard' }}
+              className="no-underline hover:color-#ffffffc4 font-600 text-10px xl:text-16px color-#fff pb-8px"
+>>>>>>> Stashed changes
             >
               {shortenAddress(items?.[1]?.wallet)}
             </NavLink>
-            <p className="font-700 text-12px lg:text-18px color-#FFD339 pb-15px">
+            <p className="font-700 text-12px xl:text-18px color-#FFD339 pb-15px">
               {formatCurrency(items?.[1]?.volume, 0)}
             </p>
           </>
         )}
-        <img src={img2st} className="w-145px lg:w-210px mr--30px lg:mr--50px" />
+        <img src={img2st} className="w-145px xl:w-210px mr--30px xl:mr--50px" />
       </div>
       <div className="tier-info">
         <Tier1 wallet={items?.[0]?.wallet} />
         {loading ? (
           <>
-            <div className="block lg:hidden">
+            <div className="block xl:hidden">
               <TopTraderContentLoaderMobile />
             </div>
-            <div className="hidden lg:block">
+            <div className="hidden xl:block">
               <TopTraderContentLoader />
             </div>
           </>
@@ -62,25 +67,30 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
           <>
             <NavLink
               to={`/traders/${items?.[0]?.wallet}`}
+<<<<<<< Updated upstream
               className="no-underline hover:color-#ffffffc4 font-600 text-10px lg:text-16px color-#fff pb-8px"
+=======
+              state={{ from: 'leaderboard' }}
+              className="no-underline hover:color-#ffffffc4 font-600 text-10px xl:text-16px color-#fff pb-8px"
+>>>>>>> Stashed changes
             >
               {shortenAddress(items?.[0]?.wallet)}
             </NavLink>
-            <p className="font-700 text-12px lg:text-18px color-#FFD339 pb-15px">
+            <p className="font-700 text-12px xl:text-18px color-#FFD339 pb-15px">
               {formatCurrency(items?.[0]?.volume, 0)}
             </p>
           </>
         )}
-        <img src={img1st} className="w-130px lg:w-190px z-1 tier-shadow" />
+        <img src={img1st} className="w-130px xl:w-190px z-1 tier-shadow" />
       </div>
       <div className="tier-info">
         <Tier2 wallet={items?.[2]?.wallet} />
         {loading ? (
           <>
-            <div className="block lg:hidden">
+            <div className="block xl:hidden">
               <TopTraderContentLoaderMobile />
             </div>
-            <div className="hidden lg:block">
+            <div className="hidden xl:block">
               <TopTraderContentLoader />
             </div>
           </>
@@ -88,16 +98,21 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
           <>
             <NavLink
               to={`/traders/${items?.[2]?.wallet}`}
+<<<<<<< Updated upstream
               className="no-underline hover:color-#ffffffc4 font-600 text-10px lg:text-16px color-#fff pb-8px"
+=======
+              state={{ from: 'leaderboard' }}
+              className="no-underline hover:color-#ffffffc4 font-600 text-10px xl:text-16px color-#fff pb-8px"
+>>>>>>> Stashed changes
             >
               {shortenAddress(items?.[2]?.wallet)}
             </NavLink>
-            <p className="font-700 text-12px lg:text-18px color-#FFD339 pb-15px">
+            <p className="font-700 text-12px xl:text-18px color-#FFD339 pb-15px">
               {formatCurrency(items?.[2]?.volume, 0)}
             </p>
           </>
         )}
-        <img src={img3st} className="w-135px lg:w-205px ml--30px lf:ml--50px" />
+        <img src={img3st} className="w-135px xl:w-205px ml--30px lf:ml--50px" />
       </div>
     </div>
   );

@@ -49,8 +49,8 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
   return (
     <div>
       <div className="relative">
-        <div className="lg:table w-100% lg:border-spacing-y-12px">
-          <div ref={headerRef} className="hidden lg:table-row [&>.table-cell]:px-17px">
+        <div className="xl:table w-100% xl:border-spacing-y-12px">
+          <div ref={headerRef} className="hidden xl:table-row [&>.table-cell]:px-17px">
             <div className="table-cell">
               <label className="text-14px color-#cdcdcd">Time</label>
             </div>
@@ -68,6 +68,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
             </div>
             <span></span>
           </div>
+<<<<<<< Updated upstream
           {items.map((item, i) => (
             <div
               className="lg:table-row lg:h-56px [&>.vertical-middle]:px-15px [&>.vertical-middle]:py-12px no-underline [&:hover>.vertical-middle]:bg-#5E5E5E"
@@ -92,6 +93,82 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                 </div>
                 <div className="flex justify-between text-14px mt-14px">
                   <span className="color-#cdcdcd">Price</span>
+=======
+          {items.map((item, i) => {
+            const tokenIn = getTokenByAddress(item.tokenIn);
+            const tokenOut = getTokenByAddress(item.tokenOut);
+            const price = item.amountOut / item.amountIn;
+            return (
+              <a
+                href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
+                target="_blank"
+                className="xl:table-row xl:h-56px [&>.vertical-middle]:px-15px [&>.vertical-middle]:py-12px cursor-pointer no-underline [&:hover>.vertical-middle]:bg-#5E5E5E [&:hover_svg_path]:fill-primary"
+                key={i}
+              >
+                <div className="xl:hidden bg-#34343B p-14px rounded-10px mb-12px">
+                  <div className="flex justify-between text-14px">
+                    <span className="color-#cdcdcd">Type</span>
+                    <span className="color-white">
+                      {item.type === OrderType.MARKET ? 'MARKET' : 'LIMIT'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-14px mt-14px">
+                    <span className="color-#cdcdcd">From</span>
+                    <div className="-my-3px">
+                      <SwapAmount amount={item.amountIn} size={20} token={tokenIn} />
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center text-14px mt-14px">
+                    <span className="color-#cdcdcd">To (Min receive)</span>
+                    <div className="-my-3px">
+                      <SwapAmount amount={item.amountOut} size={20} token={tokenOut} />
+                    </div>
+                  </div>
+                  <div className="flex justify-between text-14px mt-14px">
+                    <span className="color-#cdcdcd">Price</span>
+                    <SwapPrice
+                      tokenIn={tokenIn}
+                      tokenOut={tokenOut}
+                      price={price}
+                      priceDirection="="
+                    />
+                  </div>
+                  <div className="flex justify-between text-14px mt-14px">
+                    <span className="color-#cdcdcd">Time</span>
+                    <span className="color-white">{unixToDate(item.createdAt)}</span>
+                  </div>
+                  <div className="flex justify-between text-14px mt-14px">
+                    <span className="color-#cdcdcd">Paid Fee</span>
+                    <span className="color-white">{formatCurrency(item.fee)}</span>
+                  </div>
+                  <div className="mt-16px pt-14px b-t-1px b-dashed b-#5E5E5E">
+                    <a
+                      href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
+                      target="_blank"
+                      className="[&:hover_svg_path]:fill-primary color-#ADABAB no-underline flex justify-end text-14px"
+                    >
+                      View
+                      <IconExplorer className="ml-8px" />
+                    </a>
+                  </div>
+                </div>
+
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B rounded-l-10px">
+                  <span className="color-white">{unixToDate(item.createdAt)}</span>
+                </div>
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                  <span className="color-white">
+                    {item.type === OrderType.MARKET ? 'MARKET' : 'LIMIT'}
+                  </span>
+                </div>
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                  <SwapAmount size={32} token={tokenIn} amount={item.amountIn} />
+                </div>
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                  <SwapAmount size={32} token={tokenOut} amount={item.amountOut} />
+                </div>
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+>>>>>>> Stashed changes
                   <SwapPrice
                     tokenIn={item.tokenIn}
                     tokenOut={item.tokenOut}
@@ -102,6 +179,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                     priceDirection="="
                   />
                 </div>
+<<<<<<< Updated upstream
                 <div className="flex justify-between text-14px mt-14px">
                   <span className="color-#cdcdcd">Time</span>
                   <span className="color-white">{unixToDate(item.time)}</span>
@@ -150,6 +228,20 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
         </div>
         {loading && !!items.length && (
           <div className="hidden lg:block absolute bottom-0 left-0 w-100%">
+=======
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                  <span className="color-white">{formatCurrency(item.fee)}</span>
+                </div>
+                <span className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px w-1%">
+                  <IconExplorer />
+                </span>
+              </a>
+            );
+          })}
+        </div>
+        {loading && !silentLoad && !!items.length && (
+          <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
+>>>>>>> Stashed changes
             <TableContentLoader
               className="h-56px mb-12px bg-#34343B b-1px b-solid b-#5E5E5E rounded-10px"
               header={headerRef.current}

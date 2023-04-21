@@ -25,8 +25,8 @@ export const PositionFilter = () => {
     [params, setParams],
   );
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-between">
-      <div className="hidden lg:flex items-center">
+    <div className="flex flex-col xl:flex-row items-center justify-between">
+      <div className="hidden xl:flex items-center">
         {/* <label className="color-#cdcdcd">STATUS:</label> */}
         {statusOptions.map(({ label, value }, i) => {
           const active = value === config.status;
@@ -45,7 +45,7 @@ export const PositionFilter = () => {
           );
         })}
       </div>
-      <div className="hidden lg:flex items-center">
+      <div className="hidden xl:flex items-center">
         <div className="flex items-center">
           <label className="color-#cdcdcd">MARKET:</label>
           {marketOptions.map(({ label, value }, i) => {
@@ -65,7 +65,7 @@ export const PositionFilter = () => {
             );
           })}
         </div>
-        <div className="hidden lg:flex items-center ml-50px">
+        <div className="hidden xl:flex items-center ml-50px">
           <label className="color-#cdcdcd">SIDE:</label>
           {sideOptions.map(({ label, value, activeBg }, i) => {
             const active = value === config.side;
@@ -85,7 +85,7 @@ export const PositionFilter = () => {
           })}
         </div>
       </div>
-      <div className="lg:hidden table text-right text-14px w-100%">
+      <div className="xl:hidden table text-right text-14px w-100%">
         <div className="table-row">
           <label className="table-cell text-left color-#cdcdcd mr-6px whitespace-nowrap pr-14px">
             Status:
