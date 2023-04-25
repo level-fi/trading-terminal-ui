@@ -7,7 +7,8 @@ import { useStats } from '../context/StatsProvider';
 
 export const Footer = () => {
   const stats = useStats();
-  return (
+
+  return stats ? (
     <div className="h-41px">
       <div className="hide-scroll fixed bottom-0 left-0 h-41px w-100% px-14px lg:px-43px bg-black z-999 flex justify-between items-center overflow-x-auto">
         <div className="-mx-9px flex items-center">
@@ -57,5 +58,5 @@ export const Footer = () => {
         <div className="h-100% w-64px bg-gradient-to-l from-black"></div>
       </div>
     </div>
-  );
+  ) : undefined;
 };
