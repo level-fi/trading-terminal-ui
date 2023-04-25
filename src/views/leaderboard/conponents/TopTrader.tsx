@@ -46,7 +46,7 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
             </p>
           </>
         )}
-        <img src={img2st} className="w-145px xl:w-210px mr--30px xl:mr--50px" />
+        <img src={img2st} className="w-145px xl:w-210px h-66px xl:h-96px mr--30px xl:mr--50px" />
       </div>
       <div className="tier-info">
         <Tier1 wallet={items?.[0]?.wallet} />
@@ -73,7 +73,7 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
             </p>
           </>
         )}
-        <img src={img1st} className="w-130px xl:w-190px z-1 tier-shadow" />
+        <img src={img1st} className="w-130px xl:w-190px h-94px xl:h-137px z-1 tier-shadow" />
       </div>
       <div className="tier-info">
         <Tier2 wallet={items?.[2]?.wallet} />
@@ -100,7 +100,7 @@ export const TopTrader: React.FC<TopTraderProps> = ({ items, loading }) => {
             </p>
           </>
         )}
-        <img src={img3st} className="w-135px xl:w-205px ml--30px lf:ml--50px" />
+        <img src={img3st} className="w-135px xl:w-205px h-52px xl:h-78px ml--30px lf:ml--50px" />
       </div>
     </div>
   );
