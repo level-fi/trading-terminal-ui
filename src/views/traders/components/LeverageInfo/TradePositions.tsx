@@ -37,8 +37,8 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
 
   return (
     <div>
-      <div className="flex lg:justify-start">
-        <div className="flex mb-12px lg:mb-0 w-100% lg:w-auto items-center color-#cdcdcd text-14px font-700">
+      <div className="flex xl:justify-start">
+        <div className="flex mb-12px xl:mb-0 w-100% xl:w-auto items-center color-#cdcdcd text-14px font-700">
           {statusOptions.map(({ label, value }, i) => {
             const active = value === status;
             const color = active ? 'color-black' : 'color-white';
@@ -69,8 +69,8 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
         </div>
       ) : (
         <div className="relative">
-          <div className="lg:table w-100% lg:border-spacing-y-12px">
-            <div ref={headerRef} className="hidden lg:table-row [&>.table-cell]:px-17px">
+          <div className="xl:table w-100% xl:border-spacing-y-12px">
+            <div ref={headerRef} className="hidden xl:table-row [&>.table-cell]:px-17px">
               <div className="table-cell ">
                 <span className="text-14px color-#cdcdcd">Position</span>
               </div>
@@ -122,7 +122,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
             ))}
           </div>
           {loading && !silentLoad && !!items.length && (
-            <div className="hidden lg:block absolute bottom-0 left-0 w-100%">
+            <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
               <TableContentLoader
                 className="h-56px mb-12px bg-#34343B b-1px b-solid b-#5E5E5E rounded-10px"
                 header={headerRef.current}

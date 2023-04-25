@@ -16,7 +16,7 @@ const Size = {
     side: 'text-14px',
     spacer: 'ml-8px',
   },
-  lg: {
+  xl: {
     symbol: 44,
     token: 'text-24px font-700',
     side: 'text-16px',

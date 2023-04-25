@@ -17,7 +17,7 @@ export const LeaderboardBox: React.FC<LeaderboardBoxProps> = ({
   preWeek,
 }) => {
   return (
-    <div className="container grid grid-cols-1 lg:grid-cols-2 grid-rows-2 grid-rows-1 lg:grid-rows-2 gap-x-0px lg:gap-x-86px gap-y-25px lg:gap-y-25px m-x-auto mt-40px lg:mt-50px mb-20px px-15px lg:px-0px pb-0px lg:pb-20px">
+    <div className="container grid grid-cols-1 xl:grid-cols-2 grid-rows-2 grid-rows-1 xl:grid-rows-2 gap-x-0px xl:gap-x-86px gap-y-25px xl:gap-y-25px m-x-auto mt-40px xl:mt-50px mb-20px px-15px xl:px-0px pb-0px xl:pb-20px">
       {!loading && !currentMonth?.length ? undefined : (
         <LeaderboardBoxItem title="This Month" traders={currentMonth} loading={loading} />
       )}

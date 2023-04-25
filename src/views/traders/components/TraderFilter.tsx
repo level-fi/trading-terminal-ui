@@ -39,8 +39,8 @@ export const TraderFilter = () => {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center">
-      <div className="bg-black bg-op-90 rounded-10px flex items-center lg:w-424px">
+    <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center">
+      <div className="bg-black bg-op-90 rounded-10px flex items-center xl:w-424px">
         <img src={IconSearch} className="h-14px mr-8px ml-20px" />
         <input
           type="text"
@@ -59,16 +59,16 @@ export const TraderFilter = () => {
         <button
           onClick={() => search(searchContent)}
           disabled={!searchContent}
-          className="text-14px lg:text-16px bg-primary border-none outline-none h-36px w-76px lg:w-94px m-3px rounded-8px font-700 hover-cursor-pointer hover-bg-opacity-75 disabled-hover-bg-opacity-100 disabled-bg-#706E6A disabled-text-black disabled-hover-cursor-not-allowed"
+          className="text-14px xl:text-16px bg-primary border-none outline-none h-36px w-76px xl:w-94px m-3px rounded-8px font-700 hover-cursor-pointer hover-bg-opacity-75 disabled-hover-bg-opacity-100 disabled-bg-#706E6A disabled-text-black disabled-hover-cursor-not-allowed"
         >
           SEARCH
         </button>
       </div>
-      <div className="hidden lg:block">
-        <div className="flex flex-col lg:flex-row lg:items-center">
-          <label className="color-#cdcdcd lg:block hidden">TIME:</label>
-          <label className="color-#cdcdcd lg:hidden">TIME</label>
-          <div className="flex items-center lg:mt-0 lg:ml-0 mt-13px -ml-10px">
+      <div className="hidden xl:block">
+        <div className="flex flex-col xl:flex-row xl:items-center">
+          <label className="color-#cdcdcd xl:block hidden">TIME:</label>
+          <label className="color-#cdcdcd xl:hidden">TIME</label>
+          <div className="flex items-center xl:mt-0 xl:ml-0 mt-13px -ml-10px">
             {timeFilterOptions.map(({ label, value }, index) => {
               const active = value === config.duration;
               const color = active ? 'color-black' : 'color-white';
@@ -88,7 +88,7 @@ export const TraderFilter = () => {
           </div>
         </div>
       </div>
-      <div className="lg:hidden table text-right mt-16px text-14px">
+      <div className="xl:hidden table text-right mt-16px text-14px">
         <div className="table-row">
           <label className="table-cell text-left color-#cdcdcd mr-6px whitespace-nowrap pr-14px">
             Ordered by:
