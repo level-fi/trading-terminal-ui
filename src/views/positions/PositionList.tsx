@@ -18,7 +18,7 @@ export const PositionList = () => {
   const headerRef = useRef<HTMLDivElement>();
 
   return (
-    <div className="mx-14px lg:mx-60px my-20px pb-35px">
+    <div className="mx-14px xl:mx-60px my-20px pb-35px">
       <div className="mb-24px">
         <PositionFilter />
       </div>
@@ -30,12 +30,12 @@ export const PositionList = () => {
         </div>
       ) : (
         <div className="relative">
-          <div className="lg:table w-100% lg:border-spacing-y-12px">
-            <div ref={headerRef} className={`hidden lg:table-row`}>
-              <div className="table-cell 2xl:px-24px lg:px-17px">
+          <div className="xl:table w-100% xl:border-spacing-y-12px">
+            <div ref={headerRef} className={`hidden xl:table-row`}>
+              <div className="table-cell 2xl:px-24px xl:px-17px">
                 <label className="color-#cdcdcd">Position</label>
               </div>
-              <div className="table-cell 2xl:px-24px lg:px-17px">
+              <div className="table-cell 2xl:px-24px xl:px-17px">
                 <SortableTitle
                   valueKey="size"
                   onChange={(key, value) => {
@@ -49,7 +49,7 @@ export const PositionList = () => {
                   Size
                 </SortableTitle>
               </div>
-              <div className="table-cell 2xl:px-24px lg:px-17px">
+              <div className="table-cell 2xl:px-24px xl:px-17px">
                 <SortableTitle
                   valueKey="pnl"
                   onChange={(key, value) => {
@@ -63,7 +63,7 @@ export const PositionList = () => {
                   PnL
                 </SortableTitle>
               </div>
-              <div className="table-cell 2xl:px-24px lg:px-17px">
+              <div className="table-cell 2xl:px-24px xl:px-17px">
                 <SortableTitle
                   valueKey="netProfit"
                   onChange={(key, value) => {
@@ -77,16 +77,16 @@ export const PositionList = () => {
                   Net Profit
                 </SortableTitle>
               </div>
-              <div className="table-cell 2xl:px-24px lg:px-17px">
+              <div className="table-cell 2xl:px-24px xl:px-17px">
                 <label className="color-#cdcdcd whitespace-nowrap">Entry Price</label>
               </div>
-              <div className="table-cell 2xl:px-24px lg:px-17px">
+              <div className="table-cell 2xl:px-24px xl:px-17px">
                 <label className="color-#cdcdcd whitespace-nowrap">Mark Price</label>
               </div>
-              <div className="table-cell 2xl:px-24px lg:px-17px">
+              <div className="table-cell 2xl:px-24px xl:px-17px">
                 <label className="color-#cdcdcd">Status</label>
               </div>
-              <div className="table-cell 2xl:px-24px lg:px-17px">
+              <div className="table-cell 2xl:px-24px xl:px-17px">
                 <SortableTitle
                   valueKey="time"
                   onChange={(key, value) => {
@@ -100,7 +100,7 @@ export const PositionList = () => {
                   Last Updated
                 </SortableTitle>
               </div>
-              <span className="table-cell 2xl:px-24px lg:px-17px w-1px"></span>
+              <span className="table-cell 2xl:px-24px xl:px-17px w-1px"></span>
             </div>
             {items.map((item, i) => (
               <PositionItem
@@ -118,7 +118,7 @@ export const PositionList = () => {
                 closed={item.status !== PositionStatus.OPEN}
                 multipleAction={!!item.historiesCount}
                 loading={loading && !silentLoad}
-                cellClassName="2xl:px-24px lg:px-17px"
+                cellClassName="2xl:px-24px xl:px-17px"
                 onClick={(id) => {
                   params.set('position_id', id);
                   setParams(params);
@@ -127,7 +127,7 @@ export const PositionList = () => {
             ))}
           </div>
           {loading && !silentLoad && !!items.length && (
-            <div className="hidden lg:block absolute bottom-0 left-0 w-100%">
+            <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
               <TableContentLoader
                 className="h-56px mb-12px bg-#34343B b-1px b-solid b-#5E5E5E rounded-10px"
                 header={headerRef.current}

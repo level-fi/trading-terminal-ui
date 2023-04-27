@@ -9,7 +9,7 @@ export const Tier1: React.FC<Tier1Props> = ({ wallet }) => {
   }, [wallet]);
 
   return (
-    <div className="w-50px lg:w-70px mb-10px">
+    <div className="w-50px xl:w-70px mb-10px">
       <svg
         width="100%"
         height="100%"

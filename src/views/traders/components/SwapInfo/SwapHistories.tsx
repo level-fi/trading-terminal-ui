@@ -45,8 +45,8 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
   return (
     <div>
       <div className="relative">
-        <div className="lg:table w-100% lg:border-spacing-y-12px">
-          <div ref={headerRef} className="hidden lg:table-row [&>.table-cell]:px-17px">
+        <div className="xl:table w-100% xl:border-spacing-y-12px">
+          <div ref={headerRef} className="hidden xl:table-row [&>.table-cell]:px-17px">
             <div className="table-cell">
               <label className="text-14px color-#cdcdcd">Time</label>
             </div>
@@ -75,10 +75,10 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
               <a
                 href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
                 target="_blank"
-                className="lg:table-row lg:h-56px [&>.vertical-middle]:px-15px [&>.vertical-middle]:py-12px cursor-pointer no-underline [&:hover>.vertical-middle]:bg-#5E5E5E [&:hover_svg_path]:fill-primary"
+                className="xl:table-row xl:h-56px [&>.vertical-middle]:px-15px [&>.vertical-middle]:py-12px cursor-pointer no-underline [&:hover>.vertical-middle]:bg-#5E5E5E [&:hover_svg_path]:fill-primary"
                 key={i}
               >
-                <div className="lg:hidden bg-#34343B p-14px rounded-10px mb-12px">
+                <div className="xl:hidden bg-#34343B p-14px rounded-10px mb-12px">
                   <div className="flex justify-between text-14px">
                     <span className="color-#cdcdcd">Type</span>
                     <span className="color-white">
@@ -126,21 +126,21 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                   </div>
                 </div>
 
-                <div className="hidden lg:table-cell vertical-middle bg-#34343B rounded-l-10px">
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B rounded-l-10px">
                   <span className="color-white">{unixToDate(item.createdAt)}</span>
                 </div>
-                <div className="hidden lg:table-cell vertical-middle bg-#34343B">
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                   <span className="color-white">
                     {item.type === OrderType.MARKET ? 'MARKET' : 'LIMIT'}
                   </span>
                 </div>
-                <div className="hidden lg:table-cell vertical-middle bg-#34343B">
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                   <SwapAmount size={32} token={tokenIn} amount={item.amountIn} />
                 </div>
-                <div className="hidden lg:table-cell vertical-middle bg-#34343B">
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                   <SwapAmount size={32} token={tokenOut} amount={item.amountOut} />
                 </div>
-                <div className="hidden lg:table-cell vertical-middle bg-#34343B">
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                   <SwapPrice
                     tokenIn={tokenIn}
                     tokenOut={tokenOut}
@@ -148,10 +148,10 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                     priceDirection="="
                   />
                 </div>
-                <div className="hidden lg:table-cell vertical-middle bg-#34343B">
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                   <span className="color-white">{formatCurrency(item.fee)}</span>
                 </div>
-                <span className="hidden lg:table-cell vertical-middle bg-#34343B rounded-r-10px w-1%">
+                <span className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px w-1%">
                   <IconExplorer />
                 </span>
               </a>
@@ -159,7 +159,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
           })}
         </div>
         {loading && !silentLoad && !!items.length && (
-          <div className="hidden lg:block absolute bottom-0 left-0 w-100%">
+          <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
             <TableContentLoader
               className="h-56px mb-12px bg-#34343B b-1px b-solid b-#5E5E5E rounded-10px"
               header={headerRef.current}
