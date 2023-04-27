@@ -30,6 +30,12 @@ export const PositionDetailModal = () => {
     decimals: item?.indexToken.decimals,
     side: item?.side,
   });
+  const leverage = useMemo(() => {
+    if (!item?.netValue || !item?.size) {
+      return;
+    }
+    return item.size / item.netValue;
+  }, [item?.netValue, item?.size]);
 
   const closeModal = useCallback(() => {
     params.delete('position_id');
@@ -98,6 +104,10 @@ export const PositionDetailModal = () => {
               {
                 title: 'Size',
                 value: item ? formatCurrency(item.size) : '',
+              },
+              {
+                title: 'Leverage',
+                value: leverage ? `${leverage.toFixed(2)}x` : '',
               },
               {
                 title: 'Entry Price',
