@@ -63,7 +63,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
               <label className="text-14px color-#cdcdcd">Price</label>
             </div>
             <div className="table-cell">
-              <label className="text-14px color-#cdcdcd">Paid Fee</label>
+              <label className="text-14px color-#cdcdcd">Fees Paid</label>
             </div>
             <span></span>
           </div>
@@ -111,7 +111,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                     <span className="color-white">{unixToDate(item.createdAt)}</span>
                   </div>
                   <div className="flex justify-between text-14px mt-14px">
-                    <span className="color-#cdcdcd">Paid Fee</span>
+                    <span className="color-#cdcdcd">Fees Paid</span>
                     <span className="color-white">{formatCurrency(item.fee)}</span>
                   </div>
                   <div className="mt-16px pt-14px b-t-1px b-dashed b-#5E5E5E">

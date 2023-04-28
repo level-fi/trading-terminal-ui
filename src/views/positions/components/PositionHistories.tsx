@@ -20,7 +20,7 @@ export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, loa
         </label>
         <label className="text-12px table-cell px-20px color-#cdcdcd">Size</label>
         <label className="text-12px table-cell px-20px color-#cdcdcd whitespace-nowrap">
-          Paid Fee
+          Fees Paid
         </label>
         <label className="text-12px table-cell px-20px color-#cdcdcd whitespace-nowrap">
           Executed Price
@@ -52,7 +52,7 @@ export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, loa
               <span className="color-white">{formatCurrency(item.size)}</span>
             </div>
             <div className="flex justify-between text-14px mt-14px">
-              <span className="color-#cdcdcd">Paid Fee</span>
+              <span className="color-#cdcdcd">Fees Paid</span>
               <span className="color-white">{formatCurrency(item.paidFee)}</span>
             </div>
             <div className="flex justify-between text-14px mt-14px">

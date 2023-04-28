@@ -51,7 +51,7 @@ export const TraderDetailPanel: React.FC<TraderDetailPanelProps> = ({ item, load
           </label>
         </div>
         <div className="flex justify-between xl:flex-col xl:pl-20px xl:b-l-1px b-solid b-#2f2f2f">
-          <label className="text-14px color-#adadab xl:mb-13px">Total Fee Paid</label>
+          <label className="text-14px color-#adadab xl:mb-13px">Total Fees Paid</label>
           <label className="xl:text-16px text-14px font-700 color-white">
             {loading ? '-' : formatCurrency(item.feePaid)}
           </label>
