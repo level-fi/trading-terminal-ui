@@ -5,9 +5,30 @@ import svgr from 'vite-plugin-svgr';
 import presetUno from '@unocss/preset-uno';
 import presetWebFonts from '@unocss/preset-web-fonts';
 
+const injectGoogleTag = () => {
+  return {
+    name: 'inject-gtag',
+    transformIndexHtml: (html: string) => {
+      return html.replace(
+        `<!-- inject(gtag.js) -->`,
+        `
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-HLN6MMNNXC"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'G-HLN6MMNNXC');
+      </script>`,
+      );
+    },
+  };
+};
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    injectGoogleTag(),
     react(),
     unocss({
       presets: [
