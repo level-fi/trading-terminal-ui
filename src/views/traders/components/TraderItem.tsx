@@ -13,6 +13,7 @@ export interface TraderItemProps {
   loss: number;
   volume: number;
   netProfit: number;
+  fee: number;
   loading?: boolean;
 }
 
@@ -23,6 +24,7 @@ export const TraderItem: React.FC<TraderItemProps> = ({
   rank,
   volume,
   win,
+  fee,
   loading,
 }) => {
   return (
@@ -50,6 +52,10 @@ export const TraderItem: React.FC<TraderItemProps> = ({
             <span className="color-white">{formatCurrency(volume)}</span>
           </div>
           <div className="flex justify-between text-14px mt-14px">
+            <span className="color-#cdcdcd">Fees Paid</span>
+            <span className="color-white">{formatCurrency(fee)}</span>
+          </div>
+          <div className="flex justify-between text-14px mt-14px">
             <span className="color-#cdcdcd">Net Profit</span>
             <span className={profitColor(netProfit)}>{formatProfit(netProfit)}</span>
           </div>
@@ -69,7 +75,8 @@ export const TraderItem: React.FC<TraderItemProps> = ({
         <div className="flex items-center">
           <Avatar wallet={address} size={32} />
           <span className="mx-11px font-500 text-16px color-white leading-22px flex-1 b-solid b-#5E5E5E">
-            {address}
+            <span className="hidden 2xl:inline">{address}</span>
+            <span className="2xl:hidden">{shortenAddress(address, 15, 10)}</span>
           </span>
         </div>
       </div>
@@ -80,6 +87,9 @@ export const TraderItem: React.FC<TraderItemProps> = ({
       </div>
       <div className="hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
         <span className="color-white">{formatCurrency(volume)}</span>
+      </div>
+      <div className="hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
+        <span className="color-white">{formatCurrency(fee)}</span>
       </div>
       <div className="hidden xl:table-cell b-y-1px b-solid b-#5e5e5e vertical-mid px-24px">
         <span className={profitColor(netProfit)}>{formatProfit(netProfit)}</span>

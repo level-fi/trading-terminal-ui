@@ -5,6 +5,7 @@ export interface TraderListItemResponse {
   win: number;
   lost: number;
   pnl: number;
+  fee: number;
 }
 
 export interface PositionListItemResponse {

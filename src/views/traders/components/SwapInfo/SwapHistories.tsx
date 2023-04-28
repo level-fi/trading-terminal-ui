@@ -63,7 +63,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
               <label className="text-14px color-#cdcdcd">Price</label>
             </div>
             <div className="table-cell">
-              <label className="text-14px color-#cdcdcd">Paid Fee</label>
+              <label className="text-14px color-#cdcdcd">Fees Paid</label>
             </div>
             <span></span>
           </div>

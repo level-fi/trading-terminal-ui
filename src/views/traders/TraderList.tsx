@@ -59,6 +59,20 @@ export const TraderList = () => {
               </div>
               <div className="table-cell px-24px">
                 <SortableTitle
+                  valueKey="fee"
+                  onChange={(key, value) => {
+                    params.set('sort', key);
+                    params.set('order', value);
+                    setParams(params);
+                  }}
+                  value={config.sortBy === 'fee' ? config.sortType : undefined}
+                  className="color-#cdcdcd"
+                >
+                  Fees Paid
+                </SortableTitle>
+              </div>
+              <div className="table-cell px-24px">
+                <SortableTitle
                   valueKey="netProfit"
                   onChange={(key, value) => {
                     params.set('sort', key);
@@ -81,6 +95,7 @@ export const TraderList = () => {
                 win={item?.win}
                 loss={item?.lost}
                 netProfit={item?.netProfit}
+                fee={item?.fee}
                 rank={(pageInfo.current - 1) * config.size + i + 1}
                 loading={loading && !silentLoad}
               />
