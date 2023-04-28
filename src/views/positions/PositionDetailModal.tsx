@@ -166,7 +166,7 @@ export const PositionDetailModal = () => {
                 valueColor: profitColor(item?.pnl),
               },
               {
-                title: 'Paid Fees',
+                title: 'Fees Paid',
                 value: item ? formatCurrency(item.paidFee) : '',
               },
             ].map(({ title, value, valueColor = 'color-white' }, index) => (
