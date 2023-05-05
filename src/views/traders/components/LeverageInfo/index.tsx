@@ -7,13 +7,15 @@ import { PositionDetailModal } from '../../../positions/PositionDetailModal';
 
 interface LeverageInfoProps {
   wallet: string;
-  totalPositions: number;
+  totalOpen: number;
+  totalClosed: number;
 }
 export const LeverageInfo: React.FC<LeverageInfoProps> = ({
   wallet,
-  totalPositions: accountInfoTotalPositions,
+  totalOpen,
+  totalClosed,
 }) => {
-  const [totalPositions, setTotalPositions] = useState(accountInfoTotalPositions);
+  const [totalPositions, setTotalPositions] = useState(totalOpen + totalClosed);
   const [tab, setTab] = useState(0);
   const setEnablePriceFetcher = useEnableBackendPriceFetcher();
 
@@ -60,9 +62,12 @@ export const LeverageInfo: React.FC<LeverageInfoProps> = ({
         {tab == 0 ? (
           <TradePositions
             wallet={wallet}
+            totalOpen={totalOpen}
+            totalClosed={totalClosed}
             setTotalPositions={(value) => {
+              const userInfoTotalPosition = totalClosed + totalOpen;
               setTotalPositions(
-                value ? Math.max(value, accountInfoTotalPositions) : accountInfoTotalPositions,
+                value ? Math.max(value, userInfoTotalPosition) : userInfoTotalPosition,
               );
             }}
           />

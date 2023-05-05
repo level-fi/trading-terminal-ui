@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { NoData } from '../../../../components/NoData';
 import { Loading } from '../../../../components/Loading';
 import { usePositions } from '../../../../hooks/usePositions';
@@ -11,10 +11,14 @@ import { useSearchParams } from 'react-router-dom';
 
 interface TradePositionsProps {
   wallet: string;
+  totalOpen: number;
+  totalClosed: number;
   setTotalPositions: (value: number) => void;
 }
 export const TradePositions: React.FC<TradePositionsProps> = ({
   wallet,
+  totalOpen,
+  totalClosed,
   setTotalPositions,
 }) => {
   const [params, setParams] = useSearchParams();
@@ -35,6 +39,26 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
     setTotalPositions(pageInfo?.totalItems);
   }, [pageInfo?.totalItems, setTotalPositions]);
 
+  const getTotalInfo = useCallback(
+    (status?: PositionStatus) => {
+      let total;
+      switch (status) {
+        case PositionStatus.OPEN:
+          total = totalOpen;
+          break;
+        case PositionStatus.CLOSE:
+        case PositionStatus.LIQUIDATED:
+          total = totalClosed;
+          break;
+      }
+      if (!total) {
+        return;
+      }
+      return ` (${total})`;
+    },
+    [totalClosed, totalOpen],
+  );
+
   return (
     <div>
       <div className="flex xl:justify-start">
@@ -46,12 +70,13 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
             return (
               <div
                 key={i}
-                className={`${color} ${bg} uppercase text-12px w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
+                className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
                 onClick={() => {
                   setStatus(value);
                 }}
               >
                 {label}
+                {getTotalInfo(value)}
               </div>
             );
           })}
