@@ -38,7 +38,8 @@ export const TraderDetail = () => {
         <div className="mt-32px">
           <LeverageInfo
             wallet={wallet}
-            totalPositions={traderDetail.totalClosed + traderDetail.totalOpen}
+            totalOpen={traderDetail.totalOpen}
+            totalClosed={traderDetail.totalClosed}
           />
         </div>
         <div className="mt-32px">
