@@ -6,7 +6,7 @@ import { useLongPolling } from '../../../../../hooks/useLongPolling';
 export interface SwapHistory {
   createdAt: number;
   transactionHash: string;
-  type: number;
+  type: string;
   price: number;
   amountIn: number;
   amountOut: number;
