@@ -81,9 +81,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                 <div className="xl:hidden bg-#34343B p-14px rounded-10px mb-12px">
                   <div className="flex justify-between text-14px">
                     <span className="color-#cdcdcd">Type</span>
-                    <span className="color-white">
-                      {item.type === OrderType.MARKET ? 'MARKET' : 'LIMIT'}
-                    </span>
+                    <span className="color-white">{item.type}</span>
                   </div>
                   <div className="flex justify-between items-center text-14px mt-14px">
                     <span className="color-#cdcdcd">From</span>
@@ -130,9 +128,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                   <span className="color-white">{unixToDate(item.createdAt)}</span>
                 </div>
                 <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                  <span className="color-white">
-                    {item.type === OrderType.MARKET ? 'MARKET' : 'LIMIT'}
-                  </span>
+                  <span className="color-white">{item.type}</span>
                 </div>
                 <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                   <SwapAmount size={32} token={tokenIn} amount={item.amountIn} />
