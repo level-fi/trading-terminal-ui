@@ -1,7 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import { Pagination } from '../../components/Pagination';
 import { SortableTitle } from '../../components/SortableTitle';
-import { usePositions } from '../../hooks/usePositions';
 import { PositionFilter } from './components/PositionFilter';
 import { usePositionsConfigParsed } from './hooks/usePositionsConfig';
 import { Loading } from '../../components/Loading';
@@ -10,19 +9,23 @@ import { PositionStatus } from '../../utils/type';
 import { useRef } from 'react';
 import { TableContentLoader } from '../../components/TableContentLoader';
 import { PositionDetailModal } from './PositionDetailModal';
+import { useQuery } from '@tanstack/react-query';
+import { queryPositions } from '../../utils/queries';
 
 export const PositionList = () => {
   const [params, setParams] = useSearchParams();
-  const config = usePositionsConfigParsed();
-  const { items, pageInfo, loading, silentLoad } = usePositions(config);
+  const { config, setPage } = usePositionsConfigParsed();
+  const { data, isInitialLoading } = useQuery(queryPositions(config));
   const headerRef = useRef<HTMLDivElement>();
+  const items = data ? data.data : [];
+  const pageInfo = data ? data.page : undefined;
 
   return (
     <div className="mx-14px xl:mx-60px my-20px pb-35px">
       <div className="mb-24px">
         <PositionFilter />
       </div>
-      {loading && !silentLoad && !items.length ? (
+      {isInitialLoading && !items.length ? (
         <div className="flex items-center justify-center">
           <div className="w-300px my-50px">
             <Loading />
@@ -117,7 +120,7 @@ export const PositionList = () => {
                 time={item.time}
                 closed={item.status !== PositionStatus.OPEN}
                 multipleAction={!!item.historiesCount}
-                loading={loading && !silentLoad}
+                loading={isInitialLoading}
                 cellClassName="2xl:px-24px xl:px-17px"
                 onClick={(id) => {
                   params.set('position_id', id);
@@ -126,7 +129,7 @@ export const PositionList = () => {
               />
             ))}
           </div>
-          {loading && !silentLoad && !!items.length && (
+          {isInitialLoading && !!items.length && (
             <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
               <TableContentLoader
                 className="h-56px mb-12px bg-#34343B b-1px b-solid b-#5E5E5E rounded-10px"
@@ -140,11 +143,7 @@ export const PositionList = () => {
       )}
       {pageInfo?.total > 1 && (
         <div className="flex justify-center pt-8px">
-          <Pagination
-            current={pageInfo.current}
-            total={pageInfo.total}
-            onChange={config.setPage}
-          />
+          <Pagination current={pageInfo.current} total={pageInfo.total} onChange={setPage} />
         </div>
       )}
       <PositionDetailModal />

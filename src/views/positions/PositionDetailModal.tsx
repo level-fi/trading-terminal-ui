@@ -1,5 +1,4 @@
 import { NavLink, useSearchParams } from 'react-router-dom';
-import { usePosition } from '../../hooks/usePosition';
 import { formatBigNumber, formatCurrency, formatProfit } from '../../utils/numbers';
 import { PositionHistories } from './components/PositionHistories';
 import {
@@ -8,7 +7,7 @@ import {
 } from '../../components/ContentLoader';
 import { profitColor, shortenAddress } from '../../utils';
 import { useLiqPrice } from '../../hooks/useLiqPrice';
-import { VALUE_DECIMALS } from '../../config';
+import { VALUE_DECIMALS, getTokenByAddress } from '../../config';
 import { Moddal } from '../../components/Modal';
 import { useCallback, useMemo } from 'react';
 import IconX from '../../assets/icons/ic-x.svg';
@@ -16,19 +15,27 @@ import { TokenSymbol } from '../../components/TokenSymbol';
 import { Side } from '../../utils/type';
 import { PositionStatus } from '../../components/PositionStatus';
 import { Tooltip } from '../../components/Tooltip';
+import { useQuery } from '@tanstack/react-query';
+import { queryPosition } from '../../utils/queries';
 
 export const PositionDetailModal = () => {
   const [params, setParams] = useSearchParams();
   const id = useMemo(() => params.get('position_id'), [params]);
-  const { item, loading, silentLoad } = usePosition(id);
+  const { data, isInitialLoading } = useQuery(queryPosition(id, false));
+
+  const item = data ? data.data : undefined;
+  const indexToken = getTokenByAddress(item?.histories?.[0]?.indexToken, item?.chainId);
+  const side = item?.histories?.[0]?.side;
+  const wallet = item?.histories?.[0]?.account;
+
   const liqPrice = useLiqPrice({
     rawBorrowFee: item?.borrowFee,
     rawCloseFee: item?.closeFee,
     rawSize: item?.size,
     rawCollateralValue: item?.collateral,
     rawEntry: item?.entryPrice,
-    decimals: item?.indexToken.decimals,
-    side: item?.side,
+    decimals: indexToken.decimals,
+    side: side,
   });
   const leverage = useMemo(() => {
     if (!item?.netValue || !item?.size) {
@@ -46,37 +53,37 @@ export const PositionDetailModal = () => {
     <Moddal visible={!!id} close={closeModal}>
       <div>
         <div className="flex justify-between items-start">
-          {loading && !silentLoad ? (
+          {isInitialLoading ? (
             <div></div>
           ) : (
             <div className="flex items-center">
               <div className="hidden xl:block">
-                <TokenSymbol symbol={item?.indexToken.symbol} size={56} />
+                <TokenSymbol symbol={indexToken.symbol} size={56} />
               </div>
               <div className="xl:hidden">
-                <TokenSymbol symbol={item?.indexToken.symbol} size={40} />
+                <TokenSymbol symbol={indexToken.symbol} size={40} />
               </div>
               <div className="flex flex-col ml-8px xl:ml-17px">
                 <div>
                   <span className="font-700 xl:text-20px text-16px color-white">
-                    {item?.indexToken.symbol}/USD
+                    {indexToken.symbol}/USD
                   </span>
                   <span
                     className={`ml-4px xl:ml-8px font-400 xl:text-16px text-14px ${
-                      item?.side === Side.LONG ? 'color-win' : 'color-loss'
+                      side === Side.LONG ? 'color-win' : 'color-loss'
                     }`}
                   >
-                    {Side[item?.side]}
+                    {Side[side]}
                   </span>
                 </div>
                 <div className="mt-8px color-#cdcdcd xl:text-14px text-12px">
                   Wallet:{' '}
                   <NavLink
-                    to={`/traders/${item?.wallet}`}
+                    to={`/traders/${wallet}`}
                     className="color-white b-b-1px b-white b-solid no-underline hover-op-54"
                   >
-                    <span className="hidden xl:inline">{item?.wallet}</span>
-                    <span className="xl:hidden">{shortenAddress(item?.wallet)}</span>
+                    <span className="hidden xl:inline">{wallet}</span>
+                    <span className="xl:hidden">{shortenAddress(wallet)}</span>
                   </NavLink>
                 </div>
               </div>
@@ -91,7 +98,7 @@ export const PositionDetailModal = () => {
         </div>
         <div className="flex flex-col xl:flex-row mt-20px mb-16px -mx-10px xl:min-w-800px">
           <div className="rounded-10px bg-black bg-op-54 px-20px py-18px relative flex-1 mx-10px">
-            {loading && !silentLoad && (
+            {isInitialLoading && (
               <div className="absolute top-0 left-0 h-100% w-100%">
                 <PositionDetailPriceContentLoader />
               </div>
@@ -119,9 +126,9 @@ export const PositionDetailModal = () => {
               },
               {
                 title: 'Liquidation Price',
-                value: item
-                  ? formatBigNumber(liqPrice, VALUE_DECIMALS - item.indexToken.decimals, {
-                      fractionDigits: item.indexToken.priceFractionDigits,
+                value: indexToken
+                  ? formatBigNumber(liqPrice, VALUE_DECIMALS - indexToken.decimals, {
+                      fractionDigits: indexToken.priceFractionDigits,
                       keepTrailingZeros: true,
                       currency: 'USD',
                     })
@@ -140,9 +147,7 @@ export const PositionDetailModal = () => {
                 >
                   <label className="color-#cdcdcd">{title}</label>
                   <label
-                    className={`font-700 ${valueColor} ${
-                      loading && !silentLoad ? 'invisible' : ''
-                    }`}
+                    className={`font-700 ${valueColor} ${isInitialLoading ? 'invisible' : ''}`}
                   >
                     {value}
                   </label>
@@ -150,7 +155,7 @@ export const PositionDetailModal = () => {
               ))}
           </div>
           <div className="rounded-10px bg-black bg-op-54 px-23px py-18px relative flex-1 mx-10px mt-16px xl:mt-0">
-            {loading && !silentLoad && (
+            {isInitialLoading && (
               <div className="absolute top-0 left-0 h-100% w-100%">
                 <PositionDetailInfoContentLoader />
               </div>
@@ -167,7 +172,7 @@ export const PositionDetailModal = () => {
               },
               {
                 title: 'Fees Paid',
-                value: item ? formatCurrency(item.paidFee) : '',
+                value: item ? formatCurrency(item.fee) : '',
               },
             ].map(({ title, value, valueColor = 'color-white' }, index) => (
               <div
@@ -178,9 +183,7 @@ export const PositionDetailModal = () => {
               >
                 <label className="color-#cdcdcd">{title}</label>
                 <label
-                  className={`font-700 ${valueColor} ${
-                    loading && !silentLoad ? 'invisible' : ''
-                  }`}
+                  className={`font-700 ${valueColor} ${isInitialLoading ? 'invisible' : ''}`}
                 >
                   {value}
                 </label>
@@ -194,7 +197,7 @@ export const PositionDetailModal = () => {
                 </div>
                 <label
                   className={`font-700 ${profitColor(item?.netProfit)} ${
-                    loading && !silentLoad ? 'invisible' : ''
+                    isInitialLoading ? 'invisible' : ''
                   }`}
                 >
                   {item ? formatProfit(item.netProfit) : ''}
@@ -208,9 +211,7 @@ export const PositionDetailModal = () => {
                   <Tooltip content="Collateral Value + PnL - Close Fee - Borrow Fee" />
                 </div>
                 <label
-                  className={`font-700 color-white ${
-                    loading && !silentLoad ? 'invisible' : ''
-                  }`}
+                  className={`font-700 color-white ${isInitialLoading ? 'invisible' : ''}`}
                 >
                   {item ? formatCurrency(item.netValue) : ''}
                 </label>
@@ -220,7 +221,7 @@ export const PositionDetailModal = () => {
         </div>
         {item?.histories?.length && (
           <div className="rounded-10px bg-black bg-op-54 p-10px">
-            <PositionHistories items={item.histories} loading={loading && !silentLoad} />
+            <PositionHistories items={item.histories} chainId={item.chainId} />
           </div>
         )}
       </div>

@@ -1,5 +1,4 @@
-import React, { useCallback, useState } from 'react';
-import { useEnableBackendPriceFetcher } from '../../../../context/BackendPriceProvider';
+import React, { useState } from 'react';
 import { TradeOrders } from './TradeOrders';
 import { TradeHistories } from './TradeHistories';
 import { TradePositions } from './TradePositions';
@@ -17,15 +16,6 @@ export const LeverageInfo: React.FC<LeverageInfoProps> = ({
 }) => {
   const [totalPositions, setTotalPositions] = useState(totalOpen + totalClosed);
   const [tab, setTab] = useState(0);
-  const setEnablePriceFetcher = useEnableBackendPriceFetcher();
-
-  const switchTab = useCallback(
-    (value) => {
-      setEnablePriceFetcher(value == 1);
-      setTab(value);
-    },
-    [setEnablePriceFetcher],
-  );
 
   return (
     <div>
@@ -35,13 +25,13 @@ export const LeverageInfo: React.FC<LeverageInfoProps> = ({
         </label>
         <div className="flex items-center color-#cdcdcd text-14px font-700 b-1px b-solid b-white b-op-20% h-42px rounded-10px [&>.active]:color-primary">
           <div
-            onClick={() => switchTab(0)}
+            onClick={() => setTab(0)}
             className={`cursor-pointer hover-op-75 px-17px py-2px ${tab == 0 && 'active'}`}
           >
             POSITIONS{totalPositions ? ` (${totalPositions})` : ''}
           </div>
           <div
-            onClick={() => switchTab(1)}
+            onClick={() => setTab(1)}
             className={`cursor-pointer hover-op-75 px-17px py-2px b-l-1px b-solid b-#595861 ${
               tab == 1 && 'active'
             }`}
@@ -49,7 +39,7 @@ export const LeverageInfo: React.FC<LeverageInfoProps> = ({
             ORDERS
           </div>
           <div
-            onClick={() => switchTab(2)}
+            onClick={() => setTab(2)}
             className={`cursor-pointer hover-op-75 px-17px py-2px b-l-1px b-solid b-#595861 ${
               tab == 2 && 'active'
             }`}

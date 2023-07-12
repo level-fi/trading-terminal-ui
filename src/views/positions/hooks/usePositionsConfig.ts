@@ -1,9 +1,8 @@
 /* @unocss-include */
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { UsePositionsConfig } from '../../../hooks/usePositions';
-import { PositionStatus, Side } from '../../../utils/type';
-import { ETH_ADDRESS, config, getTokenBySymbol } from '../../../config';
+import { PositionStatus, QueryPositionsConfig, Side } from '../../../utils/type';
+import { chains, getChainConfig, getTokenBySymbol } from '../../../config';
 import { usePagination } from '../../../hooks/usePagination';
 
 export const statusOptions = [
@@ -20,18 +19,26 @@ export const statusOptions = [
     value: PositionStatus.CLOSE,
   },
 ];
-export const marketOptions = [
-  {
-    label: 'all',
-    value: undefined,
-  },
-  ...config.indexTokens
-    .filter((c) => c.address !== ETH_ADDRESS)
-    .map((c) => ({
-      label: c.symbol.toLowerCase(),
-      value: c.symbol,
-    })),
-];
+export const getMarketOptions = (chainId?: number) => {
+  const results = [
+    {
+      label: 'all',
+      value: undefined,
+    },
+  ];
+  const tokens = chainId
+    ? getChainConfig(chainId).indexTokens.map((c) => c.symbol)
+    : chains.map((c) => c.indexTokens.map((c) => c.symbol)).flat();
+  results.push(
+    ...tokens
+      .filter((c, index) => index === tokens.indexOf(c))
+      .map((c) => ({
+        label: c.toLowerCase(),
+        value: c,
+      })),
+  );
+  return results;
+};
 export const sideOptions = [
   {
     label: 'all',
@@ -164,16 +171,18 @@ export const usePositionsConfigParsed = () => {
     return token?.symbol;
   }, [params]);
 
-  return useMemo<UsePositionsConfig>(
+  return useMemo(
     () => ({
-      from: 0,
-      page: page,
-      size: size,
-      sortBy: sortBy,
-      sortType: sortType,
-      side: side,
-      status: status,
-      market: market,
+      config: {
+        from: 0,
+        page: page,
+        size: size,
+        sortBy: sortBy,
+        sortType: sortType,
+        side: side,
+        status: status,
+        market: market,
+      } as QueryPositionsConfig,
       setPage,
     }),
     [page, size, sortBy, sortType, side, status, market, setPage],

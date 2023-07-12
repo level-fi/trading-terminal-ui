@@ -11,7 +11,7 @@ import { Dropdown } from '../../../components/Dropdown';
 
 export const TraderFilter = () => {
   const [params, setParams] = useSearchParams();
-  const config = useTradersConfigParsed();
+  const { config } = useTradersConfigParsed();
   const [searchContent, setSearchContent] = useState('');
 
   const navigate = useNavigate();

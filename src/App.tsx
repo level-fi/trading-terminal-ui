@@ -7,17 +7,18 @@ import { TraderDetail } from './views/traders/TraderDetail';
 import { Leaderboard } from './views/leaderboard';
 import { Live } from './views/live';
 import { Footer } from './components/Footer';
-import { StatsProvider } from './context/StatsProvider';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './utils/queries';
 
 const Container = () => {
   return (
-    <StatsProvider>
+    <>
       <Header />
       <div className="relative z-2">
         <Outlet />
       </div>
       <Footer />
-    </StatsProvider>
+    </>
   );
 };
 
@@ -56,9 +57,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <div>
+    <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-    </div>
+    </QueryClientProvider>
   );
 }
 

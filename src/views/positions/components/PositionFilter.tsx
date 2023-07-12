@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import {
-  marketOptions,
+  getMarketOptions,
   orderOptions,
   sideOptions,
   statusOptions,
@@ -11,7 +11,7 @@ import { useCallback } from 'react';
 
 export const PositionFilter = () => {
   const [params, setParams] = useSearchParams();
-  const config = usePositionsConfigParsed();
+  const { config } = usePositionsConfigParsed();
   const onUpdate = useCallback(
     (key, label, value) => {
       if (value === undefined) {
@@ -24,6 +24,7 @@ export const PositionFilter = () => {
     },
     [params, setParams],
   );
+  const marketOptions = getMarketOptions(config.chainId);
   return (
     <div className="flex flex-col xl:flex-row items-center justify-between">
       <div className="hidden xl:flex items-center">
