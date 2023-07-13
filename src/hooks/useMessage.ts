@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
-import { ChainConfigToken, HistoryStatus, OrderType, Side, UpdateType } from '../utils/type';
-import { BigNumber } from 'ethers';
+import {
+  HistoryStatus,
+  OrderType,
+  Side,
+  UpdateType,
+  UseLeverageMessageConfig,
+} from '../utils/type';
 import { formatBigNumber } from '../utils/numbers';
 import { VALUE_DECIMALS } from '../config';
 import tradeHistoryPattern from '../assets/message/tradeHistory.json';
@@ -36,19 +41,6 @@ export const getMessage = (
   return `${pattern[0].toUpperCase()}${pattern.substring(1)}`;
 };
 
-export interface UseLeverageMessageConfig {
-  indexToken: ChainConfigToken;
-  type: OrderType;
-  updateType: UpdateType;
-  size: BigNumber;
-  status: HistoryStatus;
-  side: Side;
-  triggerAboveThreshold: boolean;
-  triggerPrice: BigNumber;
-  executionPrice: BigNumber;
-  liquidatedPrice: BigNumber;
-  collateralValue: BigNumber;
-}
 export const useLeverageMessage = ({
   indexToken,
   type,

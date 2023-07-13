@@ -1,12 +1,13 @@
-import { getTokenByAddress } from '../config';
+import { bscConfig, getTokenByAddress } from '../config';
 import IconInterest from '../assets/icons/ic-interest.svg';
 import IconPriceDown from '../assets/icons/ic-price-down.svg';
 import IconPriceUp from '../assets/icons/ic-price-up.svg';
 import { formatCurrency } from '../utils/numbers';
-import { useStats } from '../context/StatsProvider';
+import { useQuery } from '@tanstack/react-query';
+import { queryStats } from '../utils/queries';
 
 export const Footer = () => {
-  const stats = useStats();
+  const { data: stats } = useQuery(queryStats(bscConfig.chainId));
 
   return stats ? (
     <div className="h-41px">

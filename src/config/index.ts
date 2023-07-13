@@ -5,13 +5,12 @@ export const baseConfig: BaseConfig = {
   priceEndpoint: 'https://api.level.finance/prices',
 };
 
-const bscConfig: ChainConfig = {
+const subgraphQueryKey = 'c246be2f219f';
+export const bscConfig: ChainConfig = {
   chainId: 56,
   baseExplorer: 'https://bscscan.com',
   rpc: 'https://bsc-dataseed1.binance.org/',
   tradingGraph: 'https://api.thegraph.com/subgraphs/name/level-fi/levelfinancetrading',
-  tradeLens: '0xE23779FAe98D5F5ce757822A3846e8Fe45598f1A',
-  orderbook: '0xf584A17dF21Afd9de84F47842ECEAF6042b1Bb5b',
   pool: '0xA5aBFB56a78D2BD4689b25B8A77fd49Bb0675874',
   indexTokens: [
     {
@@ -75,14 +74,11 @@ const bscConfig: ChainConfig = {
   ],
 };
 
-const arbConfig: ChainConfig = {
+export const arbConfig: ChainConfig = {
   chainId: 42161,
   baseExplorer: 'https://arbiscan.io',
   rpc: 'https://arb1.arbitrum.io/rpc/',
-  tradingGraph:
-    'https://subgraph.satsuma-prod.com/c246be2f219f/levelfinance/trading-arbitrum/api',
-  tradeLens: '0x57f051304717E65ec2504f67C94b93EA65BA91ce',
-  orderbook: '0x2215298606C9D0274527b13519Ec50c3A7f1c1eF',
+  tradingGraph: `https://subgraph.satsuma-prod.com/${subgraphQueryKey}/levelfinance/trading-arbitrum/api`,
   pool: '0x32B7bF19cb8b95C27E644183837813d4b595dcc6',
   indexTokens: [
     {

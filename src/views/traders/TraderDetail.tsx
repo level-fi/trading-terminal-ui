@@ -19,6 +19,7 @@ export const TraderDetail = () => {
     }
     navigate('/traders', { replace: true });
   }, [location?.state?.from, navigate]);
+  const item = data ? data.data : undefined;
 
   return (
     <div className="mx-14px xl:mx-60px mt-20px pb-30px">
@@ -32,13 +33,13 @@ export const TraderDetail = () => {
         </span>
       </div>
       <div className="mt-15px">
-        <TraderDetailPanel item={data} wallet={wallet} loading={isInitialLoading} />
+        <TraderDetailPanel item={item} wallet={wallet} loading={isInitialLoading} />
       </div>
       <div className="mt-32px">
         <LeverageInfo
           wallet={wallet}
-          totalOpen={data?.totalOpen}
-          totalClosed={data?.totalClosed}
+          totalOpen={item?.totalOpen}
+          totalClosed={item?.totalClosed}
         />
       </div>
       <div className="mt-32px">

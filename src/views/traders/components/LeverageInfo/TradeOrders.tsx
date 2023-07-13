@@ -5,26 +5,31 @@ import { formatCurrency } from '../../../../utils/numbers';
 import { OrderType } from '../../../../utils/type';
 import { useTradeOrders } from './hooks/useTradeOrders';
 import { Loading } from '../../../../components/Loading';
+import { bscConfig } from '../../../../config';
 interface TradeOrdersProps {
   wallet: string;
 }
 export const TradeOrders: React.FC<TradeOrdersProps> = ({ wallet }) => {
-  const { items, loading, silentLoad } = useTradeOrders({ wallet });
+  const { items, loading } = useTradeOrders(bscConfig.chainId, {
+    wallet: wallet,
+    page: 1,
+    size: 999,
+  });
 
-  if (!items.length && (!loading || silentLoad)) {
-    return (
-      <div className="h-250px flex justify-center items-center">
-        <NoData />
-      </div>
-    );
-  }
-
-  if (loading && !silentLoad && !items.length) {
+  if (loading && !items.length) {
     return (
       <div className="h-250px flex items-center justify-center">
         <div className="w-300px">
           <Loading />
         </div>
+      </div>
+    );
+  }
+
+  if (!items.length) {
+    return (
+      <div className="h-250px flex justify-center items-center">
+        <NoData />
       </div>
     );
   }

@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import z from 'zod';
 
 export enum RawPlaceOrderEvent {
@@ -59,7 +60,6 @@ export const TraderListItemResponseSchema = z.object({
       volume: z.number(),
       win: z.number(),
       lost: z.number(),
-      pnl: z.number(),
       fee: z.number(),
     }),
   ),
@@ -121,10 +121,10 @@ export const PositionDetailResponseSchema = z.object({
     fee: z.number(),
     status: z.nativeEnum(PositionStatus),
     histories: z.array(PositionDetailHistoryResponseSchema),
-    openOn: z.number(),
+    openOn: z.number().optional(),
     pnl: z.number(),
     realizedPnl: z.number(),
-    closedAt: z.number(),
+    closedAt: z.number().optional(),
     closeFee: z.number(),
     borrowFee: z.number(),
     openTx: z.object({
@@ -138,13 +138,15 @@ export const PositionDetailResponseSchema = z.object({
 export type PositionDetailResponse = z.infer<typeof PositionDetailResponseSchema>;
 
 export const TraderDetailResponseSchema = z.object({
-  totalPnl: z.number(),
-  totalNetProfit: z.number(),
-  totalFee: z.number(),
-  totalTrading: z.number(),
-  totalClosed: z.number(),
-  totalOpen: z.number(),
-  openInterest: z.number(),
+  data: z.object({
+    totalPnl: z.number(),
+    totalNetProfit: z.number(),
+    totalFee: z.number(),
+    totalTrading: z.number(),
+    totalClosed: z.number(),
+    totalOpen: z.number(),
+    openInterest: z.number(),
+  }),
 });
 export type TraderDetailResponse = z.infer<typeof TraderDetailResponseSchema>;
 
@@ -155,11 +157,13 @@ export const LeaderboardItemSchema = z.object({
 export type LeaderboardItem = z.infer<typeof LeaderboardItemSchema>;
 
 export const LeaderboardResponseSchema = z.object({
-  allTime: z.array(LeaderboardItemSchema),
-  currentWeek: z.array(LeaderboardItemSchema),
-  currentMonth: z.array(LeaderboardItemSchema),
-  preWeek: z.array(LeaderboardItemSchema),
-  preMonth: z.array(LeaderboardItemSchema),
+  data: z.object({
+    allTime: z.array(LeaderboardItemSchema),
+    currentWeek: z.array(LeaderboardItemSchema),
+    currentMonth: z.array(LeaderboardItemSchema),
+    preWeek: z.array(LeaderboardItemSchema),
+    preMonth: z.array(LeaderboardItemSchema),
+  }),
 });
 export type LeaderboardResponse = z.infer<typeof LeaderboardResponseSchema>;
 
@@ -225,9 +229,78 @@ export interface ChainConfig {
   baseExplorer: string;
   rpc: string;
   tradingGraph: string;
-  tradeLens: string;
-  orderbook: string;
   pool: string;
   indexTokens: ChainConfigToken[];
   collateralTokens: ChainConfigToken[];
 }
+
+export interface UseLeverageMessageConfig {
+  indexToken: ChainConfigToken;
+  type: OrderType;
+  updateType: UpdateType;
+  size: BigNumber;
+  status: HistoryStatus;
+  side: Side;
+  triggerAboveThreshold: boolean;
+  triggerPrice: BigNumber;
+  executionPrice: BigNumber;
+  liquidatedPrice: BigNumber;
+  collateralValue: BigNumber;
+}
+
+export interface QueryTradeHistoriesConfig {
+  end: number;
+  start: number;
+  wallet: string;
+  page: number;
+  size: number;
+}
+
+export interface LeverageHistory {
+  time: number;
+  indexToken: ChainConfigToken;
+  side: Side;
+  messageConfig: UseLeverageMessageConfig;
+  transactionHash: string;
+}
+
+export interface QueryOrdersConfig {
+  wallet: string;
+  page: number;
+  size: number;
+}
+
+export type LeverageOrder = {
+  side: Side;
+  indexToken: ChainConfigToken;
+  type: OrderType;
+  action: string;
+  triggerCondition: string;
+  markPrice: number;
+};
+
+export interface QuerySwapHistoriesConfig {
+  wallet: string;
+  page: number;
+  size: number;
+  chainId?: number;
+}
+
+export const SwapHistoryResponseSchema = z.object({
+  createdAt: z.number(),
+  transactionHash: z.string(),
+  type: z.string(),
+  amountIn: z.number(),
+  amountOut: z.number(),
+  tokenIn: z.string(),
+  tokenOut: z.string(),
+  valueIn: z.number(),
+  account: z.string(),
+  fee: z.number(),
+});
+
+export const SwapHistoriesResponseSchema = z.object({
+  data: z.array(SwapHistoryResponseSchema),
+  page: PageInfoSchema,
+});
+export type SwapHistoriesResponse = z.infer<typeof SwapHistoriesResponseSchema>;

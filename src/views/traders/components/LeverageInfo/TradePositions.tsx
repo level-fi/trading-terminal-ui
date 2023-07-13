@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { NoData } from '../../../../components/NoData';
 import { Loading } from '../../../../components/Loading';
-import { usePositions } from '../../../../hooks/usePositions';
 import { PositionItem } from '../../../positions/components/PositionItem';
 import { TableContentLoader } from '../../../../components/TableContentLoader';
 import { PositionStatus } from '../../../../utils/type';
 import { Pagination } from '../../../../components/Pagination';
 import { statusOptions } from '../../../positions/hooks/usePositionsConfig';
 import { useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { queryPositions } from '../../../../utils/queries';
 
 interface TradePositionsProps {
   wallet: string;
@@ -25,19 +26,22 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
   const headerRef = useRef<HTMLDivElement>();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<PositionStatus>();
-  const { items, loading, pageInfo, silentLoad } = usePositions({
-    page: page,
-    setPage: setPage,
-    size: 10,
-    sortBy: 'time',
-    sortType: 'desc',
-    wallet: wallet,
-    status: status,
-  });
+  const { data, isInitialLoading } = useQuery(
+    queryPositions({
+      page: page,
+      size: 10,
+      sortBy: 'time',
+      sortType: 'desc',
+      wallet: wallet,
+      status: status,
+    }),
+  );
+  const items = data ? data.data : [];
+  const pageInfo = data ? data.page : undefined;
 
   useEffect(() => {
-    setTotalPositions(pageInfo?.totalItems);
-  }, [pageInfo?.totalItems, setTotalPositions]);
+    setTotalPositions(data?.page?.totalItems);
+  }, [data?.page?.totalItems, setTotalPositions]);
 
   const getTotalInfo = useCallback(
     (status?: PositionStatus) => {
@@ -82,13 +86,13 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
           })}
         </div>
       </div>
-      {loading && !silentLoad && !items.length ? (
+      {isInitialLoading && !items.length ? (
         <div className="h-250px flex items-center justify-center">
           <div className="w-300px">
             <Loading />
           </div>
         </div>
-      ) : !items.length && (!loading || silentLoad) ? (
+      ) : !items.length ? (
         <div className="h-250px flex justify-center items-center">
           <NoData />
         </div>
@@ -137,7 +141,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
                 time={item.time}
                 closed={item.status !== PositionStatus.OPEN}
                 multipleAction={!!item.historiesCount}
-                loading={loading && !silentLoad}
+                loading={isInitialLoading}
                 cellClassName="px-17px"
                 onClick={(id) => {
                   params.set('position_id', id);
@@ -146,7 +150,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
               />
             ))}
           </div>
-          {loading && !silentLoad && !!items.length && (
+          {isInitialLoading && !!items.length && (
             <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
               <TableContentLoader
                 className="h-56px mb-12px bg-#34343B b-1px b-solid b-#5E5E5E rounded-10px"

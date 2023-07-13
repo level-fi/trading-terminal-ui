@@ -40,27 +40,27 @@ export const TraderDetailPanel: React.FC<TraderDetailPanelProps> = ({
         <div className="flex justify-between mb-18px xl:m-0 xl:flex-col xl:pl-20px xl:pr-40px xl:b-l-1px b-solid b-#2f2f2f">
           <label className="text-14px color-#adadab xl:mb-13px">Total Trading Volume</label>
           <label className="xl:text-16px text-14px font-700 color-white">
-            {loading ? '-' : formatCurrency(item.totalTrading)}
+            {loading ? '-' : formatCurrency(item?.totalTrading)}
           </label>
         </div>
         <div className="flex justify-between mb-18px xl:m-0 xl:flex-col xl:pl-20px xl:pr-40px xl:b-l-1px b-solid b-#2f2f2f">
           <label className="text-14px color-#adadab xl:mb-13px">Open Interest</label>
           <label className="xl:text-16px text-14px font-700 color-white">
-            {loading ? '-' : formatCurrency(item.openInterest)}
+            {loading ? '-' : formatCurrency(item?.openInterest)}
           </label>
         </div>
         <div className="flex justify-between mb-18px xl:m-0 xl:flex-col xl:pl-20px xl:pr-40px xl:b-l-1px b-solid b-#2f2f2f">
           <label className="text-14px color-#adadab xl:mb-13px">Net Profit</label>
           <label
-            className={`xl:text-16px text-14px font-700 ${profitColor(item.totalNetProfit)}`}
+            className={`xl:text-16px text-14px font-700 ${profitColor(item?.totalNetProfit)}`}
           >
-            {loading ? '-' : formatProfit(item.totalNetProfit)}
+            {loading ? '-' : formatProfit(item?.totalNetProfit)}
           </label>
         </div>
         <div className="flex justify-between xl:flex-col xl:pl-20px xl:b-l-1px b-solid b-#2f2f2f">
           <label className="text-14px color-#adadab xl:mb-13px">Total Fees Paid</label>
           <label className="xl:text-16px text-14px font-700 color-white">
-            {loading ? '-' : formatCurrency(item.totalFee)}
+            {loading ? '-' : formatCurrency(item?.totalFee)}
           </label>
         </div>
       </div>

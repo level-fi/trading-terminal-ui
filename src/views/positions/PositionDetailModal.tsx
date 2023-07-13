@@ -36,6 +36,7 @@ export const PositionDetailModal = () => {
     rawEntry: item?.entryPrice,
     decimals: indexToken.decimals,
     side: side,
+    chainId: item?.chainId,
   });
   const leverage = useMemo(() => {
     if (!item?.netValue || !item?.size) {

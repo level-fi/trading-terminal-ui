@@ -1,15 +1,16 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { TradeHistoriesFilter } from './TradeHistoriesFilter';
-import { UseTradeHistoriesConfig, useTradeHistories } from './hooks/useTradeHistories';
+import { useTradeHistories } from './hooks/useTradeHistories';
 import { NoData } from '../../../../components/NoData';
 import { TokenSide } from '../../../../components/TokenSide';
 import { ReactComponent as IconExplorer } from '../../../../assets/icons/ic-explorer.svg';
-import { config as chainConfig } from '../../../../config';
-import { UseLeverageMessageConfig, useLeverageMessage } from '../../../../hooks/useMessage';
+import { useLeverageMessage } from '../../../../hooks/useMessage';
 import { SeekPagination } from '../../../../components/SeekPagination';
 import { Loading } from '../../../../components/Loading';
 import { unixToDate } from '../../../../utils';
 import { TableContentLoader } from '../../../../components/TableContentLoader';
+import { bscConfig, getChainConfig } from '../../../../config';
+import { QueryTradeHistoriesConfig, UseLeverageMessageConfig } from '../../../../utils/type';
 
 interface TradeHistoriesProps {
   wallet: string;
@@ -19,13 +20,16 @@ const Action: React.FC<UseLeverageMessageConfig> = (config) => {
   return <>{message}</>;
 };
 export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
+  const [chainId, setChainId] = useState(bscConfig.chainId);
+  const chainConfig = getChainConfig(chainId);
+
   const [page, setPage] = useState(1);
   const [dateStart, setDateStart] = useState<Date>();
   const [dateEnd, setDateEnd] = useState<Date>();
   const [timeFilter, setTimeFilter] = useState<number>();
   const headerRef = useRef<HTMLDivElement>();
 
-  const config = useMemo<UseTradeHistoriesConfig>(() => {
+  const config = useMemo<QueryTradeHistoriesConfig>(() => {
     const now = Date.now();
     if (timeFilter) {
       return {
@@ -44,7 +48,7 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
       wallet: wallet,
     };
   }, [dateEnd, dateStart, page, timeFilter, wallet]);
-  const { items, loading, hasNext, loadedPage } = useTradeHistories(config);
+  const { items, loading, hasNext, loadedPage } = useTradeHistories(chainId, config);
 
   return (
     <div>

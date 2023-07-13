@@ -1,68 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
-import { config, getTokenByAddress } from '../../../../../config';
-import { ChainConfigToken, OrderType, Side, UpdateType } from '../../../../../utils/type';
-import { gql, GraphQLClient } from 'graphql-request';
-import { UseLeverageMessageConfig } from '../../../../../hooks/useMessage';
+import { getTokenByAddress } from '../../../../../config';
+import {
+  LeverageHistory,
+  OrderType,
+  QueryTradeHistoriesConfig,
+  UpdateType,
+} from '../../../../../utils/type';
 import { BigNumber } from 'ethers';
-import { endOfDay, startOfDay } from 'date-fns';
+import { useQuery } from '@tanstack/react-query';
+import { queryTradeHistories } from '../../../../../utils/queries';
 
-const GET_TRADE_HISTORIES = gql`
-  query histories($owner: Bytes!, $start: Int, $end: Int, $skip: Int!, $first: Int!) {
-    histories(
-      skip: $skip
-      first: $first
-      where: {
-        owner: $owner
-        createdAtTimestamp_gte: $start
-        createdAtTimestamp_lte: $end
-        updateType_not: SWAP
-      }
-      orderBy: createdAtTimestamp
-      orderDirection: desc
-    ) {
-      id
-      createdAtTimestamp
-      tx
-      status
-      side
-      updateType
-      size
-      collateralValue
-      triggerAboveThreshold
-      triggerPrice
-      executionPrice
-      liquidatedPrice
-      liquidatedFeeValue
-      borrowFeeValue
-      closeFeeValue
-      pnl
-      type
-      collateralToken
-      market {
-        id
-        indexToken {
-          id
-          decimals
-        }
-      }
-    }
-  }
-`;
-
-export interface UseTradeHistoriesConfig {
-  end: number;
-  start: number;
-  wallet: string;
-  page: number;
-  size: number;
-}
-export interface LeverageHistory {
-  time: number;
-  indexToken: ChainConfigToken;
-  side: Side;
-  messageConfig: UseLeverageMessageConfig;
-  transactionHash: string;
-}
 const parse2LeverageHistory = (raw: any): LeverageHistory | undefined => {
   const indexToken = getTokenByAddress(raw.market?.indexToken?.id);
   if (!indexToken) {
@@ -93,50 +39,16 @@ const parse2LeverageHistory = (raw: any): LeverageHistory | undefined => {
     transactionHash: raw.tx,
   };
 };
-const graphClient = new GraphQLClient(config.tradingGraph);
-export const useTradeHistories = ({
-  end,
-  start,
-  wallet,
-  page,
-  size,
-}: UseTradeHistoriesConfig) => {
-  const [items, setItems] = useState<LeverageHistory[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [hasNext, setHasNext] = useState(false);
-  const [loadedPage, setLoadedPage] = useState(page);
+export const useTradeHistories = (chainId: number, config: QueryTradeHistoriesConfig) => {
+  const { data, isInitialLoading } = useQuery(queryTradeHistories(chainId, config));
+  const items = data ? data.data.slice(0, config.size).map(parse2LeverageHistory) : [];
+  const hasNext = data ? data.data.length > config.size : false;
+  const loadedPage = data ? data.page : config.page;
 
-  useEffect(() => {
-    const fetch = async () => {
-      setLoading(true);
-      try {
-        const { histories } = await graphClient.request<{ histories: any }>(
-          GET_TRADE_HISTORIES,
-          {
-            owner: wallet?.toLowerCase(),
-            start: Math.floor(startOfDay(start).getTime() / 1000),
-            end: Math.floor(endOfDay(end).getTime() / 1000),
-            skip: (page - 1) * size,
-            first: size + 1,
-          },
-        );
-        setLoadedPage(page);
-        setHasNext(histories.length > size);
-        setItems(histories.slice(0, size).map(parse2LeverageHistory));
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetch();
-  }, [end, page, size, start, wallet]);
-
-  return useMemo(
-    () => ({
-      items,
-      loading,
-      hasNext,
-      loadedPage,
-    }),
-    [items, loading, hasNext, loadedPage],
-  );
+  return {
+    items,
+    loading: isInitialLoading,
+    hasNext,
+    loadedPage,
+  };
 };

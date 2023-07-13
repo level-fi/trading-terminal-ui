@@ -1,15 +1,15 @@
-import { Contract, providers } from 'ethers';
-import { config, getTokenByAddress, VALUE_DECIMALS } from '../../../../../config';
-import TradeLensAbi from '../../../../../abis/TradeLens.json';
-import { useLongPolling } from '../../../../../hooks/useLongPolling';
-import { ChainConfigToken, OrderType, Side, UpdateType } from '../../../../../utils/type';
-import { useMemo, useState } from 'react';
+import { getTokenByAddress, VALUE_DECIMALS } from '../../../../../config';
+import {
+  ChainConfigToken,
+  OrderType,
+  QueryOrdersConfig,
+  Side,
+  UpdateType,
+} from '../../../../../utils/type';
 import { formatBigNumber } from '../../../../../utils/numbers';
-import { useBackendPrices } from '../../../../../context/BackendPriceProvider';
+import { useQueries } from '@tanstack/react-query';
+import { queryBackendPrice, queryOrders } from '../../../../../utils/queries';
 
-export interface UseOrdersConfig {
-  wallet: string;
-}
 export interface LeverageOrder {
   side: Side;
   indexToken: ChainConfigToken;
@@ -76,57 +76,28 @@ const parse2LeverageOrder = (raw: any): LeverageOrder | undefined => {
     )}`,
   };
 };
-const contract = new Contract(
-  config.tradeLens,
-  TradeLensAbi,
-  new providers.JsonRpcProvider(config.rpc),
-);
-export const useTradeOrders = ({ wallet }: UseOrdersConfig) => {
-  const [items, setItems] = useState<LeverageOrder[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [silentLoad, setSilentLoad] = useState(false);
-  const prices = useBackendPrices();
+export const useTradeOrders = (chainId: number, config: QueryOrdersConfig) => {
+  const [
+    { data: orders, isInitialLoading: orderLoading },
+    { data: prices, isInitialLoading: priceLoading },
+  ] = useQueries({
+    queries: [queryOrders(chainId, config), queryBackendPrice(chainId)],
+  });
+  const rawOrders = orders ? orders.data : [];
+  const items: LeverageOrder[] = [];
+  for (const order of rawOrders) {
+    const parsed = parse2LeverageOrder(order);
+    if (!parsed) {
+      continue;
+    }
+    items.push(parsed);
+  }
 
-  useLongPolling(
-    async (loadedTimes) => {
-      setLoading(true);
-      setSilentLoad(!!loadedTimes);
-
-      try {
-        const raw = await contract.getAllLeverageOrders(config.orderbook, wallet);
-        const rawOrders: [] = raw?.[0] || [];
-        if (!rawOrders?.length) {
-          return;
-        }
-        const items: LeverageOrder[] = [];
-        for (const order of rawOrders) {
-          const parsed = parse2LeverageOrder(order);
-          if (!parsed) {
-            continue;
-          }
-          items.push(parsed);
-        }
-        setItems(items);
-      } finally {
-        setLoading(false);
-      }
-    },
-    {
-      enabled: true,
-      retriable: true,
-      time: 15000,
-      fireable: !!wallet && wallet,
-    },
-  );
-  return useMemo(
-    () => ({
-      items: items.map((item) => ({
-        ...item,
-        markPrice: prices[item.indexToken.symbol],
-      })),
-      silentLoad,
-      loading,
-    }),
-    [items, loading, prices, silentLoad],
-  );
+  return {
+    items: items.map((item) => ({
+      ...item,
+      markPrice: prices?.[item.indexToken.symbol],
+    })),
+    loading: orderLoading || priceLoading,
+  };
 };

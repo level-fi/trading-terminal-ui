@@ -1,9 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { useSwapHistories } from './hooks/useSwapHistories';
 import { NoData } from '../../../../components/NoData';
 import { ReactComponent as IconExplorer } from '../../../../assets/icons/ic-explorer.svg';
-import { config as chainConfig, getTokenByAddress } from '../../../../config';
-import { OrderType } from '../../../../utils/type';
+import { bscConfig, getChainConfig, getTokenByAddress } from '../../../../config';
 import { Loading } from '../../../../components/Loading';
 import { SwapPrice } from './components/SwapPrice';
 import { SwapAmount } from './components/SwapAmount';
@@ -11,33 +9,43 @@ import { unixToDate } from '../../../../utils';
 import { TableContentLoader } from '../../../../components/TableContentLoader';
 import { Pagination } from '../../../../components/Pagination';
 import { formatCurrency } from '../../../../utils/numbers';
+import { useQuery } from '@tanstack/react-query';
+import { querySwapHistories } from '../../../../utils/queries';
 
 interface SwapHistoriesProps {
   wallet: string;
 }
 export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
+  const [chainId, setChainId] = useState(bscConfig.chainId);
+  const chainConfig = getChainConfig(chainId);
+
   const headerRef = useRef<HTMLDivElement>();
   const [page, setPage] = useState(1);
-  const { items, loading, pageInfo, silentLoad } = useSwapHistories({
-    page: page,
-    size: 10,
-    wallet: wallet,
-  });
+  const { data, isInitialLoading } = useQuery(
+    querySwapHistories({
+      page: page,
+      size: 10,
+      wallet: wallet,
+      chainId: chainId,
+    }),
+  );
+  const items = data ? data.data : [];
+  const pageInfo = data ? data.page : undefined;
 
-  if (!items.length && (!loading || silentLoad)) {
-    return (
-      <div className="h-250px flex justify-center items-center">
-        <NoData />
-      </div>
-    );
-  }
-
-  if (loading && !silentLoad && !items.length) {
+  if (isInitialLoading && !items.length) {
     return (
       <div className="h-250px flex items-center justify-center">
         <div className="w-300px">
           <Loading />
         </div>
+      </div>
+    );
+  }
+
+  if (!items.length) {
+    return (
+      <div className="h-250px flex justify-center items-center">
+        <NoData />
       </div>
     );
   }
@@ -154,7 +162,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
             );
           })}
         </div>
-        {loading && !silentLoad && !!items.length && (
+        {isInitialLoading && !!items.length && (
           <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
             <TableContentLoader
               className="h-56px mb-12px bg-#34343B b-1px b-solid b-#5E5E5E rounded-10px"

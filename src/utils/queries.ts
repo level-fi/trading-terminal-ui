@@ -1,5 +1,5 @@
 import { QueryClient, QueryObserverOptions } from '@tanstack/react-query';
-import { baseConfig, getChainConfig, getTokenBySymbol } from '../config';
+import { baseConfig, bscConfig, getChainConfig, getTokenBySymbol } from '../config';
 import z from 'zod';
 import {
   BackendPriceResponseSchema,
@@ -9,14 +9,24 @@ import {
   PositionDetailResponseSchema,
   PositionListItemResponse,
   PositionListItemResponseSchema,
+  QueryOrdersConfig,
   QueryPositionsConfig,
+  QuerySwapHistoriesConfig,
+  QueryTradeHistoriesConfig,
   QueryTradersConfig,
   Stats,
+  SwapHistoriesResponse,
+  SwapHistoriesResponseSchema,
   TraderDetailResponse,
   TraderDetailResponseSchema,
   TraderListItemResponse,
   TraderListItemResponseSchema,
 } from './type';
+import { BigNumber, Contract, providers } from 'ethers';
+import PoolV1 from '../abis/PoolV1.json';
+import PoolV2 from '../abis/PoolV2.json';
+import { GraphQLClient, gql } from 'graphql-request';
+import { endOfDay, startOfDay } from 'date-fns';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -85,13 +95,27 @@ export const queryPositions = (
       const url = new URL(`${baseUrl}/positions`);
       url.searchParams.append('sortBy', config.sortBy);
       url.searchParams.append('sortType', config.sortType);
-      url.searchParams.append('market', config.market);
-      url.searchParams.append('wallet', config.wallet);
-      url.searchParams.append('side', config.side?.toString());
-      url.searchParams.append('status', config.status?.toString());
-      url.searchParams.append('chainId', config.chainId?.toString());
-      url.searchParams.append('page', config.page?.toString());
-      url.searchParams.append('size', config.size?.toString());
+      if (config.market !== undefined) {
+        url.searchParams.append('market', config.market);
+      }
+      if (config.wallet !== undefined) {
+        url.searchParams.append('wallet', config.wallet);
+      }
+      if (config.side !== undefined) {
+        url.searchParams.append('side', config.side.toString());
+      }
+      if (config.status !== undefined) {
+        url.searchParams.append('status', config.status.toString());
+      }
+      if (config.chainId !== undefined) {
+        url.searchParams.append('chainId', config.chainId.toString());
+      }
+      if (config.page !== undefined) {
+        url.searchParams.append('page', config.page.toString());
+      }
+      if (config.size !== undefined) {
+        url.searchParams.append('size', config.size.toString());
+      }
 
       const res = await fetch(url.toString());
       if (!res.ok) {
@@ -115,13 +139,17 @@ export const queryTraders = (
       const url = new URL(`${baseUrl}/traders`);
       url.searchParams.append('sortBy', config.sortBy);
       url.searchParams.append('sortType', config.sortType);
-      url.searchParams.append('chainId', config.chainId?.toString());
-      url.searchParams.append('to', config.to?.toString());
+      if (config.chainId !== undefined) {
+        url.searchParams.append('chainId', config.chainId.toString());
+      }
+      if (config.to !== undefined) {
+        url.searchParams.append('to', config.to.toString());
+      }
       if (config.duration) {
         const from = Math.floor(Date.now() / 1000) - config.duration;
         url.searchParams.append('from', from.toString());
-      } else {
-        url.searchParams.append('from', config.from?.toString());
+      } else if (config.from) {
+        url.searchParams.append('from', config.from.toString());
       }
 
       const res = await fetch(url.toString());
@@ -185,5 +213,199 @@ export const queryTrader = (wallet: string): QueryObserverOptions<TraderDetailRe
       const parsed = TraderDetailResponseSchema.parse(await res.json());
       return parsed;
     },
+    refetchInterval: 15000,
+  };
+};
+
+export const queryMaintainMargin = (chainId: number): QueryObserverOptions<BigNumber> => {
+  return {
+    queryKey: ['chain', chainId, 'maintain_margin'],
+    enabled: !!chainId,
+    queryFn: async () => {
+      const chainConfig = getChainConfig(chainId);
+      const isV1 = chainConfig.chainId === bscConfig.chainId;
+      const abi = isV1 ? PoolV1 : PoolV2;
+      const contract = new Contract(
+        chainConfig.pool,
+        abi,
+        new providers.JsonRpcProvider(chainConfig.rpc),
+      );
+      return contract.maintenanceMargin();
+    },
+    staleTime: Infinity,
+    refetchInterval: Infinity,
+  };
+};
+
+export const queryLiquidationFee = (chainId: number): QueryObserverOptions<BigNumber> => {
+  return {
+    queryKey: ['chain', chainId, 'liquidation_fee'],
+    enabled: !!chainId,
+    queryFn: async () => {
+      const chainConfig = getChainConfig(chainId);
+      const isV1 = chainConfig.chainId === bscConfig.chainId;
+      const abi = isV1 ? PoolV1 : PoolV2;
+      const contract = new Contract(
+        chainConfig.pool,
+        abi,
+        new providers.JsonRpcProvider(chainConfig.rpc),
+      );
+      if (isV1) {
+        const [, liq] = await contract.fee();
+        return liq;
+      }
+      return contract.liquidationFee();
+    },
+    staleTime: Infinity,
+    refetchInterval: Infinity,
+  };
+};
+
+const GET_TRADE_HISTORIES = gql`
+  query histories($owner: Bytes!, $start: Int, $end: Int, $skip: Int!, $first: Int!) {
+    histories(
+      skip: $skip
+      first: $first
+      where: {
+        owner: $owner
+        createdAtTimestamp_gte: $start
+        createdAtTimestamp_lte: $end
+        updateType_not: SWAP
+      }
+      orderBy: createdAtTimestamp
+      orderDirection: desc
+    ) {
+      id
+      createdAtTimestamp
+      tx
+      status
+      side
+      updateType
+      size
+      collateralValue
+      triggerAboveThreshold
+      triggerPrice
+      executionPrice
+      liquidatedPrice
+      liquidatedFeeValue
+      borrowFeeValue
+      closeFeeValue
+      pnl
+      type
+      collateralToken
+      market {
+        id
+        indexToken {
+          id
+          decimals
+        }
+      }
+    }
+  }
+`;
+
+export const queryTradeHistories = (
+  chainId: number,
+  config: QueryTradeHistoriesConfig,
+): QueryObserverOptions<{
+  data: any[];
+  page: number;
+}> => {
+  return {
+    queryKey: ['chain', chainId, 'wallet', config.wallet, 'trade_histories'],
+    enabled: !!chainId && !!config.wallet,
+    queryFn: async () => {
+      const chainConfig = getChainConfig(chainId);
+      const graphClient = new GraphQLClient(chainConfig.tradingGraph);
+      const { histories } = await graphClient.request<{ histories: any }>(GET_TRADE_HISTORIES, {
+        owner: config.wallet.toLowerCase(),
+        start: Math.floor(startOfDay(config.start).getTime() / 1000),
+        end: Math.floor(endOfDay(config.end).getTime() / 1000),
+        skip: (config.page - 1) * config.size,
+        first: config.size + 1,
+      });
+      return {
+        data: histories,
+        page: config.page,
+      };
+    },
+    refetchInterval: 60000,
+  };
+};
+
+const GET_ORDERS = gql`
+  query orders($owner: Bytes!, $skip: Int!, $first: Int!) {
+    orders(
+      skip: $skip
+      first: $first
+      orderBy: submissionTimestamp
+      orderDirection: desc
+      where: { owner: $owner, updateType_not: SWAP }
+    ) {
+      sizeChange
+      collateralValue
+      updateType
+      side
+      market {
+        id
+      }
+      type
+      triggerAboveThreshold
+      price
+    }
+  }
+`;
+
+export const queryOrders = (
+  chainId: number,
+  config: QueryOrdersConfig,
+): QueryObserverOptions<{
+  data: any[];
+  page: number;
+}> => {
+  return {
+    queryKey: ['chain', chainId, 'wallet', config.wallet, 'orders'],
+    enabled: !!chainId && !!config.wallet,
+    queryFn: async () => {
+      const chainConfig = getChainConfig(chainId);
+      const graphClient = new GraphQLClient(chainConfig.tradingGraph);
+      const { orders } = await graphClient.request<{ orders: any }>(GET_ORDERS, {
+        owner: config.wallet.toLowerCase(),
+        skip: (config.page - 1) * config.size,
+        first: config.size + 1,
+      });
+      return {
+        data: orders,
+        page: config.page,
+      };
+    },
+    refetchInterval: 60000,
+  };
+};
+
+export const querySwapHistories = (
+  config: QuerySwapHistoriesConfig,
+): QueryObserverOptions<SwapHistoriesResponse> => {
+  return {
+    queryKey: ['swap_histories', config],
+    queryFn: async () => {
+      const baseUrl = baseConfig.baseUrl;
+
+      const url = new URL(`${baseUrl}/swapHistories`);
+      url.searchParams.append('wallet', config.wallet);
+      url.searchParams.append('page', config.page.toString());
+      url.searchParams.append('size', config.size.toString());
+      if (config.chainId !== undefined) {
+        url.searchParams.append('chainId', config.chainId.toString());
+      }
+
+      const res = await fetch(url.toString());
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const parsed = SwapHistoriesResponseSchema.parse(await res.json());
+      return parsed;
+    },
+    refetchInterval: 15000,
   };
 };
