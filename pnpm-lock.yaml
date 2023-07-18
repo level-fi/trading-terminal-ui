@@ -17,6 +17,9 @@ dependencies:
   '@unocss/reset':
     specifier: ^0.50.6
     version: 0.50.6
+  classnames:
+    specifier: ^2.3.2
+    version: 2.3.2
   date-fns:
     specifier: ^2.29.3
     version: 2.29.3

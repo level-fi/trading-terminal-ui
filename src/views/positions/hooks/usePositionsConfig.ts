@@ -39,6 +39,16 @@ export const getMarketOptions = (chainId?: number) => {
   );
   return results;
 };
+export const chainOptions = [
+  {
+    label: 'all',
+    value: undefined,
+  },
+  ...chains.map((c) => ({
+    label: c.name.toLowerCase(),
+    value: c.chainId,
+  })),
+];
 export const sideOptions = [
   {
     label: 'all',
@@ -166,10 +176,15 @@ export const usePositionsConfigParsed = () => {
     const raw = statusOptions.find((c) => c.label === params.get('status')?.toLowerCase());
     return raw?.value;
   }, [params]);
-  const market = useMemo(() => {
-    const token = getTokenBySymbol(params.get('market') || '');
-    return token?.symbol;
+  const chainId = useMemo(() => {
+    const raw = chainOptions.find((c) => c.label === params.get('chain')?.toLowerCase());
+    return raw?.value;
   }, [params]);
+  const market = useMemo(() => {
+    const marketOptions = getMarketOptions(chainId);
+    const raw = marketOptions.find((c) => c.label === params.get('market')?.toLowerCase());
+    return raw?.label;
+  }, [chainId, params]);
 
   return useMemo(
     () => ({
@@ -182,9 +197,10 @@ export const usePositionsConfigParsed = () => {
         side: side,
         status: status,
         market: market,
+        chainId: chainId,
       } as QueryPositionsConfig,
       setPage,
     }),
-    [page, size, sortBy, sortType, side, status, market, setPage],
+    [page, size, sortBy, sortType, side, status, market, chainId, setPage],
   );
 };

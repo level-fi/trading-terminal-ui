@@ -120,6 +120,7 @@ export const PositionList = () => {
                 time={item.time}
                 closed={item.status !== PositionStatus.OPEN}
                 multipleAction={!!item.historiesCount}
+                chainId={item.chainId}
                 loading={isInitialLoading}
                 cellClassName="2xl:px-24px xl:px-17px"
                 onClick={(id) => {

@@ -34,7 +34,7 @@ export const PositionDetailModal = () => {
     rawSize: item?.size,
     rawCollateralValue: item?.collateral,
     rawEntry: item?.entryPrice,
-    decimals: indexToken.decimals,
+    decimals: indexToken?.decimals,
     side: side,
     chainId: item?.chainId,
   });
@@ -59,15 +59,15 @@ export const PositionDetailModal = () => {
           ) : (
             <div className="flex items-center">
               <div className="hidden xl:block">
-                <TokenSymbol symbol={indexToken.symbol} size={56} />
+                <TokenSymbol symbol={indexToken?.symbol} chainId={item?.chainId} size={56} />
               </div>
               <div className="xl:hidden">
-                <TokenSymbol symbol={indexToken.symbol} size={40} />
+                <TokenSymbol symbol={indexToken?.symbol} chainId={item?.chainId} size={40} />
               </div>
-              <div className="flex flex-col ml-8px xl:ml-17px">
+              <div className="flex flex-col ml-17px">
                 <div>
                   <span className="font-700 xl:text-20px text-16px color-white">
-                    {indexToken.symbol}/USD
+                    {indexToken?.symbol}/USD
                   </span>
                   <span
                     className={`ml-4px xl:ml-8px font-400 xl:text-16px text-14px ${
@@ -128,8 +128,8 @@ export const PositionDetailModal = () => {
               {
                 title: 'Liquidation Price',
                 value: indexToken
-                  ? formatBigNumber(liqPrice, VALUE_DECIMALS - indexToken.decimals, {
-                      fractionDigits: indexToken.priceFractionDigits,
+                  ? formatBigNumber(liqPrice, VALUE_DECIMALS - indexToken?.decimals, {
+                      fractionDigits: indexToken?.priceFractionDigits,
                       keepTrailingZeros: true,
                       currency: 'USD',
                     })

@@ -4,6 +4,7 @@ import unocss from 'unocss/vite';
 import svgr from 'vite-plugin-svgr';
 import presetUno from '@unocss/preset-uno';
 import presetWebFonts from '@unocss/preset-web-fonts';
+import { transformerVariantGroup } from 'unocss';
 
 const injectGoogleTag = () => {
   return {
@@ -31,6 +32,7 @@ export default defineConfig({
     injectGoogleTag(),
     react(),
     unocss({
+      transformers: [transformerVariantGroup()],
       presets: [
         presetUno(),
         presetWebFonts({

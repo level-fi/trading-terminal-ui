@@ -8,25 +8,32 @@ export interface TokenSideProps {
   side?: Side;
   size?: 'md' | 'lg';
   address?: string;
+  chainId?: number;
 }
 const Size = {
   md: {
-    symbol: 28,
+    symbol: 32,
     token: 'text-16px font-700',
     side: 'text-14px',
-    spacer: 'ml-8px',
+    spacer: 'ml-14px',
   },
   xl: {
     symbol: 44,
     token: 'text-24px font-700',
     side: 'text-16px',
-    spacer: 'ml-13px',
+    spacer: 'ml-18px',
   },
 };
-export const TokenSide: React.FC<TokenSideProps> = ({ address, side, symbol, size = 'md' }) => {
+export const TokenSide: React.FC<TokenSideProps> = ({
+  address,
+  side,
+  symbol,
+  size = 'md',
+  chainId,
+}) => {
   return side !== undefined ? (
     <div className="flex items-center">
-      <TokenSymbol symbol={symbol} size={Size[size].symbol} />
+      <TokenSymbol symbol={symbol} size={Size[size].symbol} chainId={chainId} />
       <div className={Size[size].spacer}>
         <div className={`flex ${address ? 'flex-row items-end' : 'flex-col'}`}>
           <span className={`color-white ${Size[size].token}`}>{symbol?.toUpperCase()}/USD</span>

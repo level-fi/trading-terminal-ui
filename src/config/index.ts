@@ -7,6 +7,7 @@ export const baseConfig: BaseConfig = {
 
 const subgraphQueryKey = 'c246be2f219f';
 export const bscConfig: ChainConfig = {
+  name: 'BNB',
   chainId: 56,
   baseExplorer: 'https://bscscan.com',
   rpc: 'https://bsc-dataseed1.binance.org/',
@@ -75,6 +76,7 @@ export const bscConfig: ChainConfig = {
 };
 
 export const arbConfig: ChainConfig = {
+  name: 'ARB',
   chainId: 42161,
   baseExplorer: 'https://arbiscan.io',
   rpc: 'https://arb1.arbitrum.io/rpc/',
@@ -134,7 +136,7 @@ export const arbConfig: ChainConfig = {
   ],
 };
 
-export const chains = [arbConfig, bscConfig];
+export const chains = [bscConfig, arbConfig];
 export const getChainConfig = (chainId: number): BaseConfig & ChainConfig => {
   const chainConfig = chains.find((c) => c.chainId === chainId);
   if (!chainConfig) {
@@ -154,15 +156,17 @@ export const allTokens = chains
   )
   .flat();
 export const getTokenByAddress = (address: string, chainId?: number) => {
-  return allTokens.find((c) =>
-    c.address.toLowerCase() === address?.toLowerCase() && chainId
-      ? c.chainId === chainId
-      : true,
+  return allTokens.find(
+    (c) =>
+      c.address.toLowerCase() === address?.toLowerCase() &&
+      (chainId ? c.chainId === chainId : true),
   );
 };
 export const getTokenBySymbol = (symbol: string, chainId?: number) => {
-  return allTokens.find((c) =>
-    c.symbol.toLowerCase() === symbol?.toLowerCase() && chainId ? c.chainId === chainId : true,
+  return allTokens.find(
+    (c) =>
+      c.symbol.toLowerCase() === symbol?.toLowerCase() &&
+      (chainId ? c.chainId === chainId : true),
   );
 };
 export const VALUE_DECIMALS = 30;

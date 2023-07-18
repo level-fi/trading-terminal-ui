@@ -5,10 +5,11 @@ import { PositionItem } from '../../../positions/components/PositionItem';
 import { TableContentLoader } from '../../../../components/TableContentLoader';
 import { PositionStatus } from '../../../../utils/type';
 import { Pagination } from '../../../../components/Pagination';
-import { statusOptions } from '../../../positions/hooks/usePositionsConfig';
+import { chainOptions, statusOptions } from '../../../positions/hooks/usePositionsConfig';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { queryPositions } from '../../../../utils/queries';
+import { chainLogos } from '../../../../utils/constant';
 
 interface TradePositionsProps {
   wallet: string;
@@ -26,6 +27,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
   const headerRef = useRef<HTMLDivElement>();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<PositionStatus>();
+  const [chainId, setChainId] = useState<number>();
   const { data, isInitialLoading } = useQuery(
     queryPositions({
       page: page,
@@ -34,6 +36,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
       sortType: 'desc',
       wallet: wallet,
       status: status,
+      chainId: chainId,
     }),
   );
   const items = data ? data.data : [];
@@ -65,7 +68,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
 
   return (
     <div>
-      <div className="flex xl:justify-start">
+      <div className="flex flex-col xl:(flex-row justify-between)">
         <div className="flex mb-12px xl:mb-0 w-100% xl:w-auto items-center color-#cdcdcd text-14px font-700">
           {statusOptions.map(({ label, value }, i) => {
             const active = value === status;
@@ -81,6 +84,27 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
               >
                 {label}
                 {getTotalInfo(value)}
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex mb-12px xl:mb-0 w-100% xl:w-auto items-center color-#cdcdcd text-14px font-700">
+          {chainOptions.map(({ label, value }, i) => {
+            const active = value === chainId;
+            const color = active ? 'color-black' : 'color-white';
+            const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
+            return (
+              <div
+                key={i}
+                className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
+                onClick={() => {
+                  setChainId(value);
+                }}
+              >
+                {chainLogos[value] && (
+                  <img className="mr-6px" src={chainLogos[value]} width={12} height={12} />
+                )}
+                {label}
               </div>
             );
           })}
@@ -147,6 +171,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
                   params.set('position_id', id);
                   setParams(params);
                 }}
+                chainId={item.chainId}
               />
             ))}
           </div>

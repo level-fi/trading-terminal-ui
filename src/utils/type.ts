@@ -225,6 +225,7 @@ export interface BaseConfig {
 }
 
 export interface ChainConfig {
+  name: string;
   chainId: number;
   baseExplorer: string;
   rpc: string;
@@ -297,6 +298,7 @@ export const SwapHistoryResponseSchema = z.object({
   valueIn: z.number(),
   account: z.string(),
   fee: z.number(),
+  chainId: z.number(),
 });
 
 export const SwapHistoriesResponseSchema = z.object({
