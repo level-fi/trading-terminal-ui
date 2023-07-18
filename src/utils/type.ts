@@ -239,14 +239,14 @@ export interface UseLeverageMessageConfig {
   indexToken: ChainConfigToken;
   type: OrderType;
   updateType: UpdateType;
-  size: BigNumber;
+  size: number;
   status: HistoryStatus;
   side: Side;
   triggerAboveThreshold: boolean;
-  triggerPrice: BigNumber;
-  executionPrice: BigNumber;
-  liquidatedPrice: BigNumber;
-  collateralValue: BigNumber;
+  triggerPrice: number;
+  executionPrice: number;
+  liquidatedPrice: number;
+  collateralValue: number;
 }
 
 export interface QueryTradeHistoriesConfig {
@@ -255,6 +255,7 @@ export interface QueryTradeHistoriesConfig {
   wallet: string;
   page: number;
   size: number;
+  chainId?: number;
 }
 
 export interface LeverageHistory {
@@ -263,12 +264,14 @@ export interface LeverageHistory {
   side: Side;
   messageConfig: UseLeverageMessageConfig;
   transactionHash: string;
+  chainId: number;
 }
 
 export interface QueryOrdersConfig {
   wallet: string;
   page: number;
   size: number;
+  chainId?: number;
 }
 
 export type LeverageOrder = {
@@ -306,3 +309,32 @@ export const SwapHistoriesResponseSchema = z.object({
   page: PageInfoSchema,
 });
 export type SwapHistoriesResponse = z.infer<typeof SwapHistoriesResponseSchema>;
+
+export const TradeHistoryResponseSchema = z.object({
+  createdAt: z.number(),
+  transactionHash: z.string(),
+  status: z.nativeEnum(HistoryStatus),
+  side: z.number(),
+  updateType: z.string(),
+  size: z.number(),
+  collateralValue: z.number(),
+  triggerAboveThreshold: z.boolean().nullable(),
+  triggerPrice: z.number().optional(),
+  executionPrice: z.number().optional(),
+  liquidatedPrice: z.number().optional(),
+  borrowFeeValue: z.number().optional(),
+  closeFeeValue: z.number().optional(),
+  pnl: z.number().optional(),
+  type: z.string().nullable(),
+  collateralToken: z.string(),
+  indexToken: z.string(),
+  chainId: z.number(),
+  account: z.string(),
+});
+export type TradeHistoryResponse = z.infer<typeof TradeHistoryResponseSchema>;
+
+export const TradeHistoriesResponseSchema = z.object({
+  data: z.array(TradeHistoryResponseSchema),
+  page: PageInfoSchema,
+});
+export type TradeHistoriesResponse = z.infer<typeof TradeHistoriesResponseSchema>;

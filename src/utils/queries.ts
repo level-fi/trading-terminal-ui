@@ -17,10 +17,13 @@ import {
   Stats,
   SwapHistoriesResponse,
   SwapHistoriesResponseSchema,
+  TradeHistoriesResponse,
+  TradeHistoriesResponseSchema,
   TraderDetailResponse,
   TraderDetailResponseSchema,
   TraderListItemResponse,
   TraderListItemResponseSchema,
+  UpdateType,
 } from './type';
 import { BigNumber, Contract, providers } from 'ethers';
 import PoolV1 from '../abis/PoolV1.json';
@@ -261,86 +264,51 @@ export const queryLiquidationFee = (chainId: number): QueryObserverOptions<BigNu
   };
 };
 
-const GET_TRADE_HISTORIES = gql`
-  query histories($owner: Bytes!, $start: Int, $end: Int, $skip: Int!, $first: Int!) {
-    histories(
-      skip: $skip
-      first: $first
-      where: {
-        owner: $owner
-        createdAtTimestamp_gte: $start
-        createdAtTimestamp_lte: $end
-        updateType_not: SWAP
-      }
-      orderBy: createdAtTimestamp
-      orderDirection: desc
-    ) {
-      id
-      createdAtTimestamp
-      tx
-      status
-      side
-      updateType
-      size
-      collateralValue
-      triggerAboveThreshold
-      triggerPrice
-      executionPrice
-      liquidatedPrice
-      liquidatedFeeValue
-      borrowFeeValue
-      closeFeeValue
-      pnl
-      type
-      collateralToken
-      market {
-        id
-        indexToken {
-          id
-          decimals
-        }
-      }
-    }
-  }
-`;
-
 export const queryTradeHistories = (
-  chainId: number,
   config: QueryTradeHistoriesConfig,
-): QueryObserverOptions<{
-  data: any[];
-  page: number;
-}> => {
+): QueryObserverOptions<TradeHistoriesResponse> => {
   return {
-    queryKey: ['chain', chainId, 'wallet', config.wallet, 'trade_histories'],
-    enabled: !!chainId && !!config.wallet,
+    queryKey: ['trade_histories', config],
+    enabled: !!config.wallet,
     queryFn: async () => {
-      const chainConfig = getChainConfig(chainId);
-      const graphClient = new GraphQLClient(chainConfig.tradingGraph);
-      const { histories } = await graphClient.request<{ histories: any }>(GET_TRADE_HISTORIES, {
-        owner: config.wallet.toLowerCase(),
-        start: Math.floor(startOfDay(config.start).getTime() / 1000),
-        end: Math.floor(endOfDay(config.end).getTime() / 1000),
-        skip: (config.page - 1) * config.size,
-        first: config.size + 1,
-      });
-      return {
-        data: histories,
-        page: config.page,
-      };
+      const baseUrl = baseConfig.baseUrl;
+
+      const url = new URL(`${baseUrl}/tradeHistories`);
+      url.searchParams.append('wallet', config.wallet);
+      url.searchParams.append(
+        'start',
+        Math.floor(startOfDay(config.start).getTime() / 1000).toString(),
+      );
+      url.searchParams.append(
+        'end',
+        Math.floor(startOfDay(config.end).getTime() / 1000).toString(),
+      );
+      url.searchParams.append('page', config.page.toString());
+      url.searchParams.append('size', config.size.toString());
+      if (config.chainId !== undefined) {
+        url.searchParams.append('chainId', config.chainId.toString());
+      }
+
+      const res = await fetch(url.toString());
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const parsed = TradeHistoriesResponseSchema.parse(await res.json());
+      return parsed;
     },
     refetchInterval: 60000,
   };
 };
 
 const GET_ORDERS = gql`
-  query orders($owner: Bytes!, $skip: Int!, $first: Int!) {
+  query orders($owner: Bytes!, $skip: Int!, $first: Int!, $now: Int!) {
     orders(
       skip: $skip
       first: $first
       orderBy: submissionTimestamp
       orderDirection: desc
-      where: { owner: $owner, updateType_not: SWAP }
+      where: { owner: $owner, updateType_not: SWAP, status: "OPEN" }
+      or: [{ type: "LIMIT" }, { type: "MARKET", expiresAt_gte: $now }]
     ) {
       sizeChange
       collateralValue
@@ -352,6 +320,7 @@ const GET_ORDERS = gql`
       type
       triggerAboveThreshold
       price
+      submissionTimestamp
     }
   }
 `;
@@ -373,6 +342,7 @@ export const queryOrders = (
         owner: config.wallet.toLowerCase(),
         skip: (config.page - 1) * config.size,
         first: config.size + 1,
+        now: Math.floor(Date.now() / 1000),
       });
       return {
         data: orders,

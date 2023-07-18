@@ -113,13 +113,23 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                     <div className="flex justify-between items-center text-14px mt-14px">
                       <span className="color-#cdcdcd">From</span>
                       <div className="-my-3px">
-                        <SwapAmount amount={item.amountIn} size={20} token={tokenIn} />
+                        <SwapAmount
+                          amount={item.amountIn}
+                          size={20}
+                          token={tokenIn}
+                          chainId={item.chainId}
+                        />
                       </div>
                     </div>
                     <div className="flex justify-between items-center text-14px mt-14px">
                       <span className="color-#cdcdcd">To (Min receive)</span>
                       <div className="-my-3px">
-                        <SwapAmount amount={item.amountOut} size={20} token={tokenOut} />
+                        <SwapAmount
+                          amount={item.amountOut}
+                          size={20}
+                          token={tokenOut}
+                          chainId={item.chainId}
+                        />
                       </div>
                     </div>
                     <div className="flex justify-between text-14px mt-14px">
@@ -158,10 +168,20 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                     <span className="color-white">{item.type}</span>
                   </div>
                   <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                    <SwapAmount size={32} token={tokenIn} amount={item.amountIn} />
+                    <SwapAmount
+                      size={32}
+                      token={tokenIn}
+                      amount={item.amountIn}
+                      chainId={item.chainId}
+                    />
                   </div>
                   <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                    <SwapAmount size={32} token={tokenOut} amount={item.amountOut} />
+                    <SwapAmount
+                      size={32}
+                      token={tokenOut}
+                      amount={item.amountOut}
+                      chainId={item.chainId}
+                    />
                   </div>
                   <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                     <SwapPrice

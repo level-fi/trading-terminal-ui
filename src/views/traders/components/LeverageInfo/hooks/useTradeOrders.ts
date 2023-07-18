@@ -1,4 +1,4 @@
-import { getTokenByAddress, VALUE_DECIMALS } from '../../../../../config';
+import { chains, getTokenByAddress, VALUE_DECIMALS } from '../../../../../config';
 import {
   ChainConfigToken,
   OrderType,
@@ -9,6 +9,7 @@ import {
 import { formatBigNumber } from '../../../../../utils/numbers';
 import { useQueries } from '@tanstack/react-query';
 import { queryBackendPrice, queryOrders } from '../../../../../utils/queries';
+import { BigNumber } from 'ethers';
 
 export interface LeverageOrder {
   side: Side;
@@ -17,10 +18,12 @@ export interface LeverageOrder {
   action: string;
   triggerCondition: string;
   markPrice: number;
+  chainId: number;
+  timestamp: number;
 }
 const parseAction = (raw: any, indexToken: ChainConfigToken): string => {
   const size = formatBigNumber(
-    raw.size,
+    raw.sizeChange,
     VALUE_DECIMALS,
     {
       currency: 'USD',
@@ -40,28 +43,28 @@ const parseAction = (raw: any, indexToken: ChainConfigToken): string => {
     0.01,
   );
   if (raw.updateType == UpdateType.INCREASE) {
-    if (raw.size?.eq(0)) {
+    if (BigNumber.from(raw.sizeChange).eq(0)) {
       return `Deposit ${collateral} to ${indexToken.symbol} ${Side[raw.side]}`;
     }
     return `Increase ${indexToken.symbol} ${Side[raw.side]} by ${size}`;
   }
-  if (raw.size?.eq(0)) {
+  if (BigNumber.from(raw.sizeChange).eq(0)) {
     return `Withdraw ${collateral} from ${indexToken.symbol} ${Side[raw.side]}`;
   }
   return `Decrease ${indexToken.symbol} ${Side[raw.side]} by ${size}`;
 };
-const parse2LeverageOrder = (raw: any): LeverageOrder | undefined => {
-  const indexToken = getTokenByAddress(raw.indexToken);
+const parse2LeverageOrder = (raw: any, chainId: number): LeverageOrder | undefined => {
+  const indexToken = getTokenByAddress(raw.market.id, chainId);
   if (!indexToken) {
     return undefined;
   }
   const triggerAboveThreshold = raw.triggerAboveThreshold;
-  const triggerPrice = raw.triggerPrice;
+  const triggerPrice = raw.price;
 
   return {
     indexToken: indexToken,
     side: raw.side,
-    type: raw.isMarket ? OrderType.MARKET : OrderType.LIMIT,
+    type: raw.type === 'MARKET' ? OrderType.MARKET : OrderType.LIMIT,
     markPrice: 0,
     action: parseAction(raw, indexToken),
     triggerCondition: `Mark Price ${triggerAboveThreshold ? '≥' : '≤'} ${formatBigNumber(
@@ -74,30 +77,39 @@ const parse2LeverageOrder = (raw: any): LeverageOrder | undefined => {
       },
       0.01,
     )}`,
+    chainId: chainId,
+    timestamp: +raw.submissionTimestamp,
   };
 };
-export const useTradeOrders = (chainId: number, config: QueryOrdersConfig) => {
-  const [
-    { data: orders, isInitialLoading: orderLoading },
-    { data: prices, isInitialLoading: priceLoading },
-  ] = useQueries({
-    queries: [queryOrders(chainId, config), queryBackendPrice(chainId)],
+export const useTradeOrders = (config: QueryOrdersConfig) => {
+  const chainIds = config.chainId ? [config.chainId] : chains.map((c) => c.chainId);
+  const queriesResponse = useQueries({
+    queries: chainIds.map((c) => [queryOrders(c, config), queryBackendPrice(c)]).flat(),
   });
-  const rawOrders = orders ? orders.data : [];
-  const items: LeverageOrder[] = [];
-  for (const order of rawOrders) {
-    const parsed = parse2LeverageOrder(order);
-    if (!parsed) {
-      continue;
-    }
-    items.push(parsed);
+  if (queriesResponse.some((c) => !c.data && c.isInitialLoading)) {
+    return {
+      items: [],
+      loading: true,
+    };
   }
 
+  const items: LeverageOrder[] = [];
+  for (const chainId of chainIds) {
+    const [{ data: orders }, { data: prices }] = queriesResponse.splice(0, 2);
+    const rawOrders = orders.data as any[];
+    for (const order of rawOrders) {
+      const parsed = parse2LeverageOrder(order, chainId);
+      if (!parsed) {
+        continue;
+      }
+      parsed.markPrice = prices?.[parsed.indexToken.symbol];
+      items.push(parsed);
+    }
+  }
+  items.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
+
   return {
-    items: items.map((item) => ({
-      ...item,
-      markPrice: prices?.[item.indexToken.symbol],
-    })),
-    loading: orderLoading || priceLoading,
+    items: items,
+    loading: false,
   };
 };

@@ -3,19 +3,19 @@ import {
   LeverageHistory,
   OrderType,
   QueryTradeHistoriesConfig,
+  TradeHistoryResponse,
   UpdateType,
 } from '../../../../../utils/type';
-import { BigNumber } from 'ethers';
 import { useQuery } from '@tanstack/react-query';
 import { queryTradeHistories } from '../../../../../utils/queries';
 
-const parse2LeverageHistory = (raw: any): LeverageHistory | undefined => {
-  const indexToken = getTokenByAddress(raw.market?.indexToken?.id);
+const parse2LeverageHistory = (raw: TradeHistoryResponse): LeverageHistory | undefined => {
+  const indexToken = getTokenByAddress(raw.indexToken, raw.chainId);
   if (!indexToken) {
     return;
   }
   return {
-    time: raw.createdAtTimestamp,
+    time: raw.createdAt,
     indexToken: indexToken,
     messageConfig: {
       indexToken: indexToken,
@@ -26,29 +26,28 @@ const parse2LeverageHistory = (raw: any): LeverageHistory | undefined => {
           ? OrderType.LIMIT
           : OrderType.MARKET,
       updateType: raw.updateType === 'INCREASE' ? UpdateType.INCREASE : UpdateType.DECREASE,
-      size: raw.size && BigNumber.from(raw.size),
+      size: raw.size,
       status: raw.status,
       side: raw.side,
       triggerAboveThreshold: raw.triggerAboveThreshold,
-      triggerPrice: raw.triggerPrice && BigNumber.from(raw.triggerPrice),
-      executionPrice: raw.executionPrice && BigNumber.from(raw.executionPrice),
-      liquidatedPrice: raw.liquidatedPrice && BigNumber.from(raw.liquidatedPrice),
-      collateralValue: raw.collateralValue && BigNumber.from(raw.collateralValue),
+      triggerPrice: raw.triggerPrice,
+      executionPrice: raw.executionPrice,
+      liquidatedPrice: raw.liquidatedPrice,
+      collateralValue: raw.collateralValue,
     },
     side: raw.side,
-    transactionHash: raw.tx,
+    transactionHash: raw.transactionHash,
+    chainId: raw.chainId,
   };
 };
-export const useTradeHistories = (chainId: number, config: QueryTradeHistoriesConfig) => {
-  const { data, isInitialLoading } = useQuery(queryTradeHistories(chainId, config));
+export const useTradeHistories = (config: QueryTradeHistoriesConfig) => {
+  const { data, isInitialLoading } = useQuery(queryTradeHistories(config));
   const items = data ? data.data.slice(0, config.size).map(parse2LeverageHistory) : [];
-  const hasNext = data ? data.data.length > config.size : false;
-  const loadedPage = data ? data.page : config.page;
+  const pageInfo = data ? data.page : undefined;
 
   return {
     items,
     loading: isInitialLoading,
-    hasNext,
-    loadedPage,
+    pageInfo,
   };
 };

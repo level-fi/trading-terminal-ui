@@ -6,7 +6,7 @@ import {
   UpdateType,
   UseLeverageMessageConfig,
 } from '../utils/type';
-import { formatBigNumber } from '../utils/numbers';
+import { formatBigNumber, formatNumber } from '../utils/numbers';
 import { VALUE_DECIMALS } from '../config';
 import tradeHistoryPattern from '../assets/message/tradeHistory.json';
 
@@ -62,7 +62,7 @@ export const useLeverageMessage = ({
         break;
       case OrderType.MARKET:
         key = 'market';
-        if (size?.eq(0)) {
+        if (size === 0) {
           switch (updateType) {
             case UpdateType.INCREASE:
               key += '.deposit.';
@@ -101,12 +101,12 @@ export const useLeverageMessage = ({
   const [action, actionInPast] = useMemo(() => {
     switch (updateType) {
       case UpdateType.INCREASE:
-        if (size?.eq(0)) {
+        if (size === 0) {
           return ['deposit', 'deposited'];
         }
         return ['increase', 'increased'];
       case UpdateType.DECREASE:
-        if (size?.eq(0)) {
+        if (size === 0) {
           return ['withdraw', 'withdrew'];
         }
         return ['decrease', 'decreased'];
@@ -118,7 +118,7 @@ export const useLeverageMessage = ({
     if (!triggerPrice || !indexToken?.decimals) {
       return '';
     }
-    return formatBigNumber(triggerPrice, VALUE_DECIMALS - indexToken.decimals, {
+    return formatNumber(triggerPrice, {
       fractionDigits: 2,
       currency: 'USD',
       keepTrailingZeros: true,
@@ -128,7 +128,7 @@ export const useLeverageMessage = ({
     if (!executionPrice || !indexToken?.decimals) {
       return '';
     }
-    return formatBigNumber(executionPrice, VALUE_DECIMALS - indexToken.decimals, {
+    return formatNumber(executionPrice, {
       fractionDigits: 2,
       currency: 'USD',
       keepTrailingZeros: true,
@@ -138,7 +138,7 @@ export const useLeverageMessage = ({
     if (!liquidatedPrice || !indexToken?.decimals) {
       return '';
     }
-    return formatBigNumber(liquidatedPrice, VALUE_DECIMALS - indexToken.decimals, {
+    return formatNumber(liquidatedPrice, {
       fractionDigits: 2,
       currency: 'USD',
       keepTrailingZeros: true,
@@ -150,24 +150,14 @@ export const useLeverageMessage = ({
       action_in_past: actionInPast,
       index_token: indexToken.symbol,
       side: side === Side.LONG ? 'LONG' : 'SHORT',
-      size: formatBigNumber(
-        size,
-        VALUE_DECIMALS,
-        {
-          fractionDigits: 2,
-          currency: 'USD',
-        },
-        0.01,
-      ),
-      collateral: formatBigNumber(
-        collateralValue,
-        VALUE_DECIMALS,
-        {
-          fractionDigits: 2,
-          currency: 'USD',
-        },
-        0.01,
-      ),
+      size: formatNumber(size, {
+        fractionDigits: 2,
+        currency: 'USD',
+      }),
+      collateral: formatNumber(collateralValue, {
+        fractionDigits: 2,
+        currency: 'USD',
+      }),
       price_condition: triggerAboveThreshold ? '≥' : '≤',
       index_price: indexPrice,
       mark_price: markPrice,

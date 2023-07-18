@@ -8,7 +8,7 @@ import { queryStats } from '../utils/queries';
 
 export const Footer = () => {
   const { data: stats } = useQuery(queryStats(bscConfig.chainId));
-
+  console.log(stats)
   return stats ? (
     <div className="h-41px">
       <div className="hide-scroll fixed bottom-0 left-0 h-41px w-100% px-14px lg:px-43px bg-black z-999 flex justify-between items-center overflow-x-auto">
