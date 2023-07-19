@@ -174,11 +174,29 @@ export const BackendPriceResponseSchema = z.object({
 });
 export type BackendPriceResponse = z.infer<typeof BackendPriceResponseSchema>;
 
-export interface PriceInfoResponse {
-  address: string;
-  price: number;
-  change: number;
-}
+export const PriceInfoResponseSchema = z.object({
+  address: z.string(),
+  price: z.number(),
+  change: z.number(),
+});
+export type PriceInfoResponse = z.infer<typeof PriceInfoResponseSchema>;
+
+export const MultiChainStatsResponseSchema = z.array(
+  z.object({
+    status: z.number(),
+    data: z.object({
+      data: z.object({
+        prices: z.array(PriceInfoResponseSchema),
+        openInterest: z.object({
+          long: z.number(),
+          short: z.number(),
+        }),
+      }),
+    }),
+    chainId: z.string(),
+  }),
+);
+
 export interface Stats {
   prices: PriceInfoResponse[];
   openInterest: {

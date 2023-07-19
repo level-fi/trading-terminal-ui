@@ -5,6 +5,7 @@ import {
   BackendPriceResponseSchema,
   LeaderboardResponse,
   LeaderboardResponseSchema,
+  MultiChainStatsResponseSchema,
   PositionDetailResponse,
   PositionDetailResponseSchema,
   PositionListItemResponse,
@@ -74,12 +75,24 @@ export const queryStats = (chainId: number): QueryObserverOptions<Stats> => {
   return {
     queryKey: ['chain', chainId, 'stats'],
     enabled: !!chainId,
-    queryFn: () => {
+    queryFn: async () => {
+      const baseUrl = baseConfig.baseUrl;
+
+      const url = new URL(`${baseUrl}/stats`);
+      const res = await fetch(url.toString());
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const parsed = MultiChainStatsResponseSchema.parse(await res.json());
+
       return {
-        prices: [],
+        prices: parsed.map((c) => c.data?.data?.prices || []).flat(),
         openInterest: {
-          long: 0,
-          short: 0,
+          long: parsed.reduce((total, c) => total + (c.data?.data?.openInterest?.long || 0), 0),
+          short: parsed.reduce(
+            (total, c) => total + (c.data?.data?.openInterest?.short || 0),
+            0,
+          ),
         },
       };
     },

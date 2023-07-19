@@ -5,35 +5,50 @@ import IconPriceUp from '../assets/icons/ic-price-up.svg';
 import { formatCurrency } from '../utils/numbers';
 import { useQuery } from '@tanstack/react-query';
 import { queryStats } from '../utils/queries';
+import { useMemo } from 'react';
+import { ChainConfigToken, PriceInfoResponse } from '../utils/type';
 
 export const Footer = () => {
   const { data: stats } = useQuery(queryStats(bscConfig.chainId));
-  console.log(stats)
+  const prices = useMemo(() => {
+    const results: Record<string, { price: PriceInfoResponse; token: ChainConfigToken }> = {};
+    const response = stats?.prices || [];
+    for (const item of response) {
+      const token = getTokenByAddress(item.address);
+      results[token.symbol] = {
+        price: item,
+        token,
+      };
+    }
+    return Object.entries(results);
+  }, [stats?.prices]);
+
   return stats ? (
     <div className="h-41px">
       <div className="hide-scroll fixed bottom-0 left-0 h-41px w-100% px-14px lg:px-43px bg-black z-999 flex justify-between items-center overflow-x-auto">
         <div className="-mx-9px flex items-center">
-          {stats?.prices?.map((c, i) => {
-            const token = getTokenByAddress(c.address);
+          {prices.map(([symbol, { price, token }], i) => {
             return (
               <div
                 key={i}
                 className={`px-9px b-r-1px b-solid b-#545454 flex items-center leading-16px ${
-                  i + 1 === stats?.prices?.length ? 'lg:b-r-none' : ''
+                  i + 1 === prices.length ? 'lg:b-r-none' : ''
                 }`}
               >
-                <span className={`color-white text-12px`}>{token?.symbol}</span>
+                <span className={`color-white text-12px`}>{symbol}</span>
                 <span
-                  className={`${c.change >= 0 ? 'color-win' : 'color-loss'} text-12px ml-5px`}
+                  className={`${
+                    price.change >= 0 ? 'color-win' : 'color-loss'
+                  } text-12px ml-5px`}
                 >
-                  {formatCurrency(c.price, token.priceFractionDigits)}
+                  {formatCurrency(price.price, token.priceFractionDigits)}
                 </span>
                 <img
-                  src={c.change >= 0 ? IconPriceUp : IconPriceDown}
+                  src={price.change >= 0 ? IconPriceUp : IconPriceDown}
                   className="h-9px ml-12px mr-4px"
                 />
-                <span className={`text-12px ${c.change >= 0 ? 'color-win' : 'color-loss'}`}>
-                  {c.change.toFixed(2)}%
+                <span className={`text-12px ${price.change >= 0 ? 'color-win' : 'color-loss'}`}>
+                  {price.change.toFixed(2)}%
                 </span>
               </div>
             );
