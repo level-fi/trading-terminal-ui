@@ -154,6 +154,12 @@ export const queryTraders = (
       } else if (config.from) {
         url.searchParams.append('from', config.from.toString());
       }
+      if (config.page !== undefined) {
+        url.searchParams.append('page', config.page.toString());
+      }
+      if (config.size !== undefined) {
+        url.searchParams.append('size', config.size.toString());
+      }
 
       const res = await fetch(url.toString());
       if (!res.ok) {
