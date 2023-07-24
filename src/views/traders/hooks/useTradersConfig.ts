@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { usePagination } from '../../../hooks/usePagination';
-import { UseTradersConfig } from '../../../hooks/useTraders';
+import { QueryTradersConfig } from '../../../utils/type';
 
 export const timeFilterOptions = [
   {
@@ -86,13 +86,15 @@ export const useTradersConfigParsed = () => {
     return raw;
   }, [params]);
 
-  return useMemo<UseTradersConfig>(
+  return useMemo(
     () => ({
-      duration: duration,
-      page: page,
-      size: size,
-      sortBy: sortBy,
-      sortType: sortType,
+      config: {
+        duration: duration,
+        page: page,
+        size: size,
+        sortBy: sortBy,
+        sortType: sortType,
+      } as QueryTradersConfig,
       setPage,
     }),
     [page, size, sortBy, sortType, duration, setPage],

@@ -1,15 +1,38 @@
 import React from 'react';
-import { PositionHistory } from '../../../hooks/usePosition';
 import { formatCurrency } from '../../../utils/numbers';
 import { ReactComponent as IconExplorer } from '../../../assets/icons/ic-explorer.svg';
-import { config } from '../../../config';
 import { unixToDate } from '../../../utils';
+import {
+  PlaceOrderEvent,
+  PositionDetailHistoryResponse,
+  RawPlaceOrderEvent,
+} from '../../../utils/type';
+import { getChainConfig } from '../../../config';
 
 export interface PositionHistoriesProps {
-  items: PositionHistory[];
-  loading: boolean;
+  items: PositionDetailHistoryResponse[];
+  chainId: number;
 }
-export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, loading }) => {
+const parseAction = (
+  rawEvent: RawPlaceOrderEvent,
+  event: PlaceOrderEvent,
+  isCloseAll: boolean,
+) => {
+  switch (rawEvent) {
+    case RawPlaceOrderEvent.LIQUIDATE:
+      return 'liquidate';
+    case RawPlaceOrderEvent.INCREASE:
+      return event === PlaceOrderEvent.OPEN ? 'open' : 'deposit collateral';
+    case RawPlaceOrderEvent.DECREASE:
+      return event === PlaceOrderEvent.CLOSE
+        ? isCloseAll
+          ? 'close'
+          : 'partial close'
+        : 'withdraw collateral';
+  }
+};
+export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, chainId }) => {
+  const chainConfig = getChainConfig(chainId);
   return (
     <div className={`xl:table w-100% xl:border-spacing-y-12px`}>
       <div className="hidden xl:table-row items-end mb-15px">
@@ -29,7 +52,7 @@ export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, loa
       </div>
       {items.map((item, i) => (
         <a
-          href={`${config.baseExplorer}/tx/${item.transactionHash}`}
+          href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
           target="_blank"
           key={i}
           className="xl:table-row-group cursor-pointer no-underline"
@@ -37,11 +60,13 @@ export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, loa
           <div className={`xl:hidden p-14px rounded-10px ${i && 'mt-12px'} bg-#34343B`}>
             <div className="flex justify-between text-14px">
               <span className="color-#cdcdcd">Time</span>
-              <span className="color-white">{unixToDate(item.time)}</span>
+              <span className="color-white">{unixToDate(item.receivedAt)}</span>
             </div>
             <div className="flex justify-between text-14px mt-14px">
               <span className="color-#cdcdcd">Action</span>
-              <span className="color-white uppercase">{item.action}</span>
+              <span className="color-white uppercase">
+                {parseAction(item.rawEvent, item.event, !!item.isCloseAll)}
+              </span>
             </div>
             <div className="flex justify-between text-14px mt-14px">
               <span className="color-#cdcdcd">Collateral Value</span>
@@ -53,11 +78,11 @@ export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, loa
             </div>
             <div className="flex justify-between text-14px mt-14px">
               <span className="color-#cdcdcd">Fees Paid</span>
-              <span className="color-white">{formatCurrency(item.paidFee)}</span>
+              <span className="color-white">{formatCurrency(item.fee)}</span>
             </div>
             <div className="flex justify-between text-14px mt-14px">
               <span className="color-#cdcdcd">Executed Price</span>
-              <span className="color-white">{formatCurrency(item.executedPrice)}</span>
+              <span className="color-white">{formatCurrency(item.markPrice)}</span>
             </div>
             <div className="mt-16px pt-14px b-t-1px b-dashed b-#5E5E5E text-right">
               <span className="color-#ADABAB">View</span>
@@ -66,10 +91,10 @@ export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, loa
           </div>
           <div className={'hidden xl:table-row bg-#34343B hover-bg-#5E5E5E'}>
             <span className="color-white table-cell vertical-middle py-19px pl-13px pr-20px text-14px leading-22px rounded-l-10px whitespace-nowrap">
-              {unixToDate(item.time)}
+              {unixToDate(item.receivedAt)}
             </span>
             <span className="color-white table-cell vertical-middle py-19px px-20px text-14px leading-22px uppercase whitespace-nowrap">
-              {item.action}
+              {parseAction(item.rawEvent, item.event, !!item.isCloseAll)}
             </span>
             <span className="color-white table-cell vertical-middle py-19px px-20px text-14px leading-22px">
               {formatCurrency(item.collateral)}
@@ -78,10 +103,10 @@ export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, loa
               {formatCurrency(item.size)}
             </span>
             <span className="color-white table-cell vertical-middle py-19px px-20px text-14px leading-22px">
-              {formatCurrency(item.paidFee)}
+              {formatCurrency(item.fee)}
             </span>
             <span className="color-white table-cell vertical-middle py-19px px-20px text-14px leading-22px">
-              {formatCurrency(item.executedPrice)}
+              {formatCurrency(item.markPrice)}
             </span>
             <span className="table-cell vertical-middle py-19px pr-13px pl-20px w-1px rounded-r-10px">
               <IconExplorer />

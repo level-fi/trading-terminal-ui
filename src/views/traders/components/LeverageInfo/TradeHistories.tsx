@@ -1,15 +1,16 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { TradeHistoriesFilter } from './TradeHistoriesFilter';
-import { UseTradeHistoriesConfig, useTradeHistories } from './hooks/useTradeHistories';
+import { useTradeHistories } from './hooks/useTradeHistories';
 import { NoData } from '../../../../components/NoData';
 import { TokenSide } from '../../../../components/TokenSide';
 import { ReactComponent as IconExplorer } from '../../../../assets/icons/ic-explorer.svg';
-import { config as chainConfig } from '../../../../config';
-import { UseLeverageMessageConfig, useLeverageMessage } from '../../../../hooks/useMessage';
-import { SeekPagination } from '../../../../components/SeekPagination';
+import { useLeverageMessage } from '../../../../hooks/useMessage';
 import { Loading } from '../../../../components/Loading';
 import { unixToDate } from '../../../../utils';
 import { TableContentLoader } from '../../../../components/TableContentLoader';
+import { QueryTradeHistoriesConfig, UseLeverageMessageConfig } from '../../../../utils/type';
+import { Pagination } from '../../../../components/Pagination';
+import { getChainConfig } from '../../../../config';
 
 interface TradeHistoriesProps {
   wallet: string;
@@ -19,13 +20,14 @@ const Action: React.FC<UseLeverageMessageConfig> = (config) => {
   return <>{message}</>;
 };
 export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
+  const [chainId, setChainId] = useState<number>();
   const [page, setPage] = useState(1);
   const [dateStart, setDateStart] = useState<Date>();
   const [dateEnd, setDateEnd] = useState<Date>();
   const [timeFilter, setTimeFilter] = useState<number>();
   const headerRef = useRef<HTMLDivElement>();
 
-  const config = useMemo<UseTradeHistoriesConfig>(() => {
+  const config = useMemo<QueryTradeHistoriesConfig>(() => {
     const now = Date.now();
     if (timeFilter) {
       return {
@@ -34,6 +36,7 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
         page: page,
         size: 10,
         wallet: wallet,
+        chainId: chainId,
       };
     }
     return {
@@ -42,9 +45,10 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
       page: page,
       size: 10,
       wallet: wallet,
+      chainId: chainId,
     };
-  }, [dateEnd, dateStart, page, timeFilter, wallet]);
-  const { items, loading, hasNext, loadedPage } = useTradeHistories(config);
+  }, [chainId, dateEnd, dateStart, page, timeFilter, wallet]);
+  const { items, loading, pageInfo } = useTradeHistories(config);
 
   return (
     <div>
@@ -74,6 +78,14 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
           setTimeFilter(undefined);
           setPage(1);
         }}
+        chainId={chainId}
+        onUpdateChainId={(value) => {
+          setDateStart(undefined);
+          setDateEnd(undefined);
+          setTimeFilter(undefined);
+          setChainId(value);
+          setPage(1);
+        }}
       />
       {!items.length && !loading ? (
         <div className="h-250px flex justify-center items-center">
@@ -100,49 +112,62 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
               </div>
               <span className="table-cell"></span>
             </div>
-            {items.map((item, i) => (
-              <a
-                href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
-                target="_blank"
-                className="xl:table-row xl:h-56px [&>.vertical-middle]:px-14px cursor-pointer no-underline [&:hover>.vertical-middle]:bg-#5E5E5E [&:hover_svg_path]:fill-primary"
-                key={i}
-              >
-                <div className="xl:hidden p-14px rounded-10px mb-12px bg-#34343B">
-                  <div className="b-b-1px b-dashed b-#5E5E5E pb-10px flex justify-between items-center">
-                    <TokenSide side={item.side} size={'md'} symbol={item.indexToken.symbol} />
-                    <a
-                      href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
-                      target="_blank"
-                      className="[&:hover_svg_path]:fill-primary"
-                    >
-                      <IconExplorer height={16} width={16} />
-                    </a>
+            {items.map((item, i) => {
+              const chainConfig = getChainConfig(item.chainId);
+              return (
+                <a
+                  href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
+                  target="_blank"
+                  className="xl:table-row xl:h-56px [&>.vertical-middle]:px-14px cursor-pointer no-underline [&:hover>.vertical-middle]:bg-#5E5E5E [&:hover_svg_path]:fill-primary"
+                  key={i}
+                >
+                  <div className="xl:hidden p-14px rounded-10px mb-12px bg-#34343B">
+                    <div className="b-b-1px b-dashed b-#5E5E5E pb-10px flex justify-between items-center">
+                      <TokenSide
+                        side={item.side}
+                        size={'md'}
+                        symbol={item.indexToken.symbol}
+                        chainId={item.chainId}
+                      />
+                      <a
+                        href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
+                        target="_blank"
+                        className="[&:hover_svg_path]:fill-primary"
+                      >
+                        <IconExplorer height={16} width={16} />
+                      </a>
+                    </div>
+                    <div className="flex justify-between text-14px mt-14px">
+                      <span className="color-white leading-22px">
+                        <Action {...item.messageConfig} />
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-14px mt-14px">
+                      <span className="color-#cdcdcd">{unixToDate(item.time)}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-14px mt-14px">
-                    <span className="color-white leading-22px">
+                  <div className="hidden xl:table-cell vertical-middle bg-#34343B rounded-l-10px">
+                    <span className="color-white">{unixToDate(item.time)}</span>
+                  </div>
+                  <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                    <TokenSide
+                      side={item.side}
+                      size={'md'}
+                      symbol={item.indexToken.symbol}
+                      chainId={item.chainId}
+                    />
+                  </div>
+                  <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                    <span className="color-white">
                       <Action {...item.messageConfig} />
                     </span>
                   </div>
-                  <div className="flex justify-between text-14px mt-14px">
-                    <span className="color-#cdcdcd">{unixToDate(item.time)}</span>
-                  </div>
-                </div>
-                <div className="hidden xl:table-cell vertical-middle bg-#34343B rounded-l-10px">
-                  <span className="color-white">{unixToDate(item.time)}</span>
-                </div>
-                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                  <TokenSide side={item.side} size={'md'} symbol={item.indexToken.symbol} />
-                </div>
-                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                  <span className="color-white">
-                    <Action {...item.messageConfig} />
+                  <span className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px w-1%">
+                    <IconExplorer />
                   </span>
-                </div>
-                <span className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px w-1%">
-                  <IconExplorer />
-                </span>
-              </a>
-            ))}
+                </a>
+              );
+            })}
           </div>
           {loading && !!items.length && (
             <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
@@ -156,9 +181,11 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
           )}
         </div>
       )}
-      <div className="flex justify-end pt-8px">
-        <SeekPagination current={loadedPage} hasNext={hasNext} onChange={setPage} />
-      </div>
+      {pageInfo?.total > 1 && (
+        <div className="flex justify-end pt-8px">
+          <Pagination current={pageInfo.current} total={pageInfo.total} onChange={setPage} />
+        </div>
+      )}
     </div>
   );
 };

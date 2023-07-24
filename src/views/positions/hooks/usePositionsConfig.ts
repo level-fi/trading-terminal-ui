@@ -1,9 +1,8 @@
 /* @unocss-include */
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { UsePositionsConfig } from '../../../hooks/usePositions';
-import { PositionStatus, Side } from '../../../utils/type';
-import { ETH_ADDRESS, config, getTokenBySymbol } from '../../../config';
+import { PositionStatus, QueryPositionsConfig, Side } from '../../../utils/type';
+import { chains, getChainConfig, getTokenBySymbol } from '../../../config';
 import { usePagination } from '../../../hooks/usePagination';
 
 export const statusOptions = [
@@ -20,17 +19,35 @@ export const statusOptions = [
     value: PositionStatus.CLOSE,
   },
 ];
-export const marketOptions = [
+export const getMarketOptions = (chainId?: number) => {
+  const results = [
+    {
+      label: 'all',
+      value: undefined,
+    },
+  ];
+  const tokens = chainId
+    ? getChainConfig(chainId).indexTokens.map((c) => c.symbol)
+    : chains.map((c) => c.indexTokens.map((c) => c.symbol)).flat();
+  results.push(
+    ...tokens
+      .filter((c, index) => index === tokens.indexOf(c))
+      .map((c) => ({
+        label: c.toLowerCase(),
+        value: c,
+      })),
+  );
+  return results;
+};
+export const chainOptions = [
   {
     label: 'all',
     value: undefined,
   },
-  ...config.indexTokens
-    .filter((c) => c.address !== ETH_ADDRESS)
-    .map((c) => ({
-      label: c.symbol.toLowerCase(),
-      value: c.symbol,
-    })),
+  ...chains.map((c) => ({
+    label: c.name.toLowerCase(),
+    value: c.chainId,
+  })),
 ];
 export const sideOptions = [
   {
@@ -159,23 +176,31 @@ export const usePositionsConfigParsed = () => {
     const raw = statusOptions.find((c) => c.label === params.get('status')?.toLowerCase());
     return raw?.value;
   }, [params]);
-  const market = useMemo(() => {
-    const token = getTokenBySymbol(params.get('market') || '');
-    return token?.symbol;
+  const chainId = useMemo(() => {
+    const raw = chainOptions.find((c) => c.label === params.get('chain')?.toLowerCase());
+    return raw?.value;
   }, [params]);
+  const market = useMemo(() => {
+    const marketOptions = getMarketOptions(chainId);
+    const raw = marketOptions.find((c) => c.label === params.get('market')?.toLowerCase());
+    return raw?.label;
+  }, [chainId, params]);
 
-  return useMemo<UsePositionsConfig>(
+  return useMemo(
     () => ({
-      from: 0,
-      page: page,
-      size: size,
-      sortBy: sortBy,
-      sortType: sortType,
-      side: side,
-      status: status,
-      market: market,
+      config: {
+        from: 0,
+        page: page,
+        size: size,
+        sortBy: sortBy,
+        sortType: sortType,
+        side: side,
+        status: status,
+        market: market,
+        chainId: chainId,
+      } as QueryPositionsConfig,
       setPage,
     }),
-    [page, size, sortBy, sortType, side, status, market, setPage],
+    [page, size, sortBy, sortType, side, status, market, chainId, setPage],
   );
 };

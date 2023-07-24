@@ -1,22 +1,27 @@
 import { useSearchParams } from 'react-router-dom';
 import { Pagination } from '../../components/Pagination';
 import { SortableTitle } from '../../components/SortableTitle';
-import { useTraders } from '../../hooks/useTraders';
 import { TraderItem } from './components/TraderItem';
 import { useTradersConfigParsed } from './hooks/useTradersConfig';
 import { TraderFilter } from './components/TraderFilter';
 import { Loading } from '../../components/Loading';
 import { TableContentLoader } from '../../components/TableContentLoader';
 import { useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { queryTraders } from '../../utils/queries';
 
 export const TraderList = () => {
   const [params, setParams] = useSearchParams();
-  const config = useTradersConfigParsed();
-  const { items, pageInfo, loading, silentLoad } = useTraders({
-    ...config,
-    duration: config.duration,
-  });
+  const { config, setPage } = useTradersConfigParsed();
+  const { data, isInitialLoading } = useQuery(
+    queryTraders({
+      ...config,
+      duration: config.duration,
+    }),
+  );
   const headerRef = useRef<HTMLDivElement>();
+  const items = data ? data.data : [];
+  const pageInfo = data ? data.page : undefined;
 
   return (
     <div className="mx-14px xl:mx-60px my-20px pb-35px relative">
@@ -24,7 +29,7 @@ export const TraderList = () => {
         <div className="color-white font-800 text-20px mb-16px mt-4px xl:hidden">TRADERS</div>
         <TraderFilter />
       </div>
-      {loading && !silentLoad && !items.length ? (
+      {isInitialLoading && !items.length ? (
         <div className="flex items-center justify-center">
           <div className="w-300px my-50px">
             <Loading />
@@ -97,11 +102,11 @@ export const TraderList = () => {
                 netProfit={item?.netProfit}
                 fee={item?.fee}
                 rank={(pageInfo.current - 1) * config.size + i + 1}
-                loading={loading && !silentLoad}
+                loading={isInitialLoading}
               />
             ))}
           </div>
-          {loading && !silentLoad && !!items.length && (
+          {isInitialLoading && !!items.length && (
             <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
               <TableContentLoader
                 className="h-56px mb-12px bg-#34343B b-1px b-solid b-#5E5E5E rounded-10px"
@@ -115,11 +120,7 @@ export const TraderList = () => {
       )}
       {pageInfo?.total > 1 && (
         <div className="flex justify-center pt-8px">
-          <Pagination
-            current={pageInfo.current}
-            total={pageInfo.total}
-            onChange={config.setPage}
-          />
+          <Pagination current={pageInfo.current} total={pageInfo.total} onChange={setPage} />
         </div>
       )}
     </div>

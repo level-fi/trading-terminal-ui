@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import {
-  marketOptions,
+  chainOptions,
+  getMarketOptions,
   orderOptions,
   sideOptions,
   statusOptions,
@@ -8,10 +9,11 @@ import {
 } from '../hooks/usePositionsConfig';
 import { Dropdown } from '../../../components/Dropdown';
 import { useCallback } from 'react';
+import { useScreenSize } from '../../../hooks/useScreenSize';
 
 export const PositionFilter = () => {
   const [params, setParams] = useSearchParams();
-  const config = usePositionsConfigParsed();
+  const { config } = usePositionsConfigParsed();
   const onUpdate = useCallback(
     (key, label, value) => {
       if (value === undefined) {
@@ -24,68 +26,12 @@ export const PositionFilter = () => {
     },
     [params, setParams],
   );
-  return (
-    <div className="flex flex-col xl:flex-row items-center justify-between">
-      <div className="hidden xl:flex items-center">
-        {/* <label className="color-#cdcdcd">STATUS:</label> */}
-        {statusOptions.map(({ label, value }, i) => {
-          const active = value === config.status;
-          const color = active ? 'color-black' : 'color-white';
-          const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
-          return (
-            <div
-              key={i}
-              className={`uppercase ${color} ${bg} w-90px h-32px mr-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-              onClick={() => {
-                onUpdate('status', label, value);
-              }}
-            >
-              {label}
-            </div>
-          );
-        })}
-      </div>
-      <div className="hidden xl:flex items-center">
-        <div className="flex items-center">
-          <label className="color-#cdcdcd">MARKET:</label>
-          {marketOptions.map(({ label, value }, i) => {
-            const active = value?.toLowerCase() === config.market?.toLowerCase();
-            const color = active ? 'color-black' : 'color-white';
-            const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
-            return (
-              <div
-                key={i}
-                className={`uppercase ${color} ${bg} w-60px h-32px ml-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-                onClick={() => {
-                  onUpdate('market', label, value);
-                }}
-              >
-                {label}
-              </div>
-            );
-          })}
-        </div>
-        <div className="hidden xl:flex items-center ml-50px">
-          <label className="color-#cdcdcd">SIDE:</label>
-          {sideOptions.map(({ label, value, activeBg }, i) => {
-            const active = value === config.side;
-            const color = active ? 'color-black' : 'color-white';
-            const bg = active ? activeBg : 'bg-#d9d9d9 bg-opacity-10';
-            return (
-              <div
-                key={i}
-                className={`uppercase ${color} ${bg} w-70px h-32px ml-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-                onClick={() => {
-                  onUpdate('side', label, value);
-                }}
-              >
-                {label}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <div className="xl:hidden table text-right text-14px w-100%">
+  const marketOptions = getMarketOptions(config.chainId);
+  const isMobile = useScreenSize('xl');
+
+  if (isMobile) {
+    return (
+      <div className="table text-right text-14px w-100%">
         <div className="table-row">
           <label className="table-cell text-left color-#cdcdcd mr-6px whitespace-nowrap pr-14px">
             Status:
@@ -128,6 +74,23 @@ export const PositionFilter = () => {
           </div>
         </div>
         <div className="table-row">
+          <label className="table-cell text-left color-#cdcdcd mr-6px">Chain:</label>
+          <div className="table-cell">
+            <div className="flex justify-start w-100%">
+              <Dropdown
+                defaultValue={chainOptions[0]}
+                options={chainOptions}
+                value={chainOptions.find((c) => c.value === config.chainId)}
+                className="color-white uppercase"
+                onChange={(item) => {
+                  params.delete('market');
+                  onUpdate('chain', item.label, item.value);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="table-row">
           <label className="table-cell text-left color-#cdcdcd mr-6px">Market:</label>
           <div className="table-cell">
             <div className="flex justify-start w-100%">
@@ -158,6 +121,89 @@ export const PositionFilter = () => {
               />
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col xl:flex-row items-center justify-between">
+      <div className="flex items-center">
+        {statusOptions.map(({ label, value }, i) => {
+          const active = value === config.status;
+          const color = active ? 'color-black' : 'color-white';
+          const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
+          return (
+            <div
+              key={i}
+              className={`uppercase ${color} ${bg} w-90px h-32px mr-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
+              onClick={() => {
+                onUpdate('status', label, value);
+              }}
+            >
+              {label}
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex items-center">
+        <div className="flex items-center">
+          <label className="color-#cdcdcd">CHAIN:</label>
+          {chainOptions.map(({ label, value }, i) => {
+            const active = value === config.chainId;
+            const color = active ? 'color-black' : 'color-white';
+            const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
+            return (
+              <div
+                key={i}
+                className={`uppercase ${color} ${bg} w-60px h-32px ml-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
+                onClick={() => {
+                  params.delete('market');
+                  onUpdate('chain', label, value);
+                }}
+              >
+                {label}
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex items-center ml-48px">
+          <label className="color-#cdcdcd">MARKET:</label>
+          {marketOptions.map(({ label, value }, i) => {
+            const active = value?.toLowerCase() === config.market?.toLowerCase();
+            const color = active ? 'color-black' : 'color-white';
+            const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
+            return (
+              <div
+                key={i}
+                className={`uppercase ${color} ${bg} w-60px h-32px ml-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
+                onClick={() => {
+                  onUpdate('market', label, value);
+                }}
+              >
+                {label}
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex items-center ml-48px">
+          <label className="color-#cdcdcd">SIDE:</label>
+          {sideOptions.map(({ label, value, activeBg }, i) => {
+            const active = value === config.side;
+            const color = active ? 'color-black' : 'color-white';
+            const bg = active ? activeBg : 'bg-#d9d9d9 bg-opacity-10';
+            return (
+              <div
+                key={i}
+                className={`uppercase ${color} ${bg} w-70px h-32px ml-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
+                onClick={() => {
+                  onUpdate('side', label, value);
+                }}
+              >
+                {label}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

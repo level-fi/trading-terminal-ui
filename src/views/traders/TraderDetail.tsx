@@ -4,12 +4,12 @@ import { ReactComponent as IconGoBack } from '../../assets/icons/ic-go-back.svg'
 import { TraderDetailPanel } from './components/TraderDetailInfo';
 import { LeverageInfo } from './components/LeverageInfo';
 import { SwapInfo } from './components/SwapInfo';
-import { BackendPriceProvider } from '../../context/BackendPriceProvider';
-import { useTraderDetail } from '../../hooks/useTraderDetail';
+import { useQuery } from '@tanstack/react-query';
+import { queryTrader } from '../../utils/queries';
 
 export const TraderDetail = () => {
   const { wallet } = useParams();
-  const { item: traderDetail, loading } = useTraderDetail(wallet);
+  const { data, isInitialLoading } = useQuery(queryTrader(wallet));
   const navigate = useNavigate();
   const location = useLocation();
   const goBack = useCallback(() => {
@@ -32,20 +32,18 @@ export const TraderDetail = () => {
         </span>
       </div>
       <div className="mt-15px">
-        <TraderDetailPanel item={traderDetail} loading={loading} />
+        <TraderDetailPanel item={data} wallet={wallet} loading={isInitialLoading} />
       </div>
-      <BackendPriceProvider>
-        <div className="mt-32px">
-          <LeverageInfo
-            wallet={wallet}
-            totalOpen={traderDetail.totalOpen}
-            totalClosed={traderDetail.totalClosed}
-          />
-        </div>
-        <div className="mt-32px">
-          <SwapInfo wallet={wallet} />
-        </div>
-      </BackendPriceProvider>
+      <div className="mt-32px">
+        <LeverageInfo
+          wallet={wallet}
+          totalOpen={data?.data?.totalOpen}
+          totalClosed={data?.data?.totalClosed}
+        />
+      </div>
+      <div className="mt-32px">
+        <SwapInfo wallet={wallet} />
+      </div>
     </div>
   );
 };

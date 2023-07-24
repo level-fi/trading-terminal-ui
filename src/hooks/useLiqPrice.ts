@@ -1,9 +1,10 @@
-import { BigNumber, Contract, providers } from 'ethers';
-import { FEE_DECIMALS, VALUE_DECIMALS, config } from '../config';
-import PoolAbi from '../abis/Vault.json';
-import { useEffect, useMemo, useState } from 'react';
+import { BigNumber } from 'ethers';
+import { FEE_DECIMALS, VALUE_DECIMALS } from '../config';
+import { useMemo } from 'react';
 import { Side } from '../utils/type';
 import { parseUnits } from 'ethers/lib/utils';
+import { useQueries } from '@tanstack/react-query';
+import { queryLiquidationFee, queryMaintainMargin } from '../utils/queries';
 
 interface UseLiqPriceConfig {
   decimals: number;
@@ -13,11 +14,8 @@ interface UseLiqPriceConfig {
   rawCollateralValue: number;
   rawCloseFee: number;
   rawBorrowFee: number;
+  chainId?: number;
 }
-
-let liquidationFee: BigNumber;
-let maintainMargin: BigNumber;
-const contract = new Contract(config.pool, PoolAbi, new providers.JsonRpcProvider(config.rpc));
 
 const max = (a: BigNumber, b: BigNumber) => (a && b ? (a.gt(b) ? a : b) : null);
 const min = (a: BigNumber, b: BigNumber) => (a && b ? (a.lt(b) ? a : b) : null);
@@ -29,9 +27,12 @@ export const useLiqPrice = ({
   rawEntry,
   rawSize,
   side,
+  chainId,
 }: UseLiqPriceConfig) => {
-  const [margin, setMargin] = useState(maintainMargin);
-  const [liq, setLiq] = useState(liquidationFee);
+  const [{ data: margin }, { data: liq }] = useQueries({
+    queries: [queryMaintainMargin(chainId), queryLiquidationFee(chainId)],
+  });
+
   const borrowFee = useMemo(() => {
     if (rawBorrowFee === undefined) {
       return;
@@ -62,26 +63,6 @@ export const useLiqPrice = ({
     }
     return parseUnits(rawSize.toString(), VALUE_DECIMALS);
   }, [rawSize]);
-
-  useEffect(() => {
-    if (maintainMargin && liquidationFee) {
-      setMargin(maintainMargin);
-      setLiq(liquidationFee);
-      return;
-    }
-    const fetch = async () => {
-      const [margin, [, liq]] = await Promise.all([
-        contract.maintenanceMargin(),
-        contract.fee(),
-      ]);
-      maintainMargin = margin;
-      liquidationFee = liq;
-
-      setMargin(maintainMargin);
-      setLiq(liquidationFee);
-    };
-    fetch();
-  }, []);
 
   const liqPrice = useMemo(() => {
     if (

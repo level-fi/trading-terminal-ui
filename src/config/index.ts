@@ -1,25 +1,17 @@
-import { ChainConfig } from '../utils/type';
+import { BaseConfig, ChainConfig } from '../utils/type';
 
-// const DevConfig: ChainConfig = {
-//   baseUrl: '',
-//   baseExplorer: '',
-//   priceEndpoint: '',
-//   rpc: '',
-//   tradingGraph: '',
-//   tradeLens: '',
-//   orderbook: '',
-//   indexTokens: [],
-//   collateralTokens: [],
-// }
-
-const ProdConfig: ChainConfig = {
-  baseUrl: 'https://terminal-api.level.finance/v7',
-  baseExplorer: 'https://bscscan.com',
+export const baseConfig: BaseConfig = {
+  baseUrl: 'https://terminal-api.level.finance/v8',
   priceEndpoint: 'https://api.level.finance/prices',
+};
+
+const subgraphQueryKey = 'c246be2f219f';
+export const bscConfig: ChainConfig = {
+  name: 'BNB',
+  chainId: 56,
+  baseExplorer: 'https://bscscan.com',
   rpc: 'https://bsc-dataseed1.binance.org/',
   tradingGraph: 'https://api.thegraph.com/subgraphs/name/level-fi/levelfinancetrading',
-  tradeLens: '0xE23779FAe98D5F5ce757822A3846e8Fe45598f1A',
-  orderbook: '0xf584A17dF21Afd9de84F47842ECEAF6042b1Bb5b',
   pool: '0xA5aBFB56a78D2BD4689b25B8A77fd49Bb0675874',
   indexTokens: [
     {
@@ -83,12 +75,100 @@ const ProdConfig: ChainConfig = {
   ],
 };
 
-export const config = ProdConfig;
-const tokens = config.indexTokens.concat(config.collateralTokens);
-export const getTokenByAddress = (address: string) =>
-  tokens.find((c) => c.address.toLowerCase() === address?.toLowerCase());
-export const getTokenBySymbol = (symbol: string) =>
-  tokens.find((c) => c.symbol.toLowerCase() === symbol?.toLowerCase());
+export const arbConfig: ChainConfig = {
+  name: 'ARB',
+  chainId: 42161,
+  baseExplorer: 'https://arbiscan.io',
+  rpc: 'https://arb1.arbitrum.io/rpc/',
+  tradingGraph: `https://subgraph.satsuma-prod.com/${subgraphQueryKey}/levelfinance/trading-arbitrum/api`,
+  pool: '0x32B7bF19cb8b95C27E644183837813d4b595dcc6',
+  indexTokens: [
+    {
+      symbol: 'BTC',
+      address: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+      decimals: 8,
+      fractionDigits: 5,
+      priceFractionDigits: 2,
+      threshold: 0.00001,
+    },
+    {
+      symbol: 'ETH',
+      address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+      decimals: 18,
+      fractionDigits: 4,
+      priceFractionDigits: 2,
+      threshold: 0.0001,
+    },
+    {
+      symbol: 'ETH',
+      address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      decimals: 18,
+      fractionDigits: 4,
+      priceFractionDigits: 2,
+      threshold: 0.0001,
+    },
+    {
+      symbol: 'ARB',
+      address: '0x912CE59144191C1204E64559FE8253a0e49E6548',
+      decimals: 18,
+      fractionDigits: 2,
+      priceFractionDigits: 4,
+      threshold: 0.0001,
+    },
+  ],
+  collateralTokens: [
+    {
+      symbol: 'USDT',
+      address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+      decimals: 6,
+      fractionDigits: 2,
+      priceFractionDigits: 3,
+      threshold: 0.01,
+    },
+    {
+      symbol: 'USDC',
+      address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      decimals: 6,
+      fractionDigits: 2,
+      priceFractionDigits: 3,
+      threshold: 0.01,
+    },
+  ],
+};
+
+export const chains = [bscConfig, arbConfig];
+export const getChainConfig = (chainId: number): BaseConfig & ChainConfig => {
+  const chainConfig = chains.find((c) => c.chainId === chainId);
+  if (!chainConfig) {
+    throw `missing config for chain ${chainId}`;
+  }
+  return {
+    ...baseConfig,
+    ...chainConfig,
+  };
+};
+export const allTokens = chains
+  .map((c) =>
+    c.indexTokens.concat(c.collateralTokens).map((d) => ({
+      ...d,
+      chainId: c.chainId,
+    })),
+  )
+  .flat();
+export const getTokenByAddress = (address: string, chainId?: number) => {
+  return allTokens.find(
+    (c) =>
+      c.address.toLowerCase() === address?.toLowerCase() &&
+      (chainId ? c.chainId === chainId : true),
+  );
+};
+export const getTokenBySymbol = (symbol: string, chainId?: number) => {
+  return allTokens.find(
+    (c) =>
+      c.symbol.toLowerCase() === symbol?.toLowerCase() &&
+      (chainId ? c.chainId === chainId : true),
+  );
+};
 export const VALUE_DECIMALS = 30;
 export const FEE_DECIMALS = 10;
 export const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';

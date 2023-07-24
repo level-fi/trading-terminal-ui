@@ -1,15 +1,16 @@
-import { Contract, providers } from 'ethers';
-import { config, getTokenByAddress, VALUE_DECIMALS } from '../../../../../config';
-import TradeLensAbi from '../../../../../abis/TradeLens.json';
-import { useLongPolling } from '../../../../../hooks/useLongPolling';
-import { ChainConfigToken, OrderType, Side, UpdateType } from '../../../../../utils/type';
-import { useMemo, useState } from 'react';
+import { chains, getTokenByAddress, VALUE_DECIMALS } from '../../../../../config';
+import {
+  ChainConfigToken,
+  OrderType,
+  QueryOrdersConfig,
+  Side,
+  UpdateType,
+} from '../../../../../utils/type';
 import { formatBigNumber } from '../../../../../utils/numbers';
-import { useBackendPrices } from '../../../../../context/BackendPriceProvider';
+import { useQueries } from '@tanstack/react-query';
+import { queryBackendPrice, queryOrders } from '../../../../../utils/queries';
+import { BigNumber } from 'ethers';
 
-export interface UseOrdersConfig {
-  wallet: string;
-}
 export interface LeverageOrder {
   side: Side;
   indexToken: ChainConfigToken;
@@ -17,10 +18,12 @@ export interface LeverageOrder {
   action: string;
   triggerCondition: string;
   markPrice: number;
+  chainId: number;
+  timestamp: number;
 }
 const parseAction = (raw: any, indexToken: ChainConfigToken): string => {
   const size = formatBigNumber(
-    raw.size,
+    raw.sizeChange,
     VALUE_DECIMALS,
     {
       currency: 'USD',
@@ -40,28 +43,28 @@ const parseAction = (raw: any, indexToken: ChainConfigToken): string => {
     0.01,
   );
   if (raw.updateType == UpdateType.INCREASE) {
-    if (raw.size?.eq(0)) {
+    if (BigNumber.from(raw.sizeChange).eq(0)) {
       return `Deposit ${collateral} to ${indexToken.symbol} ${Side[raw.side]}`;
     }
     return `Increase ${indexToken.symbol} ${Side[raw.side]} by ${size}`;
   }
-  if (raw.size?.eq(0)) {
+  if (BigNumber.from(raw.sizeChange).eq(0)) {
     return `Withdraw ${collateral} from ${indexToken.symbol} ${Side[raw.side]}`;
   }
   return `Decrease ${indexToken.symbol} ${Side[raw.side]} by ${size}`;
 };
-const parse2LeverageOrder = (raw: any): LeverageOrder | undefined => {
-  const indexToken = getTokenByAddress(raw.indexToken);
+const parse2LeverageOrder = (raw: any, chainId: number): LeverageOrder | undefined => {
+  const indexToken = getTokenByAddress(raw.market.id, chainId);
   if (!indexToken) {
     return undefined;
   }
   const triggerAboveThreshold = raw.triggerAboveThreshold;
-  const triggerPrice = raw.triggerPrice;
+  const triggerPrice = raw.price;
 
   return {
     indexToken: indexToken,
     side: raw.side,
-    type: raw.isMarket ? OrderType.MARKET : OrderType.LIMIT,
+    type: raw.type === 'MARKET' ? OrderType.MARKET : OrderType.LIMIT,
     markPrice: 0,
     action: parseAction(raw, indexToken),
     triggerCondition: `Mark Price ${triggerAboveThreshold ? '≥' : '≤'} ${formatBigNumber(
@@ -74,59 +77,39 @@ const parse2LeverageOrder = (raw: any): LeverageOrder | undefined => {
       },
       0.01,
     )}`,
+    chainId: chainId,
+    timestamp: +raw.submissionTimestamp,
   };
 };
-const contract = new Contract(
-  config.tradeLens,
-  TradeLensAbi,
-  new providers.JsonRpcProvider(config.rpc),
-);
-export const useTradeOrders = ({ wallet }: UseOrdersConfig) => {
-  const [items, setItems] = useState<LeverageOrder[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [silentLoad, setSilentLoad] = useState(false);
-  const prices = useBackendPrices();
+export const useTradeOrders = (config: QueryOrdersConfig) => {
+  const chainIds = config.chainId ? [config.chainId] : chains.map((c) => c.chainId);
+  const queriesResponse = useQueries({
+    queries: chainIds.map((c) => [queryOrders(c, config), queryBackendPrice(c)]).flat(),
+  });
+  if (queriesResponse.some((c) => !c.data && c.isInitialLoading)) {
+    return {
+      items: [],
+      loading: true,
+    };
+  }
 
-  useLongPolling(
-    async (loadedTimes) => {
-      setLoading(true);
-      setSilentLoad(!!loadedTimes);
-
-      try {
-        const raw = await contract.getAllLeverageOrders(config.orderbook, wallet);
-        const rawOrders: [] = raw?.[0] || [];
-        if (!rawOrders?.length) {
-          return;
-        }
-        const items: LeverageOrder[] = [];
-        for (const order of rawOrders) {
-          const parsed = parse2LeverageOrder(order);
-          if (!parsed) {
-            continue;
-          }
-          items.push(parsed);
-        }
-        setItems(items);
-      } finally {
-        setLoading(false);
+  const items: LeverageOrder[] = [];
+  for (const chainId of chainIds) {
+    const [{ data: orders }, { data: prices }] = queriesResponse.splice(0, 2);
+    const rawOrders = orders.data as any[];
+    for (const order of rawOrders) {
+      const parsed = parse2LeverageOrder(order, chainId);
+      if (!parsed) {
+        continue;
       }
-    },
-    {
-      enabled: true,
-      retriable: true,
-      time: 15000,
-      fireable: !!wallet && wallet,
-    },
-  );
-  return useMemo(
-    () => ({
-      items: items.map((item) => ({
-        ...item,
-        markPrice: prices[item.indexToken.symbol],
-      })),
-      silentLoad,
-      loading,
-    }),
-    [items, loading, prices, silentLoad],
-  );
+      parsed.markPrice = prices?.[parsed.indexToken.symbol];
+      items.push(parsed);
+    }
+  }
+  items.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
+
+  return {
+    items: items,
+    loading: false,
+  };
 };
