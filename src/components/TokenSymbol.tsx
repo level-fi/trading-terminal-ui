@@ -5,6 +5,7 @@ import BUSD from '../assets/tokens/BUSD.png';
 import USDT from '../assets/tokens/USDT.png';
 import CAKE from '../assets/tokens/CAKE.png';
 import ARB from '../assets/tokens/ARB.svg';
+import USDC from '../assets/tokens/USDC.svg';
 import defaultToken from '../assets/tokens/NO_NAME.png';
 import React from 'react';
 import { chainLogos } from '../utils/constant';
@@ -20,6 +21,7 @@ const logo: { [key: string]: string } = {
   BNB: BNB,
   CAKE: CAKE,
   ARB: ARB,
+  USDC: USDC,
 };
 
 export interface TokenSymbolProps {
