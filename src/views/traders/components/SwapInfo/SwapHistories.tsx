@@ -94,8 +94,8 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
               <span></span>
             </div>
             {items.map((item, i) => {
-              const tokenIn = getTokenByAddress(item.tokenIn);
-              const tokenOut = getTokenByAddress(item.tokenOut);
+              const tokenIn = getTokenByAddress(item.tokenIn, item.chainId);
+              const tokenOut = getTokenByAddress(item.tokenOut, item.chainId);
               const price = item.amountOut / item.amountIn;
               const chainConfig = getChainConfig(item.chainId);
               return (
