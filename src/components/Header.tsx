@@ -21,7 +21,7 @@ export const Header = () => {
   const search = useCallback(
     (content: string) => {
       setSearchContent('');
-      if (!utils.isAddress(content)) {
+      if (!utils.isAddress(content?.toLowerCase())) {
         return;
       }
       navigate(`/traders/${content}`);

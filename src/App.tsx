@@ -1,4 +1,10 @@
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  Outlet,
+  redirect,
+  RouterProvider,
+} from 'react-router-dom';
 import './App.scss';
 import { Header } from './components/Header';
 import { PositionList } from './views/positions';
@@ -9,6 +15,7 @@ import { Live } from './views/live';
 import { Footer } from './components/Footer';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './utils/queries';
+import { utils } from 'ethers';
 
 const Container = () => {
   return (
@@ -42,6 +49,16 @@ const router = createBrowserRouter([
       {
         path: '/traders/:wallet',
         element: <TraderDetail />,
+        loader: ({ params }) => {
+          const { wallet } = params;
+          if (!wallet) {
+            return redirect('/');
+          }
+          if (!utils.isAddress(wallet.toLowerCase())) {
+            return redirect('/traders');
+          }
+          return null;
+        },
       },
       {
         path: '/positions',

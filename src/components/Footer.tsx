@@ -7,6 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 import { queryStats } from '../utils/queries';
 import { useMemo } from 'react';
 import { ChainConfigToken, PriceInfoResponse } from '../utils/type';
+import { Tooltip } from './Tooltip';
+import { chainLogos } from '../utils/constant';
 
 export const Footer = () => {
   const { data: stats } = useQuery(queryStats(bscConfig.chainId));
@@ -70,14 +72,54 @@ export const Footer = () => {
           <img src={IconInterest} className="h-15px" />
           <span className="color-white text-12px ml-8px whitespace-nowrap">Open Interest:</span>
           <span className="text-12px font-500 color-white ml-8px color-win">LONG</span>
-          <span className="font-700 color-white text-12px ml-4px">
-            {formatCurrency(totalLong, 0)}
+          <span className="font-700 color-white text-12px ml-4px b-b-1px b-b-dashed b-b-#ADABAB pb-2px -mb-3px">
+            <Tooltip
+              place="top"
+              options={{ offset: 20 }}
+              content={
+                <div className="font-400">
+                  {(stats || []).map((c) => (
+                    <div key={c.chainId} className="flex items-center py-5px">
+                      <img
+                        src={chainLogos[c.chainId]}
+                        width={16}
+                        height={16}
+                        className="mr-10px"
+                      />
+                      {formatCurrency(c.openInterest.long, 0)}
+                    </div>
+                  ))}
+                </div>
+              }
+            >
+              {formatCurrency(totalLong, 0)}
+            </Tooltip>
           </span>
           <span className="text-12px font-500 color-white ml-8px whitespace-nowrap color-loss ml-9px pl-9px b-l-1px b-solid b-#545454">
             SHORT
           </span>
-          <span className="font-700 color-white text-12px ml-4px">
-            {formatCurrency(totalShort, 0)}
+          <span className="font-700 color-white text-12px ml-4px b-b-1px b-b-dashed b-b-#ADABAB pb-2px -mb-3px">
+            <Tooltip
+              place="top"
+              options={{ offset: 20 }}
+              content={
+                <div className="font-400">
+                  {(stats || []).map((c) => (
+                    <div key={c.chainId} className="flex items-center py-5px">
+                      <img
+                        src={chainLogos[c.chainId]}
+                        width={16}
+                        height={16}
+                        className="mr-10px"
+                      />
+                      {formatCurrency(c.openInterest.short, 0)}
+                    </div>
+                  ))}
+                </div>
+              }
+            >
+              {formatCurrency(totalShort, 0)}
+            </Tooltip>
           </span>
         </div>
       </div>
