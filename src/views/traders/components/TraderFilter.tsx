@@ -1,7 +1,5 @@
-import { utils } from 'ethers';
-import { useState, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import IconSearch from '../../../assets/icons/ic-search.svg';
+import { useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   orderOptions,
   timeFilterOptions,
@@ -12,19 +10,7 @@ import { Dropdown } from '../../../components/Dropdown';
 export const TraderFilter = () => {
   const [params, setParams] = useSearchParams();
   const { config } = useTradersConfigParsed();
-  const [searchContent, setSearchContent] = useState('');
 
-  const navigate = useNavigate();
-  const search = useCallback(
-    (content: string) => {
-      setSearchContent('');
-      if (!utils.isAddress(content)) {
-        return;
-      }
-      navigate(`/traders/${content}`);
-    },
-    [navigate],
-  );
   const onUpdateTime = useCallback(
     (label, value) => {
       if (value === undefined) {
@@ -39,31 +25,7 @@ export const TraderFilter = () => {
   );
 
   return (
-    <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center">
-      <div className="bg-black bg-op-90 rounded-10px flex items-center xl:w-424px">
-        <img src={IconSearch} className="h-14px mr-8px ml-20px" />
-        <input
-          type="text"
-          placeholder="Enter or paste an address"
-          className="text-14px bg-transparent border-none flex-1 outline-none color-white"
-          value={searchContent}
-          onChange={(event) => {
-            setSearchContent(event?.target?.value);
-          }}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              search((event.target as any).value);
-            }
-          }}
-        />
-        <button
-          onClick={() => search(searchContent)}
-          disabled={!searchContent}
-          className="text-14px xl:text-16px bg-primary border-none outline-none h-36px w-76px xl:w-94px m-3px rounded-8px font-700 hover-cursor-pointer hover-bg-opacity-75 disabled-hover-bg-opacity-100 disabled-bg-#706E6A disabled-text-black disabled-hover-cursor-not-allowed"
-        >
-          SEARCH
-        </button>
-      </div>
+    <div className="flex flex-col xl:flex-row xl:justify-end xl:items-center">
       <div className="hidden xl:block">
         <div className="flex flex-col xl:flex-row xl:items-center">
           <label className="color-#cdcdcd xl:block hidden">TIME:</label>
