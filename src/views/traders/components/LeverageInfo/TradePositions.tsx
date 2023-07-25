@@ -3,7 +3,7 @@ import { NoData } from '../../../../components/NoData';
 import { Loading } from '../../../../components/Loading';
 import { PositionItem } from '../../../positions/components/PositionItem';
 import { TableContentLoader } from '../../../../components/TableContentLoader';
-import { PositionStatus } from '../../../../utils/type';
+import { PositionListItemResponse, PositionStatus } from '../../../../utils/type';
 import { Pagination } from '../../../../components/Pagination';
 import { chainOptions, statusOptions } from '../../../positions/hooks/usePositionsConfig';
 import { useSearchParams } from 'react-router-dom';
@@ -28,6 +28,8 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<PositionStatus>();
   const [chainId, setChainId] = useState<number>();
+  const [response, setResponse] = useState<PositionListItemResponse>();
+
   const { data, isInitialLoading } = useQuery(
     queryPositions({
       page: page,
@@ -39,8 +41,15 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
       chainId: chainId,
     }),
   );
-  const items = data ? data.data : [];
-  const pageInfo = data ? data.page : undefined;
+
+  useEffect(() => {
+    if (isInitialLoading) {
+      return;
+    }
+    setResponse(data);
+  }, [data, isInitialLoading]);
+  const items = response ? response.data : [];
+  const pageInfo = response ? response.page : undefined;
 
   useEffect(() => {
     setTotalPositions(data?.page?.totalItems);
@@ -80,6 +89,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
                 className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
                 onClick={() => {
                   setStatus(value);
+                  setPage(1);
                 }}
               >
                 {label}
@@ -99,6 +109,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
                 className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
                 onClick={() => {
                   setChainId(value);
+                  setPage(1);
                 }}
               >
                 {chainLogos[value] && (
@@ -110,17 +121,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
           })}
         </div>
       </div>
-      {isInitialLoading && !items.length ? (
-        <div className="h-250px flex items-center justify-center">
-          <div className="w-300px">
-            <Loading />
-          </div>
-        </div>
-      ) : !items.length ? (
-        <div className="h-250px flex justify-center items-center">
-          <NoData />
-        </div>
-      ) : (
+      {items.length ? (
         <div className="relative">
           <div className="xl:table w-100% xl:border-spacing-y-12px">
             <div ref={headerRef} className="hidden xl:table-row [&>.table-cell]:px-17px">
@@ -175,7 +176,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
               />
             ))}
           </div>
-          {isInitialLoading && !!items.length && (
+          {isInitialLoading && (
             <div className="hidden xl:block absolute bottom-0 left-0 w-100%">
               <TableContentLoader
                 className="h-56px mb-12px bg-#34343B b-1px b-solid b-#5E5E5E rounded-10px"
@@ -185,6 +186,16 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
               />
             </div>
           )}
+        </div>
+      ) : isInitialLoading ? (
+        <div className="h-250px flex items-center justify-center">
+          <div className="w-300px">
+            <Loading />
+          </div>
+        </div>
+      ) : (
+        <div className="h-250px flex justify-center items-center">
+          <NoData />
         </div>
       )}
       {pageInfo?.total > 1 && (

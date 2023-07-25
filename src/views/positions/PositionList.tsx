@@ -5,8 +5,8 @@ import { PositionFilter } from './components/PositionFilter';
 import { usePositionsConfigParsed } from './hooks/usePositionsConfig';
 import { Loading } from '../../components/Loading';
 import { PositionItem } from './components/PositionItem';
-import { PositionStatus } from '../../utils/type';
-import { useRef } from 'react';
+import { PositionListItemResponse, PositionStatus } from '../../utils/type';
+import { useEffect, useRef, useState } from 'react';
 import { TableContentLoader } from '../../components/TableContentLoader';
 import { PositionDetailModal } from './PositionDetailModal';
 import { useQuery } from '@tanstack/react-query';
@@ -15,10 +15,18 @@ import { queryPositions } from '../../utils/queries';
 export const PositionList = () => {
   const [params, setParams] = useSearchParams();
   const { config, setPage } = usePositionsConfigParsed();
+  const [response, setResponse] = useState<PositionListItemResponse>();
   const { data, isInitialLoading } = useQuery(queryPositions(config));
   const headerRef = useRef<HTMLDivElement>();
-  const items = data ? data.data : [];
-  const pageInfo = data ? data.page : undefined;
+
+  useEffect(() => {
+    if (isInitialLoading) {
+      return;
+    }
+    setResponse(data);
+  }, [data, isInitialLoading]);
+  const items = response ? response.data : [];
+  const pageInfo = response ? response.page : undefined;
 
   return (
     <div className="mx-14px xl:mx-60px my-20px pb-35px">

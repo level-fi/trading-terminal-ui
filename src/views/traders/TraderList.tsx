@@ -6,13 +6,15 @@ import { useTradersConfigParsed } from './hooks/useTradersConfig';
 import { TraderFilter } from './components/TraderFilter';
 import { Loading } from '../../components/Loading';
 import { TableContentLoader } from '../../components/TableContentLoader';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { queryTraders } from '../../utils/queries';
+import { TraderListItemResponse } from '../../utils/type';
 
 export const TraderList = () => {
   const [params, setParams] = useSearchParams();
   const { config, setPage } = useTradersConfigParsed();
+  const [response, setResponse] = useState<TraderListItemResponse>();
   const { data, isInitialLoading } = useQuery(
     queryTraders({
       ...config,
@@ -20,8 +22,15 @@ export const TraderList = () => {
     }),
   );
   const headerRef = useRef<HTMLDivElement>();
-  const items = data ? data.data : [];
-  const pageInfo = data ? data.page : undefined;
+
+  useEffect(() => {
+    if (isInitialLoading) {
+      return;
+    }
+    setResponse(data);
+  }, [data, isInitialLoading]);
+  const items = response ? response.data : [];
+  const pageInfo = response ? response.page : undefined;
 
   return (
     <div className="mx-14px xl:mx-60px my-20px pb-35px relative">

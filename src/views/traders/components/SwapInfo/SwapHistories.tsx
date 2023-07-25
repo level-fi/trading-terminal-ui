@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NoData } from '../../../../components/NoData';
 import { ReactComponent as IconExplorer } from '../../../../assets/icons/ic-explorer.svg';
-import { bscConfig, getChainConfig, getTokenByAddress } from '../../../../config';
+import { getChainConfig, getTokenByAddress } from '../../../../config';
 import { Loading } from '../../../../components/Loading';
 import { SwapPrice } from './components/SwapPrice';
 import { SwapAmount } from './components/SwapAmount';
@@ -13,15 +13,17 @@ import { useQuery } from '@tanstack/react-query';
 import { querySwapHistories } from '../../../../utils/queries';
 import { chainOptions } from '../../../positions/hooks/usePositionsConfig';
 import { chainLogos } from '../../../../utils/constant';
+import { SwapHistoriesResponse } from '../../../../utils/type';
 
 interface SwapHistoriesProps {
   wallet: string;
 }
 export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
   const [chainId, setChainId] = useState<number>();
+  const [response, setResponse] = useState<SwapHistoriesResponse>();
+  const [page, setPage] = useState(1);
 
   const headerRef = useRef<HTMLDivElement>();
-  const [page, setPage] = useState(1);
   const { data, isInitialLoading } = useQuery(
     querySwapHistories({
       page: page,
@@ -30,8 +32,15 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
       chainId: chainId,
     }),
   );
-  const items = data ? data.data : [];
-  const pageInfo = data ? data.page : undefined;
+
+  useEffect(() => {
+    if (isInitialLoading) {
+      return;
+    }
+    setResponse(data);
+  }, [data, isInitialLoading]);
+  const items = response ? response.data : [];
+  const pageInfo = response ? response.page : undefined;
 
   return (
     <div>
@@ -48,6 +57,7 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                 className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
                 onClick={() => {
                   setChainId(value);
+                  setPage(1);
                 }}
               >
                 {chainLogos[value] && (
