@@ -203,6 +203,7 @@ export interface Stats {
     long: number;
     short: number;
   };
+  chainId: number;
 }
 
 export interface QueryPositionsConfig {
