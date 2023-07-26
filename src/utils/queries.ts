@@ -393,6 +393,6 @@ export const querySwapHistories = (
       const parsed = SwapHistoriesResponseSchema.parse(await res.json());
       return parsed;
     },
-    refetchInterval: 15000,
+    refetchInterval: 60000,
   };
 };

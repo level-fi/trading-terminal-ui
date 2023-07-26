@@ -7,7 +7,7 @@ import {
 } from '../../components/ContentLoader';
 import { profitColor, shortenAddress } from '../../utils';
 import { useLiqPrice } from '../../hooks/useLiqPrice';
-import { VALUE_DECIMALS, getTokenByAddress } from '../../config';
+import { VALUE_DECIMALS, getChainConfig, getTokenByAddress } from '../../config';
 import { Moddal } from '../../components/Modal';
 import { useCallback, useMemo } from 'react';
 import IconX from '../../assets/icons/ic-x.svg';
@@ -17,6 +17,7 @@ import { PositionStatus } from '../../components/PositionStatus';
 import { Tooltip } from '../../components/Tooltip';
 import { useQuery } from '@tanstack/react-query';
 import { queryPosition } from '../../utils/queries';
+import { chainLogos } from '../../utils/constant';
 
 export const PositionDetailModal = () => {
   const [params, setParams] = useSearchParams();
@@ -25,6 +26,7 @@ export const PositionDetailModal = () => {
 
   const item = data ? data.data : undefined;
   const indexToken = getTokenByAddress(item?.histories?.[0]?.indexToken, item?.chainId);
+  const chainConfig = item ? getChainConfig(item.chainId) : undefined;
   const side = item?.histories?.[0]?.side;
   const wallet = item?.histories?.[0]?.account;
 
@@ -59,23 +61,34 @@ export const PositionDetailModal = () => {
           ) : (
             <div className="flex items-center">
               <div className="hidden xl:block">
-                <TokenSymbol symbol={indexToken?.symbol} chainId={item?.chainId} size={56} />
+                <TokenSymbol symbol={indexToken?.symbol} size={56} />
               </div>
               <div className="xl:hidden">
-                <TokenSymbol symbol={indexToken?.symbol} chainId={item?.chainId} size={40} />
+                <TokenSymbol symbol={indexToken?.symbol} size={40} />
               </div>
               <div className="flex flex-col ml-17px">
-                <div>
-                  <span className="font-700 xl:text-20px text-16px color-white">
+                <div className="flex items-end">
+                  <div className="font-700 xl:text-20px text-16px color-white">
                     {indexToken?.symbol}/USD
-                  </span>
-                  <span
+                  </div>
+                  <div
                     className={`ml-4px xl:ml-8px font-400 xl:text-16px text-14px ${
                       side === Side.LONG ? 'color-win' : 'color-loss'
                     }`}
                   >
                     {Side[side]}
-                  </span>
+                  </div>
+                  <div className="text-14px font-500 flex items-center text-white bg-#D9D9D9 bg-op-10 h-23px px-10px rd-999px ml-8px">
+                    {chainLogos[chainConfig?.chainId] && (
+                      <img
+                        src={chainLogos[chainConfig?.chainId]}
+                        width={14}
+                        height={14}
+                        className="mr-6px"
+                      />
+                    )}
+                    {chainConfig?.name}
+                  </div>
                 </div>
                 <div className="mt-8px color-#cdcdcd xl:text-14px text-12px">
                   Wallet:{' '}

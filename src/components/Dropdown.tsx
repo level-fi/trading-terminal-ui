@@ -66,7 +66,7 @@ export const Dropdown = <T,>({
       classNames={{
         dropdownIndicator: () => 'ml-8px',
         menu: () =>
-          'bg-black rounded-8px text-left important:w-auto min-w-100% overflow-hidden b-1px b-solid b-#5E5E5E',
+          'bg-black rounded-8px text-left important:w-auto min-w-100% overflow-hidden b-1px b-solid b-#5E5E5E whitespace-nowrap',
       }}
     />
   );

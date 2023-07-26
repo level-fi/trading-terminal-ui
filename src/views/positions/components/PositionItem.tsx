@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react';
 import { formatCurrency, formatProfit } from '../../../utils/numbers';
 import { profitColor, unixToDate } from '../../../utils';
-import { getTokenByAddress } from '../../../config';
+import { getChainConfig, getTokenByAddress } from '../../../config';
 import IconRight from '../../../assets/icons/ic-arrow-right.svg';
 import { TokenSide } from '../../../components/TokenSide';
 import { PositionStatus } from '../../../components/PositionStatus';
 import { PositionItemContentLoader } from '../../../components/ContentLoader';
 import { useScreenSize } from '../../../hooks/useScreenSize';
 import c from 'classnames';
+import { chainLogos } from '../../../utils/constant';
 
 export interface PositionItemProps {
   id: string;
@@ -45,7 +46,8 @@ export const PositionItem: React.FC<PositionItemProps> = ({
   chainId,
   onClick,
 }) => {
-  const token = useMemo(() => getTokenByAddress(indexToken || ''), [indexToken]);
+  const chainConfig = getChainConfig(chainId);
+  const token = getTokenByAddress(indexToken, chainId);
   const isMobile = useScreenSize('xl');
 
   if (isMobile) {
@@ -67,7 +69,12 @@ export const PositionItem: React.FC<PositionItemProps> = ({
             }`}
           >
             <div className="flex items-center">
-              <TokenSide address={address} side={side} symbol={token?.symbol} chainId={chainId} />
+              <TokenSide
+                address={address}
+                side={side}
+                symbol={token?.symbol}
+                chainId={chainId}
+              />
             </div>
             <img src={IconRight} height={12} />
           </div>
@@ -114,7 +121,13 @@ export const PositionItem: React.FC<PositionItemProps> = ({
           cellClassName,
         )}
       >
-        <TokenSide address={address} side={side} symbol={token?.symbol} chainId={chainId} />
+        <TokenSide side={side} symbol={token?.symbol} />
+      </div>
+      <div className={c(`table-cell b-y-1px b-solid b-#5e5e5e vertical-mid`, cellClassName)}>
+        <div className="flex items-center">
+          <img src={chainLogos[chainId]} width={18} height={18} className="mr-10px" />
+          <span className="color-white whitespace-nowrap">{chainConfig.name}</span>
+        </div>
       </div>
       <div className={c(`table-cell b-y-1px b-solid b-#5e5e5e vertical-mid`, cellClassName)}>
         <span className="color-white">{formatCurrency(size)}</span>

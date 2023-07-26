@@ -136,7 +136,10 @@ export const TraderDetailPanel: React.FC<TraderDetailPanelProps> = ({
                 content={
                   <div className="text-13px font-400">
                     {(item?.data?.byChains?.netProfit || []).map((c) => (
-                      <div key={c.chainId} className="flex items-center py-5px">
+                      <div
+                        key={c.chainId}
+                        className={`flex items-center py-5px ${profitColor(c.value)}`}
+                      >
                         <img
                           src={chainLogos[c.chainId]}
                           width={18}
@@ -156,7 +159,7 @@ export const TraderDetailPanel: React.FC<TraderDetailPanelProps> = ({
             )}
           </label>
         </div>
-        <div className="flex justify-between xl:flex-col xl:pl-20px xl:b-l-1px b-solid b-#2f2f2f">
+        <div className="flex justify-between xl:(flex-col pl-20px b-l-1px b-solid b-#2f2f2f items-start)">
           <label className="text-14px color-#adadab xl:mb-13px">Total Fees Paid</label>
           <label
             className={c(

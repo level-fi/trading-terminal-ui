@@ -10,6 +10,8 @@ import {
 import { Dropdown } from '../../../components/Dropdown';
 import { useCallback } from 'react';
 import { useScreenSize } from '../../../hooks/useScreenSize';
+import c from 'classnames';
+import { chainLogos } from '../../../utils/constant';
 
 export const PositionFilter = () => {
   const [params, setParams] = useSearchParams();
@@ -127,26 +129,27 @@ export const PositionFilter = () => {
   }
 
   return (
-    <div className="flex flex-col xl:flex-row items-center justify-between">
-      <div className="flex items-center">
+    <div className="flex flex-col">
+      <div className="mx-auto flex items-center mb-25px text-16px font-700 b-1px b-solid b-white b-op-20% h-46px rounded-10px color-white [&>.active]:color-primary w-360px max-w-100%">
         {statusOptions.map(({ label, value }, i) => {
           const active = value === config.status;
-          const color = active ? 'color-black' : 'color-white';
-          const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
           return (
             <div
-              key={i}
-              className={`uppercase ${color} ${bg} w-90px h-32px mr-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-              onClick={() => {
-                onUpdate('status', label, value);
-              }}
+              onClick={() => onUpdate('status', label, value)}
+              className={c(
+                'uppercase cursor-pointer hover-op-75 flex-1 text-center leading-30px',
+                {
+                  active: active,
+                  'b-l-1px b-solid b-#595861': i,
+                },
+              )}
             >
               {label}
             </div>
           );
         })}
       </div>
-      <div className="flex items-center">
+      <div className="flex 2xl:(flex-row items-center justify-between) xl:(flex-col items-start [&>div]:py-6px [&>div>label:first-child]:w-70px [&>div>div:nth-child(2)]:w-60px)">
         <div className="flex items-center">
           <label className="color-#cdcdcd">CHAIN:</label>
           {chainOptions.map(({ label, value }, i) => {
@@ -156,18 +159,21 @@ export const PositionFilter = () => {
             return (
               <div
                 key={i}
-                className={`uppercase ${color} ${bg} w-60px h-32px ml-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
+                className={`uppercase ${color} ${bg} px-14px h-32px ml-10px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
                 onClick={() => {
                   params.delete('market');
                   onUpdate('chain', label, value);
                 }}
               >
+                {chainLogos[value] && (
+                  <img src={chainLogos[value]} height={18} width={18} className="mr-10px" />
+                )}
                 {label}
               </div>
             );
           })}
         </div>
-        <div className="flex items-center ml-48px">
+        <div className="flex items-center 2xl:(ml-auto)">
           <label className="color-#cdcdcd">MARKET:</label>
           {marketOptions.map(({ label, value }, i) => {
             const active = value?.toLowerCase() === config.market?.toLowerCase();
@@ -186,7 +192,7 @@ export const PositionFilter = () => {
             );
           })}
         </div>
-        <div className="flex items-center ml-48px">
+        <div className="flex items-center 2xl:(ml-48px)">
           <label className="color-#cdcdcd">SIDE:</label>
           {sideOptions.map(({ label, value, activeBg }, i) => {
             const active = value === config.side;

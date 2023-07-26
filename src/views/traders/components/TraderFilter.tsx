@@ -50,7 +50,7 @@ export const TraderFilter = () => {
           </div>
         </div>
       </div>
-      <div className="xl:hidden table text-right mt-16px text-14px">
+      <div className="xl:hidden table text-right text-14px">
         <div className="table-row">
           <label className="table-cell text-left color-#cdcdcd mr-6px whitespace-nowrap pr-14px">
             Ordered by:

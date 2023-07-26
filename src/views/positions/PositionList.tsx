@@ -29,8 +29,9 @@ export const PositionList = () => {
   const pageInfo = response ? response.page : undefined;
 
   return (
-    <div className="mx-14px xl:mx-60px my-20px pb-35px">
-      <div className="mb-24px">
+    <div className="mx-14px xl:mx-60px my-20px pb-35px relative">
+      <div className="mb-16px xl:mb-24px">
+        <div className="color-white font-800 text-20px mb-16px mt-4px xl:hidden">POSITIONS</div>
         <PositionFilter />
       </div>
       {isInitialLoading && !items.length ? (
@@ -42,11 +43,17 @@ export const PositionList = () => {
       ) : (
         <div className="relative">
           <div className="xl:table w-100% xl:border-spacing-y-12px">
-            <div ref={headerRef} className={`hidden xl:table-row`}>
-              <div className="table-cell 2xl:px-24px xl:px-17px">
+            <div
+              ref={headerRef}
+              className={`hidden xl:table-row [&>*]:(table-cell) xl:([&>*]:px-17px)`}
+            >
+              <div>
                 <label className="color-#cdcdcd">Position</label>
               </div>
-              <div className="table-cell 2xl:px-24px xl:px-17px">
+              <div>
+                <label className="color-#cdcdcd">Chain</label>
+              </div>
+              <div>
                 <SortableTitle
                   valueKey="size"
                   onChange={(key, value) => {
@@ -60,7 +67,7 @@ export const PositionList = () => {
                   Size
                 </SortableTitle>
               </div>
-              <div className="table-cell 2xl:px-24px xl:px-17px">
+              <div>
                 <SortableTitle
                   valueKey="pnl"
                   onChange={(key, value) => {
@@ -74,7 +81,7 @@ export const PositionList = () => {
                   PnL
                 </SortableTitle>
               </div>
-              <div className="table-cell 2xl:px-24px xl:px-17px">
+              <div>
                 <SortableTitle
                   valueKey="netProfit"
                   onChange={(key, value) => {
@@ -88,16 +95,16 @@ export const PositionList = () => {
                   Net Profit
                 </SortableTitle>
               </div>
-              <div className="table-cell 2xl:px-24px xl:px-17px">
+              <div>
                 <label className="color-#cdcdcd whitespace-nowrap">Entry Price</label>
               </div>
-              <div className="table-cell 2xl:px-24px xl:px-17px">
+              <div>
                 <label className="color-#cdcdcd whitespace-nowrap">Mark Price</label>
               </div>
-              <div className="table-cell 2xl:px-24px xl:px-17px">
+              <div>
                 <label className="color-#cdcdcd">Status</label>
               </div>
-              <div className="table-cell 2xl:px-24px xl:px-17px">
+              <div>
                 <SortableTitle
                   valueKey="time"
                   onChange={(key, value) => {
@@ -111,7 +118,7 @@ export const PositionList = () => {
                   Last Updated
                 </SortableTitle>
               </div>
-              <span className="table-cell 2xl:px-24px xl:px-17px w-1px"></span>
+              <span className="w-1px"></span>
             </div>
             {items.map((item, i) => (
               <PositionItem
@@ -130,7 +137,7 @@ export const PositionList = () => {
                 multipleAction={!!item.historiesCount}
                 chainId={item.chainId}
                 loading={isInitialLoading}
-                cellClassName="2xl:px-24px xl:px-17px"
+                cellClassName="xl:px-17px"
                 onClick={(id) => {
                   params.set('position_id', id);
                   setParams(params);
