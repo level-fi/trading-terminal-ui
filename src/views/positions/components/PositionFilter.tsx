@@ -149,7 +149,7 @@ export const PositionFilter = () => {
           );
         })}
       </div>
-      <div className="flex 2xl:(flex-row items-center justify-between) xl:(flex-col items-start [&>div]:py-6px [&>div>label:first-child]:w-70px [&>div>div:nth-child(2)]:w-60px)">
+      <div className="flex 2xl:(flex-row items-center justify-between [&>div>label:first-child]:w-auto) xl:(flex-col items-start [&>div]:py-6px [&>div>label:first-child]:w-70px [&>div>div:nth-child(2)]:w-60px)">
         <div className="flex items-center">
           <label className="color-#cdcdcd">CHAIN:</label>
           {chainOptions.map(({ label, value }, i) => {

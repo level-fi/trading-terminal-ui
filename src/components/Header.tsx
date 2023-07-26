@@ -28,6 +28,7 @@ export const Header = () => {
     },
     [navigate],
   );
+  const isValid = !!searchContent && utils.isAddress(searchContent.toLowerCase());
 
   const toggleMenu = (visible: boolean) => {
     setMenuVisible(visible);
@@ -119,7 +120,7 @@ export const Header = () => {
             <button
               type="submit"
               onClick={() => search(searchContent)}
-              disabled={!searchContent}
+              disabled={!isValid}
               className="text-14px xl:text-16px bg-primary border-none outline-none h-36px w-76px xl:w-94px m-3px rounded-8px font-700 hover-cursor-pointer hover-bg-opacity-75 disabled-hover-bg-opacity-100 disabled-bg-#706E6A disabled-text-black disabled-hover-cursor-not-allowed"
             >
               SEARCH
