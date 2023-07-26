@@ -130,14 +130,14 @@ export const PositionFilter = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="mx-auto flex items-center mb-25px text-16px font-700 b-1px b-solid b-white b-op-20% h-46px rounded-10px color-white [&>.active]:color-primary w-360px max-w-100%">
+      <div className="mx-auto flex items-center mb-25px text-16px font-700 b-1px b-solid b-white b-op-20% h-40px rounded-10px color-white [&>.active]:color-primary max-w-100%">
         {statusOptions.map(({ label, value }, i) => {
           const active = value === config.status;
           return (
             <div
               onClick={() => onUpdate('status', label, value)}
               className={c(
-                'uppercase cursor-pointer hover-op-75 flex-1 text-center leading-30px',
+                'uppercase cursor-pointer hover-op-75 px-32px text-center leading-24px',
                 {
                   active: active,
                   'b-l-1px b-solid b-#595861': i,

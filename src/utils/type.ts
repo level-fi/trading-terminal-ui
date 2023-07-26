@@ -154,6 +154,7 @@ export const TraderDetailResponseSchema = z.object({
     totalFee: z.number(),
     totalTrading: z.number(),
     totalClosed: z.number(),
+    totalLiquidated: z.number(),
     totalOpen: z.number(),
     openInterest: z.number(),
   }),

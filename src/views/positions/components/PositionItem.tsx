@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { formatCurrency, formatProfit } from '../../../utils/numbers';
 import { profitColor, unixToDate } from '../../../utils';
 import { getChainConfig, getTokenByAddress } from '../../../config';
@@ -9,6 +9,7 @@ import { PositionItemContentLoader } from '../../../components/ContentLoader';
 import { useScreenSize } from '../../../hooks/useScreenSize';
 import c from 'classnames';
 import { chainLogos } from '../../../utils/constant';
+import { PositionStatus as Status } from '../../../utils/type';
 
 export interface PositionItemProps {
   id: string;
@@ -23,7 +24,7 @@ export interface PositionItemProps {
   address: string;
   time: number;
   multipleAction: boolean;
-  closed: boolean;
+  status: Status;
   chainId: number;
   cellClassName?: string;
   onClick?: (id: string) => void;
@@ -40,7 +41,7 @@ export const PositionItem: React.FC<PositionItemProps> = ({
   size,
   side,
   time,
-  closed,
+  status,
   loading,
   cellClassName,
   chainId,
@@ -90,7 +91,7 @@ export const PositionItem: React.FC<PositionItemProps> = ({
             <div className="flex justify-between text-14px mt-14px">
               <span className="color-#cdcdcd">Status</span>
               <div className="-my-3px">
-                <PositionStatus closed={closed} />
+                <PositionStatus status={status} />
               </div>
             </div>
             <div className="flex justify-between text-14px mt-14px">
@@ -149,7 +150,7 @@ export const PositionItem: React.FC<PositionItemProps> = ({
         </span>
       </div>
       <div className={c('table-cell b-y-1px b-solid b-#5e5e5e vertical-mid', cellClassName)}>
-        <PositionStatus closed={closed} />
+        <PositionStatus status={status} />
       </div>
       <div className={c('table-cell b-y-1px b-solid b-#5e5e5e vertical-mid', cellClassName)}>
         <div className="flex flex-col 2xl:flex-row">

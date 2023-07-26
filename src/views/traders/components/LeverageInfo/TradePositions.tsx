@@ -17,12 +17,14 @@ interface TradePositionsProps {
   wallet: string;
   totalOpen: number;
   totalClosed: number;
+  totalLiquidated: number;
   setTotalPositions: (value: number) => void;
 }
 export const TradePositions: React.FC<TradePositionsProps> = ({
   wallet,
   totalOpen,
   totalClosed,
+  totalLiquidated,
   setTotalPositions,
 }) => {
   const [params, setParams] = useSearchParams();
@@ -66,8 +68,10 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
           total = totalOpen;
           break;
         case PositionStatus.CLOSE:
-        case PositionStatus.LIQUIDATED:
           total = totalClosed;
+          break;
+        case PositionStatus.LIQUIDATED:
+          total = totalLiquidated;
           break;
       }
       if (!total) {
@@ -75,7 +79,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
       }
       return ` (${total})`;
     },
-    [totalClosed, totalOpen],
+    [totalClosed, totalLiquidated, totalOpen],
   );
 
   return (
@@ -211,10 +215,10 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
                 side={item.side}
                 size={item.size}
                 time={item.time}
-                closed={item.status !== PositionStatus.OPEN}
+                status={item.status}
                 multipleAction={!!item.historiesCount}
                 loading={isInitialLoading}
-                cellClassName="px-17px"
+                cellClassName="xl:px-5px 2xl:px-17px"
                 onClick={(id) => {
                   params.set('position_id', id);
                   setParams(params);

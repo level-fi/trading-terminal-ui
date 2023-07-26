@@ -39,6 +39,7 @@ export const TraderDetail = () => {
           wallet={wallet}
           totalOpen={data?.data?.totalOpen}
           totalClosed={data?.data?.totalClosed}
+          totalLiquidated={data?.data?.totalLiquidated}
         />
       </div>
       <div className="mt-32px">

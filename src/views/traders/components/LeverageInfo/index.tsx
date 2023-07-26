@@ -8,13 +8,17 @@ interface LeverageInfoProps {
   wallet: string;
   totalOpen: number;
   totalClosed: number;
+  totalLiquidated: number;
 }
 export const LeverageInfo: React.FC<LeverageInfoProps> = ({
   wallet,
   totalOpen,
   totalClosed,
+  totalLiquidated,
 }) => {
-  const [totalPositions, setTotalPositions] = useState(totalOpen + totalClosed);
+  const [totalPositions, setTotalPositions] = useState(
+    totalOpen + totalClosed + totalLiquidated,
+  );
   const [tab, setTab] = useState(0);
 
   return (
@@ -54,6 +58,7 @@ export const LeverageInfo: React.FC<LeverageInfoProps> = ({
             wallet={wallet}
             totalOpen={totalOpen}
             totalClosed={totalClosed}
+            totalLiquidated={totalLiquidated}
             setTotalPositions={(value) => {
               const userInfoTotalPosition = totalClosed + totalOpen;
               setTotalPositions(

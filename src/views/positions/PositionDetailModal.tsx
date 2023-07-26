@@ -120,7 +120,7 @@ export const PositionDetailModal = () => {
             {[
               {
                 title: 'Status',
-                value: <PositionStatus closed={!!item?.closedAt} size="md" />,
+                value: <PositionStatus status={item?.status} size="md" />,
               },
               {
                 title: 'Size',

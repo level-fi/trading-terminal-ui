@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PositionStatus, QueryPositionsConfig, Side } from '../../../utils/type';
-import { chains, getChainConfig, getTokenBySymbol } from '../../../config';
+import { chains, getChainConfig } from '../../../config';
 import { usePagination } from '../../../hooks/usePagination';
 
 export const statusOptions = [
@@ -17,6 +17,10 @@ export const statusOptions = [
   {
     label: 'closed',
     value: PositionStatus.CLOSE,
+  },
+  {
+    label: 'liquidated',
+    value: PositionStatus.LIQUIDATED,
   },
 ];
 export const getMarketOptions = (chainId?: number) => {

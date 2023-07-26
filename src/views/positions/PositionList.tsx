@@ -133,7 +133,7 @@ export const PositionList = () => {
                 side={item.side}
                 size={item.size}
                 time={item.time}
-                closed={item.status !== PositionStatus.OPEN}
+                status={item.status}
                 multipleAction={!!item.historiesCount}
                 chainId={item.chainId}
                 loading={isInitialLoading}
