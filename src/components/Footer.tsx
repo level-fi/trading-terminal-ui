@@ -7,21 +7,35 @@ import { useQuery } from '@tanstack/react-query';
 import { queryStats } from '../utils/queries';
 import { useMemo } from 'react';
 import { ChainConfigToken, PriceInfoResponse } from '../utils/type';
+import { Tooltip } from './Tooltip';
+import { chainLogos } from '../utils/constant';
 
 export const Footer = () => {
   const { data: stats } = useQuery(queryStats(bscConfig.chainId));
+
   const prices = useMemo(() => {
+    if (!stats) {
+      return [];
+    }
     const results: Record<string, { price: PriceInfoResponse; token: ChainConfigToken }> = {};
-    const response = stats?.prices || [];
-    for (const item of response) {
-      const token = getTokenByAddress(item.address);
-      results[token.symbol] = {
-        price: item,
-        token,
-      };
+    for (const { chainId, prices } of stats) {
+      for (const item of prices) {
+        const token = getTokenByAddress(item.address, chainId);
+        results[token.symbol] = {
+          price: item,
+          token,
+        };
+      }
     }
     return Object.entries(results);
-  }, [stats?.prices]);
+  }, [stats]);
+
+  const totalLong = stats
+    ? stats.reduce((total, c) => total + c.openInterest.long, 0)
+    : undefined;
+  const totalShort = stats
+    ? stats.reduce((total, c) => total + c.openInterest.short, 0)
+    : undefined;
 
   return stats ? (
     <div className="h-41px">
@@ -58,14 +72,54 @@ export const Footer = () => {
           <img src={IconInterest} className="h-15px" />
           <span className="color-white text-12px ml-8px whitespace-nowrap">Open Interest:</span>
           <span className="text-12px font-500 color-white ml-8px color-win">LONG</span>
-          <span className="font-700 color-white text-12px ml-4px">
-            {formatCurrency(stats?.openInterest?.long, 0)}
+          <span className="font-700 color-white text-12px ml-4px b-b-1px b-b-dashed b-b-#ADABAB pb-2px -mb-3px">
+            <Tooltip
+              place="top"
+              options={{ offset: 20 }}
+              content={
+                <div className="font-400">
+                  {(stats || []).map((c) => (
+                    <div key={c.chainId} className="flex items-center py-5px">
+                      <img
+                        src={chainLogos[c.chainId]}
+                        width={16}
+                        height={16}
+                        className="mr-10px"
+                      />
+                      {formatCurrency(c.openInterest.long, 0)}
+                    </div>
+                  ))}
+                </div>
+              }
+            >
+              {formatCurrency(totalLong, 0)}
+            </Tooltip>
           </span>
           <span className="text-12px font-500 color-white ml-8px whitespace-nowrap color-loss ml-9px pl-9px b-l-1px b-solid b-#545454">
             SHORT
           </span>
-          <span className="font-700 color-white text-12px ml-4px">
-            {formatCurrency(stats?.openInterest?.short, 0)}
+          <span className="font-700 color-white text-12px ml-4px b-b-1px b-b-dashed b-b-#ADABAB pb-2px -mb-3px">
+            <Tooltip
+              place="top"
+              options={{ offset: 20 }}
+              content={
+                <div className="font-400">
+                  {(stats || []).map((c) => (
+                    <div key={c.chainId} className="flex items-center py-5px">
+                      <img
+                        src={chainLogos[c.chainId]}
+                        width={16}
+                        height={16}
+                        className="mr-10px"
+                      />
+                      {formatCurrency(c.openInterest.short, 0)}
+                    </div>
+                  ))}
+                </div>
+              }
+            >
+              {formatCurrency(totalShort, 0)}
+            </Tooltip>
           </span>
         </div>
       </div>

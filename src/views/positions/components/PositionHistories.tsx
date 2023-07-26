@@ -32,6 +32,7 @@ const parseAction = (
   }
 };
 export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, chainId }) => {
+  items.sort((a, b) => (a.receivedAt > b.receivedAt ? -1 : 1));
   const chainConfig = getChainConfig(chainId);
   return (
     <div className={`xl:table w-100% xl:border-spacing-y-12px`}>

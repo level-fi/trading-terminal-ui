@@ -11,6 +11,7 @@ import { TableContentLoader } from '../../../../components/TableContentLoader';
 import { QueryTradeHistoriesConfig, UseLeverageMessageConfig } from '../../../../utils/type';
 import { Pagination } from '../../../../components/Pagination';
 import { getChainConfig } from '../../../../config';
+import { chainLogos } from '../../../../utils/constant';
 
 interface TradeHistoriesProps {
   wallet: string;
@@ -52,41 +53,43 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
 
   return (
     <div>
-      <TradeHistoriesFilter
-        dateStart={dateStart}
-        dateEnd={dateEnd}
-        timeFilter={timeFilter}
-        onUpdateDateStart={(value) => {
-          setTimeFilter(undefined);
-          setDateStart(value);
-          setPage(1);
-        }}
-        onUpdateDateEnd={(value) => {
-          setTimeFilter(undefined);
-          setDateEnd(value);
-          setPage(1);
-        }}
-        onUpdateTimeFilter={(value) => {
-          setDateStart(undefined);
-          setDateEnd(undefined);
-          setTimeFilter(value);
-          setPage(1);
-        }}
-        onRefresh={() => {
-          setDateStart(undefined);
-          setDateEnd(undefined);
-          setTimeFilter(undefined);
-          setPage(1);
-        }}
-        chainId={chainId}
-        onUpdateChainId={(value) => {
-          setDateStart(undefined);
-          setDateEnd(undefined);
-          setTimeFilter(undefined);
-          setChainId(value);
-          setPage(1);
-        }}
-      />
+      <div className="mb-10px">
+        <TradeHistoriesFilter
+          dateStart={dateStart}
+          dateEnd={dateEnd}
+          timeFilter={timeFilter}
+          onUpdateDateStart={(value) => {
+            setTimeFilter(undefined);
+            setDateStart(value);
+            setPage(1);
+          }}
+          onUpdateDateEnd={(value) => {
+            setTimeFilter(undefined);
+            setDateEnd(value);
+            setPage(1);
+          }}
+          onUpdateTimeFilter={(value) => {
+            setDateStart(undefined);
+            setDateEnd(undefined);
+            setTimeFilter(value);
+            setPage(1);
+          }}
+          onRefresh={() => {
+            setDateStart(undefined);
+            setDateEnd(undefined);
+            setTimeFilter(undefined);
+            setPage(1);
+          }}
+          chainId={chainId}
+          onUpdateChainId={(value) => {
+            setDateStart(undefined);
+            setDateEnd(undefined);
+            setTimeFilter(undefined);
+            setChainId(value);
+            setPage(1);
+          }}
+        />
+      </div>
       {!items.length && !loading ? (
         <div className="h-250px flex justify-center items-center">
           <NoData />
@@ -99,13 +102,16 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
         </div>
       ) : (
         <div className="relative">
-          <div className="xl:table w-100% xl:border-spacing-y-12px mt-14px xl:mt-0">
+          <div className="xl:table w-100% xl:border-spacing-y-12px">
             <div ref={headerRef} className="hidden xl:table-row [&>.table-cell]:px-17px">
               <div className="table-cell">
                 <label className="text-14px color-#cdcdcd">Action Time</label>
               </div>
               <div className="table-cell">
                 <label className="text-14px color-#cdcdcd">Market</label>
+              </div>
+              <div className="table-cell">
+                <label className="text-14px color-#cdcdcd">Chain</label>
               </div>
               <div className="table-cell">
                 <label className="text-14px color-#cdcdcd">Action</label>
@@ -150,12 +156,20 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
                     <span className="color-white">{unixToDate(item.time)}</span>
                   </div>
                   <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                    <TokenSide
-                      side={item.side}
-                      size={'md'}
-                      symbol={item.indexToken.symbol}
-                      chainId={item.chainId}
-                    />
+                    <TokenSide side={item.side} size={'md'} symbol={item.indexToken.symbol} />
+                  </div>
+                  <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                    <div className="flex items-center">
+                      <img
+                        src={chainLogos[item.chainId]}
+                        width={18}
+                        height={18}
+                        className="mr-10px"
+                      />
+                      <span className="color-white whitespace-nowrap">
+                        {getChainConfig(item.chainId).name}
+                      </span>
+                    </div>
                   </div>
                   <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                     <span className="color-white">

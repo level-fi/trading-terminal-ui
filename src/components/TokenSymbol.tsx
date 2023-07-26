@@ -8,8 +8,6 @@ import ARB from '../assets/tokens/ARB.svg';
 import USDC from '../assets/tokens/USDC.svg';
 import defaultToken from '../assets/tokens/NO_NAME.png';
 import React from 'react';
-import { chainLogos } from '../utils/constant';
-import c from 'classnames';
 
 const logo: { [key: string]: string } = {
   DEFAULT: defaultToken,
@@ -27,10 +25,9 @@ const logo: { [key: string]: string } = {
 export interface TokenSymbolProps {
   symbol?: string;
   size?: number;
-  chainId?: number;
 }
 
-export const TokenSymbol: React.FC<TokenSymbolProps> = ({ symbol, size = 32, chainId }) => {
+export const TokenSymbol: React.FC<TokenSymbolProps> = ({ symbol, size = 32 }) => {
   return (
     <div className="relative">
       <img
@@ -39,21 +36,6 @@ export const TokenSymbol: React.FC<TokenSymbolProps> = ({ symbol, size = 32, cha
         height={size}
         width={size}
       />
-      {chainLogos[chainId] && (
-        <div
-          style={{
-            height: size / 2,
-            width: size / 2,
-          }}
-          className={c(
-            'rd-999px bg-#040404',
-            'absolute -right-6px -bottom-3px z-2',
-            'flex items-center justify-center',
-          )}
-        >
-          <img height={size / 3} width={size / 3} className="block" src={chainLogos[chainId]} />
-        </div>
-      )}
     </div>
   );
 };

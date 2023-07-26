@@ -3,11 +3,13 @@ import {
   LeverageHistory,
   OrderType,
   QueryTradeHistoriesConfig,
+  TradeHistoriesResponse,
   TradeHistoryResponse,
   UpdateType,
 } from '../../../../../utils/type';
 import { useQuery } from '@tanstack/react-query';
 import { queryTradeHistories } from '../../../../../utils/queries';
+import { useState, useEffect } from 'react';
 
 const parse2LeverageHistory = (raw: TradeHistoryResponse): LeverageHistory | undefined => {
   const indexToken = getTokenByAddress(raw.indexToken, raw.chainId);
@@ -41,9 +43,17 @@ const parse2LeverageHistory = (raw: TradeHistoryResponse): LeverageHistory | und
   };
 };
 export const useTradeHistories = (config: QueryTradeHistoriesConfig) => {
+  const [response, setResponse] = useState<TradeHistoriesResponse>();
   const { data, isInitialLoading } = useQuery(queryTradeHistories(config));
-  const items = data ? data.data.slice(0, config.size).map(parse2LeverageHistory) : [];
-  const pageInfo = data ? data.page : undefined;
+
+  useEffect(() => {
+    if (isInitialLoading) {
+      return;
+    }
+    setResponse(data);
+  }, [data, isInitialLoading]);
+  const items = response ? response.data.slice(0, config.size).map(parse2LeverageHistory) : [];
+  const pageInfo = response ? response.page : undefined;
 
   return {
     items,

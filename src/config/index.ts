@@ -7,7 +7,7 @@ export const baseConfig: BaseConfig = {
 
 const subgraphQueryKey = 'c246be2f219f';
 export const bscConfig: ChainConfig = {
-  name: 'BNB',
+  name: 'BNB Chain',
   chainId: 56,
   baseExplorer: 'https://bscscan.com',
   rpc: 'https://bsc-dataseed1.binance.org/',
@@ -76,7 +76,7 @@ export const bscConfig: ChainConfig = {
 };
 
 export const arbConfig: ChainConfig = {
-  name: 'ARB',
+  name: 'Arbitrum',
   chainId: 42161,
   baseExplorer: 'https://arbiscan.io',
   rpc: 'https://arb1.arbitrum.io/rpc/',

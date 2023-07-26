@@ -71,7 +71,7 @@ export const queryBackendPrice = (
 };
 
 // TODO
-export const queryStats = (chainId: number): QueryObserverOptions<Stats> => {
+export const queryStats = (chainId: number): QueryObserverOptions<Stats[]> => {
   return {
     queryKey: ['chain', chainId, 'stats'],
     enabled: !!chainId,
@@ -85,16 +85,14 @@ export const queryStats = (chainId: number): QueryObserverOptions<Stats> => {
       }
       const parsed = MultiChainStatsResponseSchema.parse(await res.json());
 
-      return {
-        prices: parsed.map((c) => c.data?.data?.prices || []).flat(),
+      return parsed.map((item) => ({
+        prices: item.data.data.prices || [],
         openInterest: {
-          long: parsed.reduce((total, c) => total + (c.data?.data?.openInterest?.long || 0), 0),
-          short: parsed.reduce(
-            (total, c) => total + (c.data?.data?.openInterest?.short || 0),
-            0,
-          ),
+          long: item.data.data.openInterest.long,
+          short: item.data.data.openInterest.short,
         },
-      };
+        chainId: +item.chainId,
+      }));
     },
     refetchInterval: 15000,
   };
@@ -395,6 +393,6 @@ export const querySwapHistories = (
       const parsed = SwapHistoriesResponseSchema.parse(await res.json());
       return parsed;
     },
-    refetchInterval: 15000,
+    refetchInterval: 60000,
   };
 };

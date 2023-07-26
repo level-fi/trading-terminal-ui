@@ -7,9 +7,10 @@ import {
   UpdateType,
 } from '../../../../../utils/type';
 import { formatBigNumber } from '../../../../../utils/numbers';
-import { useQueries } from '@tanstack/react-query';
+import { QueryObserverOptions, useQueries } from '@tanstack/react-query';
 import { queryBackendPrice, queryOrders } from '../../../../../utils/queries';
 import { BigNumber } from 'ethers';
+import { useEffect, useMemo, useState } from 'react';
 
 export interface LeverageOrder {
   side: Side;
@@ -86,19 +87,17 @@ export const useTradeOrders = (config: QueryOrdersConfig) => {
   const queriesResponse = useQueries({
     queries: chainIds.map((c) => [queryOrders(c, config), queryBackendPrice(c)]).flat(),
   });
-  if (queriesResponse.some((c) => !c.data && c.isInitialLoading)) {
-    return {
-      items: [],
-      loading: true,
-    };
-  }
-
+  const loading = queriesResponse.some((c) => c.isInitialLoading);
   const items: LeverageOrder[] = [];
-  for (const chainId of chainIds) {
-    const [{ data: orders }, { data: prices }] = queriesResponse.splice(0, 2);
-    const rawOrders = orders.data as any[];
+  for (let i = 0; i < chainIds.length; i++) {
+    const orders = queriesResponse[i * 2].data;
+    const prices = queriesResponse[i * 2 + 1].data;
+    if (!orders || !prices) {
+      continue;
+    }
+    const rawOrders = (orders.data as []).map((c) => Object.assign({}, c));
     for (const order of rawOrders) {
-      const parsed = parse2LeverageOrder(order, chainId);
+      const parsed = parse2LeverageOrder(order, chainIds[i]);
       if (!parsed) {
         continue;
       }
@@ -106,10 +105,8 @@ export const useTradeOrders = (config: QueryOrdersConfig) => {
       items.push(parsed);
     }
   }
-  items.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
-
   return {
-    items: items,
-    loading: false,
+    items,
+    loading,
   };
 };

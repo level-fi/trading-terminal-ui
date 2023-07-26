@@ -4,14 +4,31 @@ import { ReactComponent as IconTrader } from '../assets/icons/ic-trader.svg';
 import { ReactComponent as IconLeaderboard } from '../assets/icons/ic-leaderboard.svg';
 import { ReactComponent as IconPosition } from '../assets/icons/ic-position.svg';
 import { ReactComponent as IconLive } from '../assets/icons/ic-live.svg';
-import { NavLink, useLocation } from 'react-router-dom';
+import IconSearch from '../assets/icons/ic-search.svg';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../assets/imgs/level.svg';
 import IconBar from '../assets/icons/ic-bar.svg';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { utils } from 'ethers';
+import c from 'classnames';
 
 export const Header = () => {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [searchContent, setSearchContent] = useState('');
   const location = useLocation();
+
+  const navigate = useNavigate();
+  const search = useCallback(
+    (content: string) => {
+      setSearchContent('');
+      if (!utils.isAddress(content?.toLowerCase())) {
+        return;
+      }
+      navigate(`/traders/${content}`);
+    },
+    [navigate],
+  );
+  const isValid = !!searchContent && utils.isAddress(searchContent.toLowerCase());
 
   const toggleMenu = (visible: boolean) => {
     setMenuVisible(visible);
@@ -31,8 +48,15 @@ export const Header = () => {
         className="header-bg z-1 absolute top-0 left-0 w-100% h-331px op-20 xl:op-100"
         data-zone={location.pathname.split('/')[1]}
       ></div>
-      <div className="relative z-2 flex justify-between items-center px-18px py-15px flex xl:px-30px xl:py-25px">
-        <div className="flex items-center xl:w-150px">
+      <div
+        className={c(
+          'relative z-2',
+          'grid grid-cols-[auto_auto] grid-rows-2 items-center',
+          'px-18px py-15px',
+          'md:(px-30px py-25px flex justify-between)',
+        )}
+      >
+        <div className="flex items-center order-1">
           <img
             src={IconBar}
             height={16}
@@ -45,11 +69,12 @@ export const Header = () => {
             <img src={Logo} className="h-28px xl:h-34px" />
           </NavLink>
         </div>
-        <div className="header-nav-link text-center hidden xl:block">
+        {/* menu */}
+        <div className="header-nav-link hidden xl:block ml-24px order-2">
           <NavLink
             to={'/'}
             className={
-              'mr-36px no-underline [&.active>label]:color-primary color-white hover-opacity-75 hover:color-primary [&.active_svg_path]:fill-primary [&_svg_path]:hover:fill-primary'
+              'mx-24px no-underline [&.active>label]:color-primary color-white hover-opacity-75 hover:color-primary [&.active_svg_path]:fill-primary [&_svg_path]:hover:fill-primary'
             }
           >
             <label className="text-16px font-400 cursor-inherit">Leaderboard</label>
@@ -57,7 +82,7 @@ export const Header = () => {
           <NavLink
             to={'/traders'}
             className={
-              'mr-36px no-underline [&.active>label]:color-primary color-white hover-opacity-75 hover:color-primary [&.active_svg_path]:fill-primary [&_svg_path]:hover:fill-primary'
+              'mx-24px no-underline [&.active>label]:color-primary color-white hover-opacity-75 hover:color-primary [&.active_svg_path]:fill-primary [&_svg_path]:hover:fill-primary'
             }
           >
             <label className="text-16px font-400 cursor-inherit">Traders</label>
@@ -65,7 +90,7 @@ export const Header = () => {
           <NavLink
             to={'/positions?status=open'}
             className={
-              'mr-36px no-underline [&.active>label]:color-primary color-white hover-opacity-75 hover:color-primary [&.active_svg_path]:fill-primary [&_svg_path]:hover:fill-primary'
+              'mx-24px no-underline [&.active>label]:color-primary color-white hover-opacity-75 hover:color-primary [&.active_svg_path]:fill-primary [&_svg_path]:hover:fill-primary'
             }
           >
             <label className="text-16px font-400 cursor-inherit">Positions</label>
@@ -73,13 +98,37 @@ export const Header = () => {
           <NavLink
             to={'/live'}
             className={
-              'mr-36px no-underline [&.active>label]:color-primary color-white hover-opacity-75 hover:color-primary [&.active_svg_path]:fill-primary [&_svg_path]:hover:fill-primary'
+              'mx-24px no-underline [&.active>label]:color-primary color-white hover-opacity-75 hover:color-primary [&.active_svg_path]:fill-primary [&_svg_path]:hover:fill-primary'
             }
           >
             <label className="text-16px font-400 cursor-inherit">Live</label>
           </NavLink>
         </div>
-        <div className="xl:w-150px flex justify-end items-center">
+        {/* search */}
+        <form className="ml-auto mr-40px mt-10px order-4 col-span-2 w-100% md:(w-424px order-3 mt-0)">
+          <div className="bg-black bg-op-45 rounded-10px flex items-center">
+            <img src={IconSearch} className="h-14px mr-8px ml-20px" />
+            <input
+              type="text"
+              placeholder="Enter or paste an address"
+              className="text-14px bg-transparent border-none flex-1 outline-none color-white"
+              value={searchContent}
+              onChange={(event) => {
+                setSearchContent(event?.target?.value);
+              }}
+            />
+            <button
+              type="submit"
+              onClick={() => search(searchContent)}
+              disabled={!isValid}
+              className="text-14px xl:text-16px bg-primary border-none outline-none h-36px w-76px xl:w-94px m-3px rounded-8px font-700 hover-cursor-pointer hover-bg-opacity-75 disabled-hover-bg-opacity-100 disabled-bg-#706E6A disabled-text-black disabled-hover-cursor-not-allowed"
+            >
+              SEARCH
+            </button>
+          </div>
+        </form>
+        {/* go to app */}
+        <div className="flex items-center justify-end order-3 md:order-4">
           <a
             href="https://app.level.finance/"
             className="color-primary flex items-center font-700 no-underline hover-opacity-75 [&>_svg_path]:fill-primary xl:text-16px text-14px"

@@ -137,13 +137,24 @@ export const PositionDetailResponseSchema = z.object({
 });
 export type PositionDetailResponse = z.infer<typeof PositionDetailResponseSchema>;
 
+export const TraderDetailStatByChainSchema = z.object({
+  chainId: z.number(),
+  value: z.number(),
+});
 export const TraderDetailResponseSchema = z.object({
   data: z.object({
+    byChains: z.object({
+      fee: z.array(TraderDetailStatByChainSchema),
+      netProfit: z.array(TraderDetailStatByChainSchema),
+      openInterest: z.array(TraderDetailStatByChainSchema),
+      volumes: z.array(TraderDetailStatByChainSchema),
+    }),
     totalPnl: z.number(),
     totalNetProfit: z.number(),
     totalFee: z.number(),
     totalTrading: z.number(),
     totalClosed: z.number(),
+    totalLiquidated: z.number(),
     totalOpen: z.number(),
     openInterest: z.number(),
   }),
@@ -203,6 +214,7 @@ export interface Stats {
     long: number;
     short: number;
   };
+  chainId: number;
 }
 
 export interface QueryPositionsConfig {

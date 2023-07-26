@@ -7,12 +7,11 @@ interface SwapAmountProps {
   token: ChainConfigToken;
   size: number;
   amount: number;
-  chainId: number;
 }
-export const SwapAmount: React.FC<SwapAmountProps> = ({ amount, size, token, chainId }) => {
+export const SwapAmount: React.FC<SwapAmountProps> = ({ amount, size, token }) => {
   return (
     <div className="flex items-center">
-      <TokenSymbol symbol={token?.symbol} size={size} chainId={chainId} />
+      <TokenSymbol symbol={token?.symbol} size={size} />
       <label className="color-white ml-14px">
         {formatNumberWithThreshold(
           amount,
