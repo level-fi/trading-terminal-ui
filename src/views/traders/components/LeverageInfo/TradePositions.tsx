@@ -126,26 +126,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
       ) : (
         <div className="flex flex-row justify-between mb-10px">
           <div className="flex items-center color-#cdcdcd text-14px font-700">
-            {statusOptions.map(({ label, value }, i) => {
-              const active = value === status;
-              const color = active ? 'color-black' : 'color-white';
-              const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
-              return (
-                <div
-                  key={i}
-                  className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-                  onClick={() => {
-                    setStatus(value);
-                    setPage(1);
-                  }}
-                >
-                  {label}
-                  {getTotalInfo(value)}
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex items-center color-#cdcdcd text-14px font-700">
+            <label className="color-#cdcdcd mr-6px">CHAIN:</label>
             {chainOptions.map(({ label, value }, i) => {
               const active = value === chainId;
               const color = active ? 'color-black' : 'color-white';
@@ -163,6 +144,27 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
                     <img className="mr-10px" src={chainLogos[value]} width={16} height={16} />
                   )}
                   {label}
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex items-center color-#cdcdcd text-14px font-700">
+            <label className="color-#cdcdcd mr-6px">STATUS:</label>
+            {statusOptions.map(({ label, value }, i) => {
+              const active = value === status;
+              const color = active ? 'color-black' : 'color-white';
+              const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
+              return (
+                <div
+                  key={i}
+                  className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
+                  onClick={() => {
+                    setStatus(value);
+                    setPage(1);
+                  }}
+                >
+                  {label}
+                  {getTotalInfo(value)}
                 </div>
               );
             })}

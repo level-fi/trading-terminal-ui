@@ -50,7 +50,51 @@ export const TradeHistoriesFilter: React.FC<TradeHistoriesFilterProps> = ({
   const isMobile = useScreenSize('xl');
   return (
     <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
-      <div className="flex items-center justify-between -mx-5px">
+      {isMobile ? (
+        <div className="table text-right text-14px w-100% [&_.table-cell]:pb-10px">
+          <div className="table-row">
+            <label className="table-cell w-70px text-left color-#cdcdcd">Chain:</label>
+            <div className="table-cell">
+              <div className="flex justify-start w-100% -my-10px">
+                <Dropdown
+                  defaultValue={chainOptions[0]}
+                  options={chainOptions}
+                  value={chainOptions.find((c) => c.value === chainId)}
+                  className="color-white uppercase"
+                  onChange={(item) => {
+                    onUpdateChainId(item.value);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center color-#cdcdcd text-14px font-700">
+          <label className="color-#cdcdcd mr-6px">CHAIN:</label>
+          {chainOptions.map(({ label, value }, i) => {
+            const active = value === chainId;
+            const color = active ? 'color-black' : 'color-white';
+            const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
+            return (
+              <div
+                key={i}
+                className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
+                onClick={() => {
+                  onUpdateChainId(value);
+                }}
+              >
+                {chainLogos[value] && (
+                  <img className="mr-10px" src={chainLogos[value]} width={16} height={16} />
+                )}
+                {label}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      <div className="flex items-center color-#cdcdcd text-14px font-700 xl:(mx-20px mt-0) -mx-5px mt-10px">
+        <label className="color-#cdcdcd mr-6px hidden xl:block">TIME:</label>
         {timeFilters.map(({ label, value }, i) => {
           const active = timeFilter == value;
           const color = active ? 'color-black' : 'color-white';
@@ -72,7 +116,7 @@ export const TradeHistoriesFilter: React.FC<TradeHistoriesFilterProps> = ({
         className={c(
           'flex items-center mt-20px mb-10px',
           '[&_input]:(bg-transparent b-none color-#d8d8d8 outline-none w-98px text-14px)',
-          'xl:([&_input]:w-112px [&_input]:text-16px h-auto ml-auto mr-20px mt-0 mb-0)',
+          'xl:([&_input]:w-112px [&_input]:text-16px h-auto ml-auto mt-0 mb-0)',
         )}
       >
         <label className="text-14px xl:text-16px color-#cdcdcd mr-10px">From:</label>
@@ -99,48 +143,6 @@ export const TradeHistoriesFilter: React.FC<TradeHistoriesFilterProps> = ({
           <label className="hidden xl:block ml-8px text-14px color-#cdcdcd">Refresh</label>
         </div>
       </div>
-      {isMobile ? (
-        <div className="table text-right text-14px w-100% [&_.table-cell]:pb-10px">
-          <div className="table-row">
-            <label className="table-cell w-70px text-left color-#cdcdcd">Chain:</label>
-            <div className="table-cell">
-              <div className="flex justify-start w-100% -my-10px">
-                <Dropdown
-                  defaultValue={chainOptions[0]}
-                  options={chainOptions}
-                  value={chainOptions.find((c) => c.value === chainId)}
-                  className="color-white uppercase"
-                  onChange={(item) => {
-                    onUpdateChainId(item.value);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="flex items-center color-#cdcdcd text-14px font-700">
-          {chainOptions.map(({ label, value }, i) => {
-            const active = value === chainId;
-            const color = active ? 'color-black' : 'color-white';
-            const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
-            return (
-              <div
-                key={i}
-                className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-                onClick={() => {
-                  onUpdateChainId(value);
-                }}
-              >
-                {chainLogos[value] && (
-                  <img className="mr-10px" src={chainLogos[value]} width={16} height={16} />
-                )}
-                {label}
-              </div>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 };

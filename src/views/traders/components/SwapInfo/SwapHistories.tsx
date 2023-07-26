@@ -68,8 +68,9 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col xl:(flex-row justify-end) mb-10px">
+        <div className="flex flex-col xl:(flex-row) mb-10px">
           <div className="flex items-center color-#cdcdcd text-14px font-700">
+            <label className="color-#cdcdcd mr-6px">CHAIN:</label>
             {chainOptions.map(({ label, value }, i) => {
               const active = value === chainId;
               const color = active ? 'color-black' : 'color-white';
