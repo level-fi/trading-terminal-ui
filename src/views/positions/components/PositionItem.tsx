@@ -125,12 +125,6 @@ export const PositionItem: React.FC<PositionItemProps> = ({
         <TokenSide side={side} symbol={token?.symbol} />
       </div>
       <div className={c(`table-cell b-y-1px b-solid b-#5e5e5e vertical-mid`, cellClassName)}>
-        <div className="flex items-center">
-          <img src={chainLogos[chainId]} width={18} height={18} className="mr-10px" />
-          <span className="color-white whitespace-nowrap">{chainConfig.name}</span>
-        </div>
-      </div>
-      <div className={c(`table-cell b-y-1px b-solid b-#5e5e5e vertical-mid`, cellClassName)}>
         <span className="color-white">{formatCurrency(size)}</span>
       </div>
       <div className={c(`table-cell b-y-1px b-solid b-#5e5e5e vertical-mid`, cellClassName)}>
@@ -151,6 +145,12 @@ export const PositionItem: React.FC<PositionItemProps> = ({
       </div>
       <div className={c('table-cell b-y-1px b-solid b-#5e5e5e vertical-mid', cellClassName)}>
         <PositionStatus status={status} />
+      </div>
+      <div className={c(`table-cell b-y-1px b-solid b-#5e5e5e vertical-mid`, cellClassName)}>
+        <div className="flex items-center">
+          <img src={chainLogos[chainId]} width={18} height={18} className="mr-10px" />
+          <span className="color-white whitespace-nowrap">{chainConfig.name}</span>
+        </div>
       </div>
       <div className={c('table-cell b-y-1px b-solid b-#5e5e5e vertical-mid', cellClassName)}>
         <div className="flex flex-col 2xl:flex-row">

@@ -78,17 +78,6 @@ export const PositionDetailModal = () => {
                   >
                     {Side[side]}
                   </div>
-                  <div className="text-14px font-500 flex items-center text-white bg-#D9D9D9 bg-op-10 h-23px px-10px rd-999px ml-8px">
-                    {chainLogos[chainConfig?.chainId] && (
-                      <img
-                        src={chainLogos[chainConfig?.chainId]}
-                        width={14}
-                        height={14}
-                        className="mr-6px"
-                      />
-                    )}
-                    {chainConfig?.name}
-                  </div>
                 </div>
                 <div className="mt-8px color-#cdcdcd xl:text-14px text-12px">
                   Wallet:{' '}
@@ -118,6 +107,22 @@ export const PositionDetailModal = () => {
               </div>
             )}
             {[
+              {
+                title: 'Chain',
+                value: (
+                  <div className="flex items-center text-white">
+                    {chainLogos[chainConfig?.chainId] && (
+                      <img
+                        src={chainLogos[chainConfig?.chainId]}
+                        width={14}
+                        height={14}
+                        className="mr-6px"
+                      />
+                    )}
+                    {chainConfig?.name}
+                  </div>
+                ),
+              },
               {
                 title: 'Status',
                 value: <PositionStatus status={item?.status} size="md" />,

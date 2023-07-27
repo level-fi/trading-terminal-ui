@@ -35,12 +35,7 @@ export const TraderDetail = () => {
         <TraderDetailPanel item={data} wallet={wallet} loading={isInitialLoading} />
       </div>
       <div className="mt-32px">
-        <LeverageInfo
-          wallet={wallet}
-          totalOpen={data?.data?.totalOpen}
-          totalClosed={data?.data?.totalClosed}
-          totalLiquidated={data?.data?.totalLiquidated}
-        />
+        <LeverageInfo wallet={wallet} />
       </div>
       <div className="mt-32px">
         <SwapInfo wallet={wallet} />
