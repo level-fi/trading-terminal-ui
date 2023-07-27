@@ -1,30 +1,27 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NoData } from '../../../../components/NoData';
 import { Loading } from '../../../../components/Loading';
 import { PositionItem } from '../../../positions/components/PositionItem';
 import { TableContentLoader } from '../../../../components/TableContentLoader';
 import { PositionListItemResponse, PositionStatus } from '../../../../utils/type';
 import { Pagination } from '../../../../components/Pagination';
-import { chainOptions, statusOptions } from '../../../positions/hooks/usePositionsConfig';
+import {
+  chainOptions,
+  statusOptions as baseStatusOptions,
+} from '../../../positions/hooks/usePositionsConfig';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { queryPositions } from '../../../../utils/queries';
+import { queryPositions, queryTrader } from '../../../../utils/queries';
 import { chainLogos } from '../../../../utils/constant';
 import { useScreenSize } from '../../../../hooks/useScreenSize';
 import { Dropdown } from '../../../../components/Dropdown';
 
 interface TradePositionsProps {
   wallet: string;
-  totalOpen: number;
-  totalClosed: number;
-  totalLiquidated: number;
   setTotalPositions: (value: number) => void;
 }
 export const TradePositions: React.FC<TradePositionsProps> = ({
   wallet,
-  totalOpen,
-  totalClosed,
-  totalLiquidated,
   setTotalPositions,
 }) => {
   const [params, setParams] = useSearchParams();
@@ -35,6 +32,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
   const [response, setResponse] = useState<PositionListItemResponse>();
   const isMobile = useScreenSize('xl');
 
+  const { data: trader, refetch: refetchTrader } = useQuery(queryTrader(wallet));
   const { data, isInitialLoading } = useQuery(
     queryPositions({
       page: page,
@@ -56,31 +54,89 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
   const items = response ? response.data : [];
   const pageInfo = response ? response.page : undefined;
 
-  useEffect(() => {
-    setTotalPositions(data?.page?.totalItems);
-  }, [data?.page?.totalItems, setTotalPositions]);
+  const totalOpen = useMemo(
+    () => trader?.data?.byChains?.totalOpen || [],
+    [trader?.data?.byChains?.totalOpen],
+  );
+  const totalClosed = useMemo(
+    () => trader?.data?.byChains?.totalClosed || [],
+    [trader?.data?.byChains?.totalClosed],
+  );
+  const totalLiquidated = useMemo(
+    () => trader?.data?.byChains?.totalLiquidated || [],
+    [trader?.data?.byChains?.totalLiquidated],
+  );
 
-  const getTotalInfo = useCallback(
+  const getTotal = useCallback(
     (status?: PositionStatus) => {
-      let total;
+      let total = 0;
       switch (status) {
         case PositionStatus.OPEN:
-          total = totalOpen;
+          if (chainId) {
+            total = totalOpen.find((c) => c.chainId === chainId)?.value;
+          } else {
+            total = totalOpen.reduce((a, b) => a + b.value, 0);
+          }
           break;
         case PositionStatus.CLOSE:
-          total = totalClosed;
+          if (chainId) {
+            total = totalClosed.find((c) => c.chainId === chainId)?.value;
+          } else {
+            total = totalClosed.reduce((a, b) => a + b.value, 0);
+          }
           break;
         case PositionStatus.LIQUIDATED:
-          total = totalLiquidated;
+          if (chainId) {
+            total = totalLiquidated.find((c) => c.chainId === chainId)?.value;
+          } else {
+            total = totalLiquidated.reduce((a, b) => a + b.value, 0);
+          }
           break;
       }
-      if (!total) {
-        return;
-      }
-      return ` (${total})`;
+      return total;
     },
-    [totalClosed, totalLiquidated, totalOpen],
+    [chainId, totalClosed, totalLiquidated, totalOpen],
   );
+
+  const total = useMemo(
+    () =>
+      getTotal(PositionStatus.OPEN) +
+      getTotal(PositionStatus.CLOSE) +
+      getTotal(PositionStatus.LIQUIDATED),
+    [getTotal],
+  );
+
+  useEffect(() => {
+    setTotalPositions(total);
+  }, [setTotalPositions, total]);
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+    let fromTrader = 0;
+    if (!status) {
+      fromTrader = total;
+    } else {
+      fromTrader = getTotal(status);
+    }
+    if (fromTrader === data.page.totalItems) {
+      return;
+    }
+    refetchTrader();
+  }, [data, getTotal, refetchTrader, status, total]);
+
+  const statusOptions = baseStatusOptions.map((c) => {
+    const total = getTotal(c.value);
+    return {
+      label: c.label,
+      customLabel: {
+        label: c.label,
+        subLabel: total && `Total: ${total}`,
+      },
+      value: c.value,
+    };
+  });
 
   return (
     <div>
@@ -154,6 +210,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
               const active = value === status;
               const color = active ? 'color-black' : 'color-white';
               const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
+              const total = getTotal(value);
               return (
                 <div
                   key={i}
@@ -164,7 +221,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
                   }}
                 >
                   {label}
-                  {getTotalInfo(value)}
+                  {!!total && ` (${total})`}
                 </div>
               );
             })}

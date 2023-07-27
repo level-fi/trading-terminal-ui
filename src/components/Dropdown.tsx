@@ -27,9 +27,11 @@ const CustomOption = (props) => {
           } py-10px hover:op-100 px-10px`}
         >
           <div className={`text-14px color-white font-700`}>{props.data.customLabel.label}</div>
-          <div className="mt-8px text-12px color-#cdcdcb font-200">
-            {props.data.customLabel.subLabel}
-          </div>
+          {!!props.data.customLabel.subLabel && (
+            <div className="mt-8px text-12px color-#cdcdcb font-200">
+              {props.data.customLabel.subLabel}
+            </div>
+          )}
         </div>
       ) : (
         <div
