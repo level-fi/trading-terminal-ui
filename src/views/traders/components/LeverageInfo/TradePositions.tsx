@@ -179,9 +179,6 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
                 <span className="text-14px color-#cdcdcd">Position</span>
               </div>
               <div className="table-cell ">
-                <span className="text-14px color-#cdcdcd">Chain</span>
-              </div>
-              <div className="table-cell ">
                 <span className="text-14px color-#cdcdcd">Size</span>
               </div>
               <div className="table-cell ">
@@ -198,6 +195,9 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
               </div>
               <div className="table-cell ">
                 <span className="text-14px color-#cdcdcd">Status</span>
+              </div>
+              <div className="table-cell ">
+                <span className="text-14px color-#cdcdcd">Chain</span>
               </div>
               <div className="table-cell ">
                 <span className="text-14px color-#cdcdcd">Last Updated</span>
