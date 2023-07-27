@@ -102,6 +102,9 @@ export const PositionList = () => {
                 <label className="color-#cdcdcd">Status</label>
               </div>
               <div>
+                <label className="color-#cdcdcd">Chain</label>
+              </div>
+              <div>
                 <SortableTitle
                   valueKey="time"
                   onChange={(key, value) => {
@@ -114,9 +117,6 @@ export const PositionList = () => {
                 >
                   Last Updated
                 </SortableTitle>
-              </div>
-              <div>
-                <label className="color-#cdcdcd">Chain</label>
               </div>
               <span className="w-1px"></span>
             </div>
