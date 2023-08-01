@@ -1,7 +1,7 @@
 import { BaseConfig, ChainConfig } from '../utils/type';
 
 export const baseConfig: BaseConfig = {
-  baseUrl: 'https://terminal-api.level.finance/v8',
+  baseUrl: 'https://terminal-api.level.finance/v8.1',
   priceEndpoint: 'https://api.level.finance/prices',
 };
 
