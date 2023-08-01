@@ -115,9 +115,6 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                 <label className="text-14px color-#cdcdcd">Type</label>
               </div>
               <div className="table-cell">
-                <label className="text-14px color-#cdcdcd">Chain</label>
-              </div>
-              <div className="table-cell">
                 <label className="text-14px color-#cdcdcd">From</label>
               </div>
               <div className="table-cell">
@@ -128,6 +125,9 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
               </div>
               <div className="table-cell">
                 <label className="text-14px color-#cdcdcd">Fees Paid</label>
+              </div>
+              <div className="table-cell">
+                <label className="text-14px color-#cdcdcd">Chain</label>
               </div>
               <span></span>
             </div>
@@ -145,22 +145,6 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                 >
                   <div className="xl:hidden bg-#34343B p-14px rounded-10px mb-12px">
                     <div className="flex justify-between text-14px">
-                      <span className="color-#cdcdcd">Chain</span>
-                      <div className="color-white">
-                        <div className="flex items-center">
-                          <img
-                            src={chainLogos[item.chainId]}
-                            width={18}
-                            height={18}
-                            className="mr-10px -my-10px"
-                          />
-                          <span className="color-white whitespace-nowrap">
-                            {chainConfig.name}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex justify-between text-14px mt-14px">
                       <span className="color-#cdcdcd">Type</span>
                       <span className="color-white">{item.type}</span>
                     </div>
@@ -193,6 +177,22 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                       <span className="color-#cdcdcd">Fees Paid</span>
                       <span className="color-white">{formatCurrency(item.fee)}</span>
                     </div>
+                    <div className="flex justify-between text-14px mt-14px">
+                      <span className="color-#cdcdcd">Chain</span>
+                      <div className="color-white">
+                        <div className="flex items-center">
+                          <img
+                            src={chainLogos[item.chainId]}
+                            width={18}
+                            height={18}
+                            className="mr-10px -my-10px"
+                          />
+                          <span className="color-white whitespace-nowrap">
+                            {chainConfig.name}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                     <div className="mt-16px pt-14px b-t-1px b-dashed b-#5E5E5E">
                       <a
                         href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
@@ -212,17 +212,6 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                     <span className="color-white">{item.type}</span>
                   </div>
                   <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                    <div className="flex items-center">
-                      <img
-                        src={chainLogos[item.chainId]}
-                        width={18}
-                        height={18}
-                        className="mr-10px"
-                      />
-                      <span className="color-white whitespace-nowrap">{chainConfig.name}</span>
-                    </div>
-                  </div>
-                  <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                     <SwapAmount size={32} token={tokenIn} amount={item.amountIn} />
                   </div>
                   <div className="hidden xl:table-cell vertical-middle bg-#34343B">
@@ -238,6 +227,17 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                   </div>
                   <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                     <span className="color-white">{formatCurrency(item.fee)}</span>
+                  </div>
+                  <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                    <div className="flex items-center">
+                      <img
+                        src={chainLogos[item.chainId]}
+                        width={18}
+                        height={18}
+                        className="mr-10px"
+                      />
+                      <span className="color-white whitespace-nowrap">{chainConfig.name}</span>
+                    </div>
                   </div>
                   <span className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px w-1%">
                     <IconExplorer />
