@@ -111,10 +111,10 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
                 <label className="text-14px color-#cdcdcd">Market</label>
               </div>
               <div className="table-cell">
-                <label className="text-14px color-#cdcdcd">Chain</label>
+                <label className="text-14px color-#cdcdcd">Action</label>
               </div>
               <div className="table-cell">
-                <label className="text-14px color-#cdcdcd">Action</label>
+                <label className="text-14px color-#cdcdcd">Chain</label>
               </div>
               <span className="table-cell"></span>
             </div>
@@ -159,6 +159,11 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
                     <TokenSide side={item.side} size={'md'} symbol={item.indexToken.symbol} />
                   </div>
                   <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                    <span className="color-white">
+                      <Action {...item.messageConfig} />
+                    </span>
+                  </div>
+                  <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                     <div className="flex items-center">
                       <img
                         src={chainLogos[item.chainId]}
@@ -170,11 +175,6 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
                         {getChainConfig(item.chainId).name}
                       </span>
                     </div>
-                  </div>
-                  <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                    <span className="color-white">
-                      <Action {...item.messageConfig} />
-                    </span>
                   </div>
                   <span className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px w-1%">
                     <IconExplorer />

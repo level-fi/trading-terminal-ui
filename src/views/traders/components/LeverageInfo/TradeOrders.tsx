@@ -86,11 +86,11 @@ export const TradeOrders: React.FC<TradeOrdersProps> = ({ wallet }) => {
           <div className="xl:table w-100% xl:border-spacing-y-12px">
             <div className="hidden xl:table-row [&>.table-cell]:px-17px">
               <label className="table-cell text-14px color-#cdcdcd">Order Type</label>
-              <label className="table-cell text-14px color-#cdcdcd">Chain</label>
               <label className="table-cell text-14px color-#cdcdcd">Type</label>
               <label className="table-cell text-14px color-#cdcdcd">Order</label>
               <label className="table-cell text-14px color-#cdcdcd">Trigger Condition</label>
               <label className="table-cell text-14px color-#cdcdcd">Mark Price</label>
+              <label className="table-cell text-14px color-#cdcdcd">Chain</label>
             </div>
             {items.map((item, i) => (
               <div
@@ -128,6 +128,18 @@ export const TradeOrders: React.FC<TradeOrdersProps> = ({ wallet }) => {
                   <TokenSide side={item.side} size={'md'} symbol={item.indexToken.symbol} />
                 </div>
                 <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                  <label className="color-white">{OrderType[item.type]}</label>
+                </div>
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                  <label className="color-white">{item.action}</label>
+                </div>
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                  <label className="color-white">{item.triggerCondition}</label>
+                </div>
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px">
+                  <label className="color-white">{formatCurrency(item.markPrice)}</label>
+                </div>
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                   <div className="flex items-center">
                     <img
                       src={chainLogos[item.chainId]}
@@ -139,18 +151,6 @@ export const TradeOrders: React.FC<TradeOrdersProps> = ({ wallet }) => {
                       {getChainConfig(item.chainId).name}
                     </span>
                   </div>
-                </div>
-                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                  <label className="color-white">{OrderType[item.type]}</label>
-                </div>
-                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                  <label className="color-white">{item.action}</label>
-                </div>
-                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
-                  <label className="color-white">{item.triggerCondition}</label>
-                </div>
-                <div className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px">
-                  <label className="color-white">{formatCurrency(item.markPrice)}</label>
                 </div>
               </div>
             ))}
