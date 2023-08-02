@@ -136,10 +136,10 @@ export const TradeOrders: React.FC<TradeOrdersProps> = ({ wallet }) => {
                 <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                   <label className="color-white">{item.triggerCondition}</label>
                 </div>
-                <div className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px">
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
                   <label className="color-white">{formatCurrency(item.markPrice)}</label>
                 </div>
-                <div className="hidden xl:table-cell vertical-middle bg-#34343B">
+                <div className="hidden xl:table-cell vertical-middle bg-#34343B rounded-r-10px">
                   <div className="flex items-center">
                     <img
                       src={chainLogos[item.chainId]}
