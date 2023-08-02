@@ -294,11 +294,11 @@ export const queryTradeHistories = (
       url.searchParams.append('wallet', config.wallet);
       url.searchParams.append(
         'start',
-        Math.floor(startOfDay(config.start).getTime() / 1000).toString(),
+        Math.max(0, Math.floor(startOfDay(config.start).getTime() / 1000)).toString(),
       );
       url.searchParams.append(
         'end',
-        Math.floor(startOfDay(config.end).getTime() / 1000).toString(),
+        Math.floor(endOfDay(config.end).getTime() / 1000).toString(),
       );
       url.searchParams.append('page', config.page.toString());
       url.searchParams.append('size', config.size.toString());
