@@ -193,6 +193,10 @@ export const PositionDetailModal = () => {
                 title: 'Fees Paid',
                 value: item ? formatCurrency(item.fee) : '',
               },
+              {
+                title: 'Borrow Fee',
+                value: item ? formatCurrency(item.borrowFee) : '',
+              },
             ].map(({ title, value, valueColor = 'color-white' }, index) => (
               <div
                 key={index}
