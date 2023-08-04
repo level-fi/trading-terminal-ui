@@ -4,13 +4,11 @@ import {
   OrderType,
   QueryOrdersConfig,
   Side,
-  UpdateType,
 } from '../../../../../utils/type';
 import { formatBigNumber } from '../../../../../utils/numbers';
-import { QueryObserverOptions, useQueries } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import { queryBackendPrice, queryOrders } from '../../../../../utils/queries';
 import { BigNumber } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
 
 export interface LeverageOrder {
   side: Side;
@@ -43,7 +41,7 @@ const parseAction = (raw: any, indexToken: ChainConfigToken): string => {
     },
     0.01,
   );
-  if (raw.updateType == UpdateType.INCREASE) {
+  if (raw.updateType == 'INCREASE') {
     if (BigNumber.from(raw.sizeChange).eq(0)) {
       return `Deposit ${collateral} to ${indexToken.symbol} ${Side[raw.side]}`;
     }
