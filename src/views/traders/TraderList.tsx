@@ -33,14 +33,14 @@ export const TraderList = () => {
   const pageInfo = response ? response.page : undefined;
 
   return (
-    <div className="mx-14px xl:mx-60px my-20px pb-35px relative">
-      <div className="mb-16px xl:mb-24px">
-        <div className="color-white font-800 text-20px mb-16px mt-4px xl:hidden">TRADERS</div>
+    <div className="px-14px py-15px md:(px-30px py-25px) relative">
+      <div className="mb-24px flex flex-col xl:(mb-24px flex-row items-center justify-between)">
+        <div className="color-white font-800 text-20px mb-12px xl:(text-28px mb-0)">TRADERS</div>
         <TraderFilter />
       </div>
       {isInitialLoading && !items.length ? (
         <div className="flex items-center justify-center">
-          <div className="w-300px my-50px">
+          <div className="w-50% max-w-200px my-50px">
             <Loading />
           </div>
         </div>

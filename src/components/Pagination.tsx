@@ -52,7 +52,7 @@ export const Pagination: React.FC<PaginationProps> = ({ total, current, onChange
   return (
     <div className="flex items-center bg-#2F3037 p-3px rounded-10px grid grid-cols-2 grid-gap-5px">
       <div
-        className={`xl:w-39px w-32px h-30px flex items-center justify-center rounded-l-8px ${
+        className={`xl:w-39px w-28px h-28px flex items-center justify-center rounded-l-8px ${
           current == 1
             ? 'bg-#353538 cursor-not-allowed'
             : 'bg-#18181B [&:hover_svg_path]:fill-black cursor-pointer hover-bg-primary'
@@ -64,7 +64,7 @@ export const Pagination: React.FC<PaginationProps> = ({ total, current, onChange
           onChange(1);
         }}
       >
-        <IconGoFirst className="xl:h-12px h-10px" />
+        <IconGoFirst className="xl:h-12px h-9px" />
       </div>
       {pages.map((page, i) => {
         const active = page === current;
@@ -76,7 +76,7 @@ export const Pagination: React.FC<PaginationProps> = ({ total, current, onChange
         return (
           <div
             key={i}
-            className={`bg-#18181B xl:min-w-39px min-w-32px h-30px px-8px flex items-center justify-center font-700 ${color} ${border} ${hover} xl:text-16px text-14px`}
+            className={`bg-#18181B xl:min-w-39px min-w-28px h-28px px-8px flex items-center justify-center ${color} ${border} ${hover} xl:(text-14px font-700) text-12px`}
             onClick={() => {
               if (!page) {
                 return;
@@ -89,7 +89,7 @@ export const Pagination: React.FC<PaginationProps> = ({ total, current, onChange
         );
       })}
       <div
-        className={`xl:w-39px w-32px h-30px flex items-center justify-center rounded-r-8px ${
+        className={`xl:w-39px w-28px h-28px flex items-center justify-center rounded-r-8px ${
           current == total
             ? 'bg-#353538 cursor-not-allowed'
             : 'bg-#18181B hover-bg-primary cursor-pointer [&:hover_svg_path]:fill-black'
@@ -98,7 +98,7 @@ export const Pagination: React.FC<PaginationProps> = ({ total, current, onChange
           onChange(total);
         }}
       >
-        <IconGoLast className="xl:h-12px h-10px" />
+        <IconGoLast className="xl:h-12px h-9px" />
       </div>
     </div>
   );

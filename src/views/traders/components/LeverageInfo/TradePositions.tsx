@@ -12,9 +12,8 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { queryPositions, queryTrader } from '../../../../utils/queries';
-import { chainLogos } from '../../../../utils/constant';
-import { useScreenSize } from '../../../../hooks/useScreenSize';
 import { Dropdown } from '../../../../components/Dropdown';
+import c from 'classnames';
 
 interface TradePositionsProps {
   wallet: string;
@@ -30,7 +29,6 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
   const [status, setStatus] = useState<PositionStatus>();
   const [chainId, setChainId] = useState<number>();
   const [response, setResponse] = useState<PositionListItemResponse>();
-  const isMobile = useScreenSize('xl');
 
   const { data: trader, refetch: refetchTrader } = useQuery(queryTrader(wallet));
   const { data, isInitialLoading } = useQuery(
@@ -140,94 +138,40 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
 
   return (
     <div>
-      {isMobile ? (
-        <div className="table text-right text-14px w-100% [&_.table-cell]:pb-10px mb-10px">
-          <div className="table-row">
-            <label className="table-cell text-left color-#cdcdcd mr-6px whitespace-nowrap pr-14px">
-              Status:
-            </label>
-            <div className="table-cell w-100%">
-              <div className="flex justify-start w-100% -my-10px">
-                <Dropdown
-                  defaultValue={statusOptions[1]}
-                  options={statusOptions}
-                  value={statusOptions.find((c) => c.value === status)}
-                  className="color-white uppercase"
-                  onChange={(item) => {
-                    setStatus(item.value);
-                    setPage(1);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="table-row">
-            <label className="table-cell text-left color-#cdcdcd mr-6px">Chain:</label>
-            <div className="table-cell">
-              <div className="flex justify-start w-100% -my-10px">
-                <Dropdown
-                  defaultValue={chainOptions[0]}
-                  options={chainOptions}
-                  value={chainOptions.find((c) => c.value === chainId)}
-                  className="color-white uppercase"
-                  onChange={(item) => {
-                    setChainId(item.value);
-                    setPage(1);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+      <div
+        className={c(
+          'flex flex-col mb-20px xl:(flex-row items-center mb-10px)',
+          '[&>div]:(grid grid-rows-[auto_auto] gap-y-10px items-center xl:(grid-cols-[auto_130px]))',
+          '[&>div>label]:(text-12px mr-4px xl:(text-16px))',
+        )}
+      >
+        <div>
+          <label className="color-#cdcdcd">CHAIN:</label>
+          <Dropdown
+            defaultValue={chainOptions[0]}
+            options={chainOptions}
+            value={chainOptions.find((c) => c.value === chainId)}
+            className="color-white uppercase"
+            onChange={(item) => {
+              setChainId(item.value);
+              setPage(1);
+            }}
+          />
         </div>
-      ) : (
-        <div className="flex flex-row justify-between mb-10px">
-          <div className="flex items-center color-#cdcdcd text-14px font-700">
-            <label className="color-#cdcdcd mr-6px">CHAIN:</label>
-            {chainOptions.map(({ label, value }, i) => {
-              const active = value === chainId;
-              const color = active ? 'color-black' : 'color-white';
-              const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
-              return (
-                <div
-                  key={i}
-                  className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-                  onClick={() => {
-                    setChainId(value);
-                    setPage(1);
-                  }}
-                >
-                  {chainLogos[value] && (
-                    <img className="mr-10px" src={chainLogos[value]} width={16} height={16} />
-                  )}
-                  {label}
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex items-center color-#cdcdcd text-14px font-700">
-            <label className="color-#cdcdcd mr-6px">STATUS:</label>
-            {statusOptions.map(({ label, value }, i) => {
-              const active = value === status;
-              const color = active ? 'color-black' : 'color-white';
-              const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
-              const total = getTotal(value);
-              return (
-                <div
-                  key={i}
-                  className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-                  onClick={() => {
-                    setStatus(value);
-                    setPage(1);
-                  }}
-                >
-                  {label}
-                  {!!total && ` (${total})`}
-                </div>
-              );
-            })}
-          </div>
+        <div className="mt-12px xl:(mt-0 ml-46px)">
+          <label className="color-#cdcdcd">STATUS:</label>
+          <Dropdown
+            defaultValue={statusOptions[1]}
+            options={statusOptions}
+            value={statusOptions.find((c) => c.value === status)}
+            className="color-white uppercase"
+            onChange={(item) => {
+              setStatus(item.value);
+              setPage(1);
+            }}
+          />
         </div>
-      )}
+      </div>
       {items.length ? (
         <div className="relative">
           <div className="xl:table w-100% xl:border-spacing-y-12px">
@@ -299,7 +243,7 @@ export const TradePositions: React.FC<TradePositionsProps> = ({
         </div>
       ) : isInitialLoading ? (
         <div className="h-250px flex items-center justify-center">
-          <div className="w-300px">
+          <div className="w-50% max-w-200px">
             <Loading />
           </div>
         </div>

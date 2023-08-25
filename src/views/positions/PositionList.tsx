@@ -5,7 +5,7 @@ import { PositionFilter } from './components/PositionFilter';
 import { usePositionsConfigParsed } from './hooks/usePositionsConfig';
 import { Loading } from '../../components/Loading';
 import { PositionItem } from './components/PositionItem';
-import { PositionListItemResponse, PositionStatus } from '../../utils/type';
+import { PositionListItemResponse } from '../../utils/type';
 import { useEffect, useRef, useState } from 'react';
 import { TableContentLoader } from '../../components/TableContentLoader';
 import { PositionDetailModal } from './PositionDetailModal';
@@ -29,14 +29,16 @@ export const PositionList = () => {
   const pageInfo = response ? response.page : undefined;
 
   return (
-    <div className="mx-14px xl:mx-60px my-20px pb-35px relative">
-      <div className="mb-16px xl:mb-24px">
-        <div className="color-white font-800 text-20px mb-16px mt-4px xl:hidden">POSITIONS</div>
+    <div className="px-14px py-15px md:(px-30px py-25px) relative">
+      <div className="mb-24px flex flex-col xl:(mb-24px flex-row items-center justify-between)">
+        <div className="color-white font-800 text-20px mb-12px xl:(text-28px mb-0)">
+          POSITIONS
+        </div>
         <PositionFilter />
       </div>
       {isInitialLoading && !items.length ? (
         <div className="flex items-center justify-center">
-          <div className="w-300px my-50px">
+          <div className="w-50% max-w-200px my-50px">
             <Loading />
           </div>
         </div>

@@ -59,35 +59,35 @@ export const PositionHistories: React.FC<PositionHistoriesProps> = ({ items, cha
           className="xl:table-row-group cursor-pointer no-underline"
         >
           <div className={`xl:hidden p-14px rounded-10px ${i && 'mt-12px'} bg-#34343B`}>
-            <div className="flex justify-between text-14px">
+            <div className="flex justify-between text-12px xl:(text-14px)">
               <span className="color-#cdcdcd">Time</span>
               <span className="color-white">{unixToDate(item.receivedAt)}</span>
             </div>
-            <div className="flex justify-between text-14px mt-14px">
+            <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
               <span className="color-#cdcdcd">Action</span>
               <span className="color-white uppercase">
                 {parseAction(item.rawEvent, item.event, !!item.isCloseAll)}
               </span>
             </div>
-            <div className="flex justify-between text-14px mt-14px">
+            <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
               <span className="color-#cdcdcd">Collateral Value</span>
               <span className="color-white">{formatCurrency(item.collateral)}</span>
             </div>
-            <div className="flex justify-between text-14px mt-14px">
+            <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
               <span className="color-#cdcdcd">Size</span>
               <span className="color-white">{formatCurrency(item.size)}</span>
             </div>
-            <div className="flex justify-between text-14px mt-14px">
+            <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
               <span className="color-#cdcdcd">Fees Paid</span>
               <span className="color-white">{formatCurrency(item.fee)}</span>
             </div>
-            <div className="flex justify-between text-14px mt-14px">
+            <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
               <span className="color-#cdcdcd">Executed Price</span>
               <span className="color-white">{formatCurrency(item.markPrice)}</span>
             </div>
-            <div className="mt-16px pt-14px b-t-1px b-dashed b-#5E5E5E text-right">
+            <div className="mt-16px pt-14px b-t-1px b-dashed b-#5E5E5E text-12px xl:(text-14px) flex items-center justify-end">
               <span className="color-#ADABAB">View</span>
-              <IconExplorer className="ml-8px" />
+              <IconExplorer className="ml-8px w-12px" />
             </div>
           </div>
           <div className={'hidden xl:table-row bg-#34343B hover-bg-#5E5E5E'}>

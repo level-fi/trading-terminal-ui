@@ -55,7 +55,7 @@ export const LeaderboardBoxItem: React.FC<LeaderboardBoxItemProps> = ({
                   {shortenAddress(trader.wallet, 20, 10)}
                 </span>
               </div>
-              <div className="ml-auto font-800 text-16px xl:text-20px color-#ffd339">
+              <div className="ml-auto font-800 text-14px xl:text-20px color-#ffd339">
                 {formatCurrency(trader.volume, 0)}
               </div>
             </NavLink>

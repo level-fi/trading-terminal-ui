@@ -12,6 +12,7 @@ import { QueryTradeHistoriesConfig, UseLeverageMessageConfig } from '../../../..
 import { Pagination } from '../../../../components/Pagination';
 import { getChainConfig } from '../../../../config';
 import { chainLogos } from '../../../../utils/constant';
+import { endOfDay } from 'date-fns';
 
 interface TradeHistoriesProps {
   wallet: string;
@@ -32,7 +33,7 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
     const now = Date.now();
     if (timeFilter) {
       return {
-        end: now,
+        end: endOfDay(now).getTime(),
         start: now - timeFilter * 86400000,
         page: page,
         size: 10,
@@ -41,7 +42,7 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
       };
     }
     return {
-      end: dateEnd?.getTime() || now,
+      end: dateEnd?.getTime() || endOfDay(now).getTime(),
       start: dateStart?.getTime() || 0,
       page: page,
       size: 10,
@@ -53,7 +54,7 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
 
   return (
     <div>
-      <div className="mb-10px">
+      <div className="mb-20px xl:(mb-10px)">
         <TradeHistoriesFilter
           dateStart={dateStart}
           dateEnd={dateEnd}
@@ -96,7 +97,7 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
         </div>
       ) : loading && !items.length ? (
         <div className="h-250px flex items-center justify-center">
-          <div className="w-300px">
+          <div className="w-50% max-w-200px">
             <Loading />
           </div>
         </div>
@@ -131,7 +132,7 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
                     <div className="b-b-1px b-dashed b-#5E5E5E pb-10px flex justify-between items-center">
                       <TokenSide
                         side={item.side}
-                        size={'md'}
+                        size={'sm'}
                         symbol={item.indexToken.symbol}
                         chainId={item.chainId}
                       />
@@ -143,12 +144,12 @@ export const TradeHistories = ({ wallet }: TradeHistoriesProps) => {
                         <IconExplorer height={16} width={16} />
                       </a>
                     </div>
-                    <div className="flex justify-between text-14px mt-14px">
+                    <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                       <span className="color-white leading-22px">
                         <Action {...item.messageConfig} />
                       </span>
                     </div>
-                    <div className="flex justify-between text-14px mt-14px">
+                    <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                       <span className="color-#cdcdcd">{unixToDate(item.time)}</span>
                     </div>
                   </div>

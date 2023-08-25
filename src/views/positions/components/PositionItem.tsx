@@ -75,26 +75,27 @@ export const PositionItem: React.FC<PositionItemProps> = ({
                 side={side}
                 symbol={token?.symbol}
                 chainId={chainId}
+                size="sm"
               />
             </div>
             <img src={IconRight} height={12} />
           </div>
           <div className={loading ? '[&>*>*:last-child]:invisible' : ''}>
-            <div className="flex justify-between text-14px mt-14px">
+            <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
               <span className="color-#cdcdcd">Size</span>
               <span className="color-white">{formatCurrency(size)}</span>
             </div>
-            <div className="flex justify-between text-14px mt-14px">
+            <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
               <span className="color-#cdcdcd">Net Profit</span>
               <span className={profitColor(netProfit)}>{formatProfit(netProfit)}</span>
             </div>
-            <div className="flex justify-between text-14px mt-14px">
+            <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
               <span className="color-#cdcdcd">Status</span>
               <div className="-my-3px">
                 <PositionStatus status={status} />
               </div>
             </div>
-            <div className="flex justify-between text-14px mt-14px">
+            <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
               <span className="color-#cdcdcd">Time</span>
               <span className="color-white">{unixToDate(time)}</span>
             </div>

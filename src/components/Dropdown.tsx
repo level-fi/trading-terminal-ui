@@ -21,22 +21,24 @@ const CustomOption = (props) => {
   return (
     <div {...props.innerProps}>
       {props.data.customLabel ? (
-        <div
-          className={`${
-            props.isSelected ? 'bg-#34343B' : 'op-60'
-          } py-10px hover:op-100 px-10px`}
-        >
-          <div className={`text-14px color-white font-700`}>{props.data.customLabel.label}</div>
+        <div className={`hover:op-100 px-12px py-10px lg:(py-12px px-17px)`}>
+          <div className={`text-14px font-700 ${props.isSelected ? 'c-primary' : 'c-#fff'}`}>
+            {props.data.customLabel.label}
+          </div>
           {!!props.data.customLabel.subLabel && (
-            <div className="mt-8px text-12px color-#cdcdcb font-200">
+            <div
+              className={`mt-8px text-12px ${
+                props.isSelected ? 'c-primary' : 'color-#cdcdcb'
+              } font-200`}
+            >
               {props.data.customLabel.subLabel}
             </div>
           )}
         </div>
       ) : (
         <div
-          className={`uppercase p-10px hover:op-100 ${
-            props.isSelected ? 'bg-#34343B bg-op-20 color-white' : 'op-60 color-#cdcdcb'
+          className={`uppercase text-14px px-12px py-10px hover:(cursor-pointer c-primary op-75) lg:(px-17px py-12px text-16px) ${
+            props.isSelected ? 'c-primary' : 'c-#fff'
           }`}
         >
           {props.children}
@@ -65,10 +67,19 @@ export const Dropdown = <T,>({
       menuPlacement="auto"
       menuPosition="fixed"
       className={className}
+      openMenuOnClick
       classNames={{
-        dropdownIndicator: () => 'ml-8px',
+        container: () => 'px-10px bg-#d9d9d9 bg-op-15 rd-10px',
+        indicatorsContainer: () => 'pl-8px',
+        dropdownIndicator: ({ selectProps }) =>
+          `ease-linear duration-125 transition-transform ${
+            selectProps.menuIsOpen ? 'rotate-180deg' : ''
+          } [&_img]:(w-9px)`,
+        control: () => '-mx-10px px-10px !min-h-32px !flex-row !flex-nowrap',
+        valueContainer: () => '!overflow-visible',
+        singleValue: () => '!overflow-visible !text-clip text-14px xl:text-16px',
         menu: () =>
-          'bg-black rounded-8px text-left important:w-auto min-w-100% overflow-hidden b-1px b-solid b-#5E5E5E whitespace-nowrap',
+          'bg-#565663 rounded-10px text-left important:w-auto min-w-100% overflow-hidden whitespace-nowrap py-6px mt-2px shadow-[0_10px_15px_0_rgba(0,0,0,0.26)] transition-all duration-200 ease-linear',
       }}
     />
   );

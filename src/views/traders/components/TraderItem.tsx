@@ -47,19 +47,19 @@ export const TraderItem: React.FC<TraderItemProps> = ({
           <span className={`text-24px font-800 trader-item-rank color-#adadab`}>{rank}</span>
         </div>
         <div className={loading ? '[&>*>*:last-child]:invisible' : ''}>
-          <div className="flex justify-between text-14px mt-14px">
+          <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
             <span className="color-#cdcdcd">Trading Volume</span>
             <span className="color-white">{formatCurrency(volume)}</span>
           </div>
-          <div className="flex justify-between text-14px mt-14px">
+          <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
             <span className="color-#cdcdcd">Fees Paid</span>
             <span className="color-white">{formatCurrency(fee)}</span>
           </div>
-          <div className="flex justify-between text-14px mt-14px">
+          <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
             <span className="color-#cdcdcd">Net Profit</span>
             <span className={profitColor(netProfit)}>{formatProfit(netProfit)}</span>
           </div>
-          <div className="flex justify-between text-14px mt-14px">
+          <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
             <span className="color-#cdcdcd">Win/Loss</span>
             <span className="color-white">
               {win}/{loss}
