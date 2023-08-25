@@ -9,11 +9,17 @@ import c from 'classnames';
 export interface TokenSideProps {
   symbol?: string;
   side?: Side;
-  size?: 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
   address?: string;
   chainId?: number;
 }
 const Size = {
+  sm: {
+    symbol: 28,
+    token: 'text-14px font-500',
+    side: 'text-12px',
+    spacer: 'ml-10px',
+  },
   md: {
     symbol: 32,
     token: 'text-16px font-700',

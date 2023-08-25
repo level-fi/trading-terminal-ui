@@ -17,7 +17,7 @@ export const LeverageInfo: React.FC<LeverageInfoProps> = ({ wallet }) => {
         <label className="text-18px xl:text-20px mb-11px xl:mb-0 font-700 color-white ">
           TRADING
         </label>
-        <div className="flex items-center color-#cdcdcd text-14px font-700 b-1px b-solid b-white b-op-20% h-42px rounded-10px [&>.active]:color-primary">
+        <div className="flex items-center color-#cdcdcd text-12px justify-between xl:(text-14px font-700) b-1px b-solid b-white b-op-20% h-42px rounded-10px [&>.active]:color-primary">
           <div
             onClick={() => setTab(0)}
             className={`cursor-pointer hover-op-75 px-17px py-2px ${tab == 0 && 'active'}`}

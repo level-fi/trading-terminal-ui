@@ -21,7 +21,7 @@ export const TraderDetail = () => {
   }, [location?.state?.from, navigate]);
 
   return (
-    <div className="mx-14px xl:mx-60px mt-20px pb-30px">
+    <div className="px-14px py-15px md:(px-30px py-25px)">
       <div className="flex justify-start">
         <span
           onClick={goBack}

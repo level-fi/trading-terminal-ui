@@ -100,7 +100,7 @@ export const PositionDetailModal = () => {
           </div>
         </div>
         <div className="flex flex-col xl:flex-row mt-20px mb-16px -mx-10px xl:min-w-800px">
-          <div className="rounded-10px bg-black bg-op-54 px-20px py-18px relative flex-1 mx-10px">
+          <div className="rounded-10px bg-black bg-op-54 p-14px relative flex-1 mx-10px xl:(px-20px py-18px)">
             {isInitialLoading && (
               <div className="absolute top-0 left-0 h-100% w-100%">
                 <PositionDetailPriceContentLoader />
@@ -160,7 +160,7 @@ export const PositionDetailModal = () => {
               .map(({ title, value, valueColor = 'color-white' }, index) => (
                 <div
                   key={index}
-                  className={`text-14px flex items-center justify-between leading-21px ${
+                  className={`text-12px xl:(text-14px) flex items-center justify-between leading-21px ${
                     index ? 'mt-14px' : ''
                   }`}
                 >
@@ -173,7 +173,7 @@ export const PositionDetailModal = () => {
                 </div>
               ))}
           </div>
-          <div className="rounded-10px bg-black bg-op-54 px-23px py-18px relative flex-1 mx-10px mt-16px xl:mt-0">
+          <div className="rounded-10px bg-black bg-op-54 p-14px relative flex-1 mx-10px mt-16px xl:(mt-0 px-23px py-18px)">
             {isInitialLoading && (
               <div className="absolute top-0 left-0 h-100% w-100%">
                 <PositionDetailInfoContentLoader />
@@ -200,7 +200,7 @@ export const PositionDetailModal = () => {
             ].map(({ title, value, valueColor = 'color-white' }, index) => (
               <div
                 key={index}
-                className={`text-14px flex items-center justify-between leading-21px ${
+                className={`text-12px xl:(text-14px) flex items-center justify-between leading-21px ${
                   index ? 'mt-14px' : ''
                 }`}
               >
@@ -213,7 +213,9 @@ export const PositionDetailModal = () => {
               </div>
             ))}
             <div className="b-t-1px b-dashed b-#5E5E5E mt-16px pt-16px">
-              <div className={`text-14px flex items-center justify-between leading-21px`}>
+              <div
+                className={`text-12px xl:(text-14px) flex items-center justify-between leading-21px`}
+              >
                 <div className="flex items-center">
                   <span className="color-#cdcdcd mr-4px">Net Profit</span>
                   <Tooltip content="Realized PnL + PnL - Close Fee - Borrow Fee" />
@@ -227,7 +229,7 @@ export const PositionDetailModal = () => {
                 </label>
               </div>
               <div
-                className={`text-14px flex items-center justify-between leading-21px mt-14px`}
+                className={`text-12px xl:(text-14px) flex items-center justify-between leading-21px mt-14px`}
               >
                 <div className="flex items-center">
                   <span className="color-#cdcdcd mr-4px">Net Value</span>

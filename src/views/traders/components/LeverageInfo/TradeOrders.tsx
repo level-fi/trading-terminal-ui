@@ -8,15 +8,15 @@ import { Loading } from '../../../../components/Loading';
 import { chainLogos } from '../../../../utils/constant';
 import { chainOptions } from '../../../positions/hooks/usePositionsConfig';
 import { getChainConfig } from '../../../../config';
-import { useScreenSize } from '../../../../hooks/useScreenSize';
 import { Dropdown } from '../../../../components/Dropdown';
+import c from 'classnames';
+
 interface TradeOrdersProps {
   wallet: string;
 }
 export const TradeOrders: React.FC<TradeOrdersProps> = ({ wallet }) => {
   const [chainId, setChainId] = useState<number>();
 
-  const isMobile = useScreenSize('xl');
   const { items, loading } = useTradeOrders({
     wallet: wallet,
     page: 1,
@@ -26,54 +26,29 @@ export const TradeOrders: React.FC<TradeOrdersProps> = ({ wallet }) => {
 
   return (
     <div>
-      {isMobile ? (
-        <div className="table text-right text-14px w-100% [&_.table-cell]:pb-10px mb-10px">
-          <div className="table-row">
-            <label className="table-cell w-70px text-left color-#cdcdcd">Chain:</label>
-            <div className="table-cell">
-              <div className="flex justify-start w-100% -my-10px">
-                <Dropdown
-                  defaultValue={chainOptions[0]}
-                  options={chainOptions}
-                  value={chainOptions.find((c) => c.value === chainId)}
-                  className="color-white uppercase"
-                  onChange={(item) => {
-                    setChainId(item.value);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+      <div
+        className={c(
+          'flex flex-col mb-20px xl:(flex-row items-center mb-10px)',
+          '[&>div]:(grid grid-cols-[60px_auto] gap-y-10px items-center xl:(grid-cols-[auto_130px]))',
+          '[&>div>label]:(text-12px mr-4px xl:(text-16px))',
+        )}
+      >
+        <div>
+          <label className="color-#cdcdcd">CHAIN:</label>
+          <Dropdown
+            defaultValue={chainOptions[0]}
+            options={chainOptions}
+            value={chainOptions.find((c) => c.value === chainId)}
+            className="color-white uppercase"
+            onChange={(item) => {
+              setChainId(item.value);
+            }}
+          />
         </div>
-      ) : (
-        <div className="flex flex-row mb-10px">
-          <div className="flex items-center color-#cdcdcd text-14px font-700">
-            <label className="color-#cdcdcd mr-6px">CHAIN:</label>
-            {chainOptions.map(({ label, value }, i) => {
-              const active = value === chainId;
-              const color = active ? 'color-black' : 'color-white';
-              const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
-              return (
-                <div
-                  key={i}
-                  className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-                  onClick={() => {
-                    setChainId(value);
-                  }}
-                >
-                  {chainLogos[value] && (
-                    <img className="mr-10px" src={chainLogos[value]} width={16} height={16} />
-                  )}
-                  {label}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      </div>
       {loading && !items.length ? (
         <div className="h-250px flex items-center justify-center">
-          <div className="w-300px">
+          <div className="w-50% max-w-200px">
             <Loading />
           </div>
         </div>
@@ -101,24 +76,24 @@ export const TradeOrders: React.FC<TradeOrdersProps> = ({ wallet }) => {
                   <div className="b-b-1px b-dashed b-#5E5E5E pb-10px flex justify-between">
                     <TokenSide
                       side={item.side}
-                      size={'md'}
+                      size={'sm'}
                       symbol={item.indexToken.symbol}
                       chainId={item.chainId}
                     />
                   </div>
-                  <div className="flex justify-between text-14px mt-14px">
+                  <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                     <label className="color-#cdcdcd">Type</label>
                     <label className="color-white">{OrderType[item.type]}</label>
                   </div>
-                  <div className="flex justify-between text-14px mt-14px">
+                  <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                     <label className="color-#cdcdcd">Order</label>
                     <label className="color-white">{item.action}</label>
                   </div>
-                  <div className="flex justify-between text-14px mt-14px">
+                  <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                     <label className="color-#cdcdcd">Condition</label>
                     <label className="color-white">{item.triggerCondition}</label>
                   </div>
-                  <div className="flex justify-between text-14px mt-14px">
+                  <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                     <label className="color-#cdcdcd">Mark Price</label>
                     <label className="color-white">{formatCurrency(item.markPrice)}</label>
                   </div>

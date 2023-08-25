@@ -52,7 +52,7 @@ export const Header = () => {
         className={c(
           'relative z-2',
           'grid grid-cols-[auto_auto] grid-rows-2 items-center',
-          'px-18px py-15px',
+          'px-14px py-15px',
           'md:(px-30px py-25px flex justify-between)',
         )}
       >

@@ -14,8 +14,8 @@ import { querySwapHistories } from '../../../../utils/queries';
 import { chainOptions } from '../../../positions/hooks/usePositionsConfig';
 import { chainLogos } from '../../../../utils/constant';
 import { SwapHistoriesResponse } from '../../../../utils/type';
-import { useScreenSize } from '../../../../hooks/useScreenSize';
 import { Dropdown } from '../../../../components/Dropdown';
+import c from 'classnames';
 
 interface SwapHistoriesProps {
   wallet: string;
@@ -26,7 +26,6 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
   const [page, setPage] = useState(1);
 
   const headerRef = useRef<HTMLDivElement>();
-  const isMobile = useScreenSize('xl');
   const { data, isInitialLoading } = useQuery(
     querySwapHistories({
       page: page,
@@ -47,56 +46,29 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
 
   return (
     <div>
-      {isMobile ? (
-        <div className="table text-right text-14px w-100% mb-20px">
-          <div className="table-row">
-            <label className="table-cell w-70px text-left color-#cdcdcd">Chain:</label>
-            <div className="table-cell">
-              <div className="flex justify-start w-100%">
-                <Dropdown
-                  defaultValue={chainOptions[0]}
-                  options={chainOptions}
-                  value={chainOptions.find((c) => c.value === chainId)}
-                  className="color-white uppercase"
-                  onChange={(item) => {
-                    setChainId(item.value);
-                    setPage(1);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+      <div
+        className={c(
+          'flex flex-col mb-20px xl:(flex-row items-center mb-10px)',
+          '[&>div]:(grid grid-cols-[60px_auto] gap-y-10px items-center xl:(grid-cols-[auto_130px]))',
+          '[&>div>label]:(text-12px mr-4px xl:(text-16px))',
+        )}
+      >
+        <div>
+          <label className="color-#cdcdcd">CHAIN:</label>
+          <Dropdown
+            defaultValue={chainOptions[0]}
+            options={chainOptions}
+            value={chainOptions.find((c) => c.value === chainId)}
+            className="color-white uppercase"
+            onChange={(item) => {
+              setChainId(item.value);
+            }}
+          />
         </div>
-      ) : (
-        <div className="flex flex-col xl:(flex-row) mb-10px">
-          <div className="flex items-center color-#cdcdcd text-14px font-700">
-            <label className="color-#cdcdcd mr-6px">CHAIN:</label>
-            {chainOptions.map(({ label, value }, i) => {
-              const active = value === chainId;
-              const color = active ? 'color-black' : 'color-white';
-              const bg = active ? 'bg-primary' : 'bg-#d9d9d9 bg-opacity-10';
-              return (
-                <div
-                  key={i}
-                  className={`${color} ${bg} uppercase text-12px px-14px min-w-82px h-32px mx-5px rounded-10px flex items-center justify-center font-700 cursor-pointer hover-opacity-75`}
-                  onClick={() => {
-                    setChainId(value);
-                    setPage(1);
-                  }}
-                >
-                  {chainLogos[value] && (
-                    <img className="mr-10px" src={chainLogos[value]} width={16} height={16} />
-                  )}
-                  {label}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      </div>
       {isInitialLoading && !items.length ? (
         <div className="h-250px flex items-center justify-center">
-          <div className="w-300px">
+          <div className="w-50% max-w-200px">
             <Loading />
           </div>
         </div>
@@ -144,23 +116,23 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                   key={i}
                 >
                   <div className="xl:hidden bg-#34343B p-14px rounded-10px mb-12px">
-                    <div className="flex justify-between text-14px">
+                    <div className="flex justify-between text-12px xl:(text-14px)">
                       <span className="color-#cdcdcd">Type</span>
                       <span className="color-white">{item.type}</span>
                     </div>
-                    <div className="flex justify-between items-center text-14px mt-14px">
+                    <div className="flex justify-between items-center text-12px xl:(text-14px) mt-14px">
                       <span className="color-#cdcdcd">From</span>
                       <div className="-my-3px">
                         <SwapAmount amount={item.amountIn} size={20} token={tokenIn} />
                       </div>
                     </div>
-                    <div className="flex justify-between items-center text-14px mt-14px">
+                    <div className="flex justify-between items-center text-12px xl:(text-14px) mt-14px">
                       <span className="color-#cdcdcd">To (Min receive)</span>
                       <div className="-my-3px">
                         <SwapAmount amount={item.amountOut} size={20} token={tokenOut} />
                       </div>
                     </div>
-                    <div className="flex justify-between text-14px mt-14px">
+                    <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                       <span className="color-#cdcdcd">Price</span>
                       <SwapPrice
                         tokenIn={tokenIn}
@@ -169,15 +141,15 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                         priceDirection="="
                       />
                     </div>
-                    <div className="flex justify-between text-14px mt-14px">
+                    <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                       <span className="color-#cdcdcd">Time</span>
                       <span className="color-white">{unixToDate(item.createdAt)}</span>
                     </div>
-                    <div className="flex justify-between text-14px mt-14px">
+                    <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                       <span className="color-#cdcdcd">Fees Paid</span>
                       <span className="color-white">{formatCurrency(item.fee)}</span>
                     </div>
-                    <div className="flex justify-between text-14px mt-14px">
+                    <div className="flex justify-between text-12px xl:(text-14px) mt-14px">
                       <span className="color-#cdcdcd">Chain</span>
                       <div className="color-white">
                         <div className="flex items-center">
@@ -197,10 +169,10 @@ export const SwapHistories: React.FC<SwapHistoriesProps> = ({ wallet }) => {
                       <a
                         href={`${chainConfig.baseExplorer}/tx/${item.transactionHash}`}
                         target="_blank"
-                        className="[&:hover_svg_path]:fill-primary color-#ADABAB no-underline flex justify-end text-14px"
+                        className="[&:hover_svg_path]:fill-primary color-#ADABAB no-underline flex justify-end items-center text-12px xl:(text-14px)"
                       >
                         View
-                        <IconExplorer className="ml-8px" />
+                        <IconExplorer className="ml-8px w-12px" />
                       </a>
                     </div>
                   </div>

@@ -7,7 +7,7 @@ export const Leaderboard = () => {
   const { data, isInitialLoading } = useQuery(queryLeaderboard());
   const items = data ? data.data : undefined;
   return (
-    <div className="mx-14px xl:mx-60px my-20px">
+    <div className="px-14px py-15px md:(px-30px py-25px)">
       <TopTrader items={items?.allTime || []} loading={isInitialLoading} />
       <LeaderboardBox
         currentMonth={items?.currentMonth || []}

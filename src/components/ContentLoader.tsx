@@ -131,6 +131,15 @@ export const PositionDetailPriceContentLoader = () => {
         y={159}
         style={{ transform: 'translateX(-20px)' }}
       />
+      <rect
+        height={21}
+        width={'50%'}
+        rx={5}
+        ry={5}
+        x={`50%`}
+        y={194}
+        style={{ transform: 'translateX(-20px)' }}
+      />
     </ContentLoader>
   );
 };
@@ -173,11 +182,20 @@ export const PositionDetailInfoContentLoader = () => {
       />
       <rect
         height={21}
+        width={'20%'}
+        rx={5}
+        ry={5}
+        x={`80%`}
+        y={124}
+        style={{ transform: 'translateX(-20px)' }}
+      />
+      <rect
+        height={21}
         width={'22%'}
         rx={5}
         ry={5}
         x={`78%`}
-        y={143}
+        y={175}
         style={{ transform: 'translateX(-20px)' }}
       />
       <rect
@@ -186,7 +204,7 @@ export const PositionDetailInfoContentLoader = () => {
         rx={5}
         ry={5}
         x={`70%`}
-        y={178}
+        y={210}
         style={{ transform: 'translateX(-20px)' }}
       />
     </ContentLoader>
