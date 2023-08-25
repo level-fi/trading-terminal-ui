@@ -33,7 +33,7 @@ export const PositionFilter = () => {
   return (
     <div
       className={c(
-        'grid [&>div]:(grid grid-rows-2 items-center xl:(grid-rows-1 grid-cols-[auto_130px])) [&>div>label]:(text-12px mr-4px xl:(text-16px))',
+        'grid [&>div]:(grid grid-cols-[90px_auto] items-center xl:(grid-cols-[auto_130px])) [&>div>label]:(text-12px mr-4px xl:(text-16px))',
         'gap-y-8px',
         'xl:(grid-cols-[repeat(4,auto)] gap-x-46px)',
       )}

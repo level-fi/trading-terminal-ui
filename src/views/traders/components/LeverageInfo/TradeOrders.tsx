@@ -29,7 +29,7 @@ export const TradeOrders: React.FC<TradeOrdersProps> = ({ wallet }) => {
       <div
         className={c(
           'flex flex-col mb-20px xl:(flex-row items-center mb-10px)',
-          '[&>div]:(grid grid-rows-[auto_auto] gap-y-10px items-center xl:(grid-cols-[auto_130px]))',
+          '[&>div]:(grid grid-cols-[60px_auto] gap-y-10px items-center xl:(grid-cols-[auto_130px]))',
           '[&>div>label]:(text-12px mr-4px xl:(text-16px))',
         )}
       >
