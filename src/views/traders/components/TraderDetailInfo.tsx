@@ -29,9 +29,7 @@ export const TraderDetailPanel: React.FC<TraderDetailPanelProps> = ({
         <div className="flex flex-col ml-18px">
           <label className="color-white text-18px font-700">
             <span className="hidden 2xl:block">{wallet}</span>
-            <span className="hidden xl:inline 2xl:hidden">
-              {shortenAddress(wallet, 15, 10)}
-            </span>
+            <span className="hidden xl:block 2xl:hidden">{shortenAddress(wallet, 10, 6)}</span>
             <span className="xl:hidden">{shortenAddress(wallet)}</span>
           </label>
           <a
@@ -46,9 +44,10 @@ export const TraderDetailPanel: React.FC<TraderDetailPanelProps> = ({
       <div
         className={c(
           'mt-10px xl:mt-0',
-          'grid grid-rows-4 gap-y-10px xl:(grid-rows-1 grid-cols-[repeat(4,auto)] items-center gap-x-40px)',
-          '[&>div>div]:(flex flex-col items-start xl:(b-l-1px b-solid b-#2f2f2f pl-20px pr-0px py-0px rd-0))',
-          '[&>div]:(flex items-center bg-black bg-op-54 xl:bg-op-0 px-16px py-18px rd-10px)',
+          '2xl:(gap-x-40px)',
+          'grid grid-rows-4 gap-y-10px xl:(grid-rows-1 grid-cols-[repeat(4,auto)] items-center gap-x-20px)',
+          '[&>div>div]:(flex flex-col items-start xl:(b-l-1px b-solid b-#2f2f2f pl-14px pr-0px py-0px rd-0) 2xl:(pl-20px))',
+          '[&>div]:(flex items-center bg-black bg-op-54 xl:bg-op-0 rd-10px px-16px py-18px xl:(px-10px py-14px) 2xl:(px-16px py-18px))',
           '[&>div>img]:(xl:hidden mr-20px w-32px block)',
         )}
       >
