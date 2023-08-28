@@ -21,8 +21,14 @@ const CustomOption = (props) => {
   return (
     <div {...props.innerProps}>
       {props.data.customLabel ? (
-        <div className={`hover:op-100 px-12px py-10px lg:(py-12px px-17px)`}>
-          <div className={`text-14px font-700 ${props.isSelected ? 'c-primary' : 'c-#fff'}`}>
+        <div
+          className={`hover:(op-75 [&>div:first-child]:(c-primary)) px-12px py-10px lg:(py-12px px-17px) cursor-pointer`}
+        >
+          <div
+            className={`text-14px lg:(text-16px) font-700 ${
+              props.isSelected ? 'c-primary' : 'c-#fff'
+            }`}
+          >
             {props.data.customLabel.label}
           </div>
           {!!props.data.customLabel.subLabel && (
